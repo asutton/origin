@@ -26,13 +26,9 @@ static_assert(not origin::Convertible<const volatile int, const int&>(), "");
 
 static_assert(origin::Convertible<int, int&&>(), "");
 
-
-
 static_assert(origin::Convertible<int&, int>(), "");
 static_assert(origin::Convertible<const int&, int>(), "");
 
-
-
-// TODO: Write more tests.
+// TODO: Write more tests. Obviously...
 
 int main() { return 0; }
