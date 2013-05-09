@@ -1,8 +1,8 @@
-// (C) 2013 Andrew Sutton
+// Copyright (c) 2008-2013 Andrew Sutton
 //
-// This file is distributed under the MIT License. See
-// http://www.opensource.org/licenses/mit-license.php
-// for terms and conditions.
+// This file is distributed under the MIT License. See the accompanying file
+// LICENSE.txt or http://www.opensource.org/licenses/mit-license.php for terms
+// and conditions.
 
 #ifndef ORIGIN_ITERATOR_HPP
 #define ORIGIN_ITERATOR_HPP
@@ -112,48 +112,6 @@ template<typename I>
              {i[n]} -> decltype(*i);
            };
   }
-
-// Range Concepts
-
-// Range
-template<typename R>
-  concept bool Range()
-  {
-    return requires (R range) {
-      std::begin(range);
-      std::end(range);
-      requires Same<decltype(std::begin(range)), decltype(std::end(range))>();
-    };
-  }
-
-// Iterator type
-template<typename R>
-  using Iterator_type = decltype(std::begin(std::declval<R>()));
-
-template<typename R>
-  concept bool Input_range()
-  {
-    return Range<R>() && Input_iterator<Iterator_type<R>>();
-  }
-
-template<typename R>
-  concept bool Forward_range()
-  {
-    return Range<R>() && Forward_iterator<Iterator_type<R>>();
-  }
-
-template<typename R>
-  concept bool Bidirectional_range()
-  {
-    return Range<R>() && Bidirectional_iterator<Iterator_type<R>>();
-  }
-
-template<typename R>
-  concept bool Random_access_range()
-  {
-    return Range<R>() && Random_access_iterator<Iterator_type<R>>();
-  }
-
 
 } // namespace origin
 
