@@ -115,12 +115,10 @@ template<typename T, typename U>
 // Regular types
 
 // Destructible
-
 template<typename T>
   concept bool Destructible() { return std::is_destructible<T>::value; }
 
 // Constructible
-
 template<typename T, typename... Args>
   concept bool Constructible() 
   { 
@@ -128,17 +126,14 @@ template<typename T, typename... Args>
   }
 
 // Default constructible
-
 template<typename T>
   concept bool Default_constructible() { return Constructible<T>(); }
 
 // Move constructible
-
 template<typename T>
   concept bool Move_constructible() { return Constructible<T, T&&>(); }
 
 // Copy constructible
-
 template<typename T>
   concept bool Copy_constructible() 
   { 
@@ -146,17 +141,14 @@ template<typename T>
   }
 
 // Assignable
-
 template<typename T, typename U>
   concept bool Assignable() { return std::is_assignable<T, U>::value; }
 
 // Move assignable
-
 template<typename T>
   concept bool Move_assignable() { return Assignable<T&, T&&>(); }
 
 // Copy assignable
-
 template<typename T>
   concept bool Copy_assignable() 
   { 
@@ -164,7 +156,6 @@ template<typename T>
   }
 
 // Movable
-
 template<typename T>
   concept bool Movable()
   {
@@ -172,7 +163,6 @@ template<typename T>
   }
 
 // Copyable
-
 template<typename T>
   concept bool Copyable()
   {
@@ -180,7 +170,6 @@ template<typename T>
   }
 
 // Semiregular
-
 template<typename T>
   concept bool Semiregular()
   {
@@ -188,7 +177,6 @@ template<typename T>
   }
 
 // Regular
-
 template<typename T>
   concept bool Regular()
   {
@@ -196,15 +184,16 @@ template<typename T>
   }
 
 // Ordered
-
 template<typename T>
   concept bool Ordered()
   {
     return Regular<T>() && Totally_ordered<T>();
   }
 
-// Function
 
+// Functional types
+
+// Function
 template<typename F, typename... Args>
   concept bool Function()
   {
@@ -215,7 +204,6 @@ template<typename F, typename... Args>
   }
 
 // Predicate
-
 template<typename P, typename... Args>
   concept bool Predicate()
   {
@@ -225,15 +213,26 @@ template<typename P, typename... Args>
   }
 
 // Relation
-
 template<typename R, typename T>
   concept bool Relation()
   {
     return Predicate<R, T, T>();
   }
 
-// Unary_operation
+// Relation (cross-type)
+template<typename R, typename T, typename U>
+  concept bool Relation()
+  {
+    return Relation<R, T>()
+        && Relation<R, U>()
+        && Common<T, U>()
+        && requires (T t, U u) {
+             {r(t, u)} -> bool;
+             {r(u, t)} -> bool;
+           };
+  }
 
+// Unary_operation
 template<typename F, typename T>
   concept bool Unary_operation()
   {
@@ -242,6 +241,7 @@ template<typename F, typename T>
            };
   }
 
+// Binary_operation
 template<typename F, typename T>
   concept bool Binary_operation()
   {
@@ -250,6 +250,7 @@ template<typename F, typename T>
            };
   }
 
+// Binary_operation (cross-type)
 template<typename F, typename T, typename U>
   concept bool Binary_operation()
   {
@@ -262,14 +263,15 @@ template<typename F, typename T, typename U>
            };
   }
 
-// Main type
 
+// Miscellaneous associated types
+
+// Main type
 template<typename T>
   using Main_type = typename std::remove_cv<
                       typename std::remove_reference<T>::type
                     >::type;
 
-// Value type
 
 namespace core_impl
 {
@@ -293,11 +295,10 @@ namespace core_impl
       struct get_value_type<T> { using type = typename T::value_type; };
 } // namespace core_impl
 
+// Value type
 template<typename T>
   using Value_type = typename core_impl::get_value_type<T>::type;
 
-
-// Difference_type
 
 namespace core_impl
 {
@@ -318,6 +319,7 @@ namespace core_impl
       struct get_difference_type<T> { using type = typename T::difference_type; };
 } // namespace core_impl
 
+// Difference_type
 template<typename T>
   using Difference_type = typename core_impl::get_difference_type<T>::type;
 

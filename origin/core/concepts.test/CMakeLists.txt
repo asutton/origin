@@ -35,3 +35,4 @@ add_run_test(core_unary_operation unary_operation.cpp)
 add_run_test(core_binary_operation binary_operation.cpp)
 
 add_run_test(core_value_type value_type.cpp)
+add_run_test(core_difference_type difference_type.cpp)

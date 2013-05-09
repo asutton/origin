@@ -18,10 +18,10 @@ struct S
   using difference_type = int;
 };
 
-static_assert(Has_value_type<int*, std::ptrdiff_t>(), "");
-static_assert(Has_value_type<const int*, std::ptrdiff_t>(), "");
-static_assert(Has_value_type<int[], std::ptrdiff_t>(), "");
-static_assert(Has_value_type<int[1], std::ptrdiff_t>(), "");
-static_assert(Has_value_type<S, int>(), "");
+static_assert(Has_difference_type<int*, std::ptrdiff_t>(), "");
+static_assert(Has_difference_type<const int*, std::ptrdiff_t>(), "");
+static_assert(Has_difference_type<int[], std::ptrdiff_t>(), "");
+static_assert(Has_difference_type<int[1], std::ptrdiff_t>(), "");
+static_assert(Has_difference_type<S, int>(), "");
 
 int main() { return 0; }
