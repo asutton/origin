@@ -13,19 +13,19 @@ namespace origin {
 
 // Same
 template<typename T, typename U>
-  constexpr bool Same() { return __is_same_as(T, U); }
+  concept bool Same() { return __is_same_as(T, U); }
 
 // Derived
 template<typename T, typename U>
-  constexpr bool Derived() { return __is_base_of(U, T); }
+  concept bool Derived() { return __is_base_of(U, T); }
 
 // Convertible
 template<typename T, typename U>
-  constexpr bool Convertible() { return __is_convertible_to(T, U); }
+  concept bool Convertible() { return __is_convertible_to(T, U); }
 
 // Common
 template<typename T, typename U>
-  constexpr bool Common() 
+  concept bool Common() 
   { 
     return requires (T t, U u) { true ? t : u; }; 
   }
@@ -40,7 +40,7 @@ template<typename T, typename U>
 
 // Equality comparable
 template<typename T>
-  constexpr bool Equality_comparable()
+  concept bool Equality_comparable()
   {
     return requires (T a, T b) {
              {a == b} -> bool;
@@ -50,7 +50,7 @@ template<typename T>
 
 // Equality comparable
 template<typename T, typename U>
-  constexpr bool Equality_comparable()
+  concept bool Equality_comparable()
   {
     return Equality_comparable<T>() 
         && Equality_comparable<U>() 
@@ -65,7 +65,7 @@ template<typename T, typename U>
 
 // Weakly ordered
 template<typename T>
-  constexpr bool Weakly_ordered()
+  concept bool Weakly_ordered()
   {
     return requires (T a, T b) {
              {a < b} -> bool;
@@ -77,7 +77,7 @@ template<typename T>
 
 // Weakly ordered
 template<typename T, typename U>
-  constexpr bool Weakly_ordered()
+  concept bool Weakly_ordered()
   {
     return Weakly_ordered<T>() 
         && Weakly_ordered<U>() 
@@ -96,14 +96,14 @@ template<typename T, typename U>
 
 // Totally ordered
 template<typename T>
-  constexpr bool Totally_ordered()
+  concept bool Totally_ordered()
   {
     return Equality_comparable<T>() && Weakly_ordered<T>();
   }
 
 // Totally ordered
 template<typename T, typename U>
-  constexpr bool Totally_ordered()
+  concept bool Totally_ordered()
   {
     return Totally_ordered<T>() 
         && Totally_ordered<U>()
@@ -117,12 +117,12 @@ template<typename T, typename U>
 // Destructible
 
 template<typename T>
-  constexpr bool Destructible() { return std::is_destructible<T>::value; }
+  concept bool Destructible() { return std::is_destructible<T>::value; }
 
 // Constructible
 
 template<typename T, typename... Args>
-  constexpr bool Constructible() 
+  concept bool Constructible() 
   { 
     return Destructible<T>() && std::is_constructible<T, Args...>::value; 
   }
@@ -130,17 +130,17 @@ template<typename T, typename... Args>
 // Default constructible
 
 template<typename T>
-  constexpr bool Default_constructible() { return Constructible<T>(); }
+  concept bool Default_constructible() { return Constructible<T>(); }
 
 // Move constructible
 
 template<typename T>
-  constexpr bool Move_constructible() { return Constructible<T, T&&>(); }
+  concept bool Move_constructible() { return Constructible<T, T&&>(); }
 
 // Copy constructible
 
 template<typename T>
-  constexpr bool Copy_constructible() 
+  concept bool Copy_constructible() 
   { 
     return Move_constructible<T>() && Constructible<T, const T&>(); 
   }
@@ -148,17 +148,17 @@ template<typename T>
 // Assignable
 
 template<typename T, typename U>
-  constexpr bool Assignable() { return std::is_assignable<T, U>::value; }
+  concept bool Assignable() { return std::is_assignable<T, U>::value; }
 
 // Move assignable
 
 template<typename T>
-  constexpr bool Move_assignable() { return Assignable<T&, T&&>(); }
+  concept bool Move_assignable() { return Assignable<T&, T&&>(); }
 
 // Copy assignable
 
 template<typename T>
-  constexpr bool Copy_assignable() 
+  concept bool Copy_assignable() 
   { 
     return Move_assignable<T>() && Assignable<T&, const T&>(); 
   }
@@ -166,7 +166,7 @@ template<typename T>
 // Movable
 
 template<typename T>
-  constexpr bool Movable()
+  concept bool Movable()
   {
     return Move_constructible<T>() && Move_assignable<T>();
   }
@@ -174,7 +174,7 @@ template<typename T>
 // Copyable
 
 template<typename T>
-  constexpr bool Copyable()
+  concept bool Copyable()
   {
     return Copy_constructible<T>() && Copy_assignable<T>();
   }
@@ -182,7 +182,7 @@ template<typename T>
 // Semiregular
 
 template<typename T>
-  constexpr bool Semiregular()
+  concept bool Semiregular()
   {
     return Default_constructible<T>() && Copyable<T>();
   }
@@ -190,7 +190,7 @@ template<typename T>
 // Regular
 
 template<typename T>
-  constexpr bool Regular()
+  concept bool Regular()
   {
     return Semiregular<T>() && Equality_comparable<T>();
   }
@@ -198,7 +198,7 @@ template<typename T>
 // Ordered
 
 template<typename T>
-  constexpr bool Ordered()
+  concept bool Ordered()
   {
     return Regular<T>() && Totally_ordered<T>();
   }
@@ -206,7 +206,7 @@ template<typename T>
 // Function
 
 template<typename F, typename... Args>
-  constexpr bool Function()
+  concept bool Function()
   {
     return Copy_constructible<F>()
         && requires (F f, Args... args) {
@@ -214,21 +214,12 @@ template<typename F, typename... Args>
            };
   }
 
-// Regular function
-
-template<typename F, typename... Args>
-  constexpr bool Regular_function() 
-  {
-    return Function<F, Args...>();
-  }
-
 // Predicate
 
 template<typename P, typename... Args>
-  constexpr bool Predicate()
+  concept bool Predicate()
   {
-    return Regular_function<P, Args...>()
-        && requires (P pred, Args... args) {
+    return requires (P pred, Args... args) {
              {pred(args...)} -> bool;
            };
   }
@@ -236,9 +227,39 @@ template<typename P, typename... Args>
 // Relation
 
 template<typename R, typename T>
-  constexpr bool Relation()
+  concept bool Relation()
   {
     return Predicate<R, T, T>();
+  }
+
+// Unary_operation
+
+template<typename F, typename T>
+  concept bool Unary_operation()
+  {
+    return requires (F f, T a) {
+             {f(a)} -> T;
+           };
+  }
+
+template<typename F, typename T>
+  concept bool Binary_operation()
+  {
+    return requires (F f, T a, T b) {
+             {f(a, b)} -> T;
+           };
+  }
+
+template<typename F, typename T, typename U>
+  concept bool Binary_operation()
+  {
+    return Binary_operation<F, T>()
+        && Binary_operation<F, U>()
+        && Common<T, U>()
+        && requires (F f, T t, U u) {
+             {f(t, u)} -> Common_type<T, U>;
+             {f(u, t)} -> Common_type<T, U>;
+           };
   }
 
 // Main type
@@ -250,43 +271,55 @@ template<typename T>
 
 // Value type
 
-template<typename T>
-  struct get_value_type;
+namespace core_impl
+{
+  template<typename T>
+    struct get_value_type;
+
+  template<typename T>
+    struct get_value_type<T*> { using type = T; };
+
+  template<typename T>
+    struct get_value_type<const T*> { using type = T; };
+
+  template<typename T>
+    struct get_value_type<T[]> { using type = T; };
+
+  template<typename T, std::size_t N>
+    struct get_value_type<T[N]> { using type = T; };
+
+  template<typename T>
+    requires requires () { typename T::value_type; }
+      struct get_value_type<T> { using type = typename T::value_type; };
+} // namespace core_impl
 
 template<typename T>
-  struct get_value_type<T*> { using type = T; };
-
-template<typename T>
-  struct get_value_type<const T*> { using type = T; };
-
-template<typename T>
-  struct get_value_type<T[]> { using type = T; };
-
-template<typename T>
-  requires requires () { typename T::value_type; }
-    struct get_value_type<T> { using type = typename T::value_type; };
-
-template<typename T>
-  using Value_type = typename get_value_type<T>::type;
+  using Value_type = typename core_impl::get_value_type<T>::type;
 
 
 // Difference_type
 
-template<typename T>
-  struct get_difference_type;
+namespace core_impl
+{
+  template<typename T>
+    struct get_difference_type;
+
+  template<typename T>
+    struct get_difference_type<T*> { using type = std::ptrdiff_t; };
+
+  template<typename T>
+    struct get_difference_type<T[]> { using type = std::ptrdiff_t; };
+
+  template<typename T, std::size_t N>
+    struct get_difference_type<T[N]> { using type = std::ptrdiff_t; };
+
+  template<typename T>
+    requires requires () { typename T::difference_type; }
+      struct get_difference_type<T> { using type = typename T::difference_type; };
+} // namespace core_impl
 
 template<typename T>
-  struct get_difference_type<T*> { using type = std::ptrdiff_t; };
-
-template<typename T>
-  struct get_difference_type<T[]> { using type = std::ptrdiff_t; };
-
-template<typename T>
-  requires requires () { typename T::difference_type; }
-    struct get_difference_type<T> { using type = typename T::difference_type; };
-
-template<typename T>
-  using Difference_type = typename get_difference_type<T>::type;
+  using Difference_type = typename core_impl::get_difference_type<T>::type;
 
 } // namespace origin
 
