@@ -7,35 +7,13 @@
 #ifndef ORIGIN_ITERATOR_HPP
 #define ORIGIN_ITERATOR_HPP
 
-#include "concepts.hpp"
+#include <origin/core/concepts.hpp>
 
 namespace origin {
 
-// Iterator category
-
-template<typename I>
-  struct get_iterator_category;
-
-template<typename T>
-  struct get_iterator_category<T*>
-  {
-    using type = std::random_access_iterator_tag;
-  };
-
-template<typename T>
-  requires requires () { typename T::get_iterator_category; }
-    struct get_iterator_category<T>
-    {
-      using type = typename T::get_iterator_category;
-    };
-
-template<typename I>
-  using Iterator_category = typename get_iterator_category<I>::type;
-
-
 // Readable
 template<typename I>
-  constexpr bool Readable()
+  concept bool Readable()
   {
     return requires (I i) {
              {*i} -> const Value_type<I>&;
@@ -44,7 +22,7 @@ template<typename I>
 
 // Writable
 template<typename I, typename T>
-  constexpr bool Writable()
+  concept bool Writable()
   {
     return requires (I i, T x) {
              *i = std::forward<T>(x); 
@@ -53,23 +31,23 @@ template<typename I, typename T>
 
 // Permutable
 template<typename I>
-  constexpr bool Permutable()
+  concept bool Permutable()
   {
-    return Readable<I>() 
+    return Readable<I>()
         && Writable<I, Value_type<I>&&>();
   }
 
 // Mutable
 template<typename I>
-  constexpr bool Mutable()
+  concept bool Mutable()
   {
-    return Permutable<I> 
+    return Permutable<I>()
         && Writable<I, const Value_type<I>&>();
   }
 
 // Advanceable
 template<typename I>
-  constexpr bool Advanceable()
+  concept bool Advanceable()
   {
     return requires (I i) {
              { ++i } -> I&;
@@ -78,7 +56,7 @@ template<typename I>
 
 // Incrementable
 template<typename I>
-  constexpr bool Incrementable()
+  concept bool Incrementable()
   {
     return requires (I i) {
              Difference_type<I>;
@@ -89,27 +67,27 @@ template<typename I>
 
 // Input iterator
 template<typename I>
-  constexpr bool Input_iterator()
+  concept bool Input_iterator()
   {
     return Readable<I>() && Advanceable<I>();
   }
 
 template<typename I, typename T>
-  constexpr bool Output_iterator()
+  concept bool Output_iterator()
   {
     return Writable<I, T>() && Advanceable<I>();
   }
 
 // Forward iterator
 template<typename I>
-  constexpr bool Forward_iterator()
+  concept bool Forward_iterator()
   {
     return Readable<I>() && Incrementable<I>();
   }
 
 // Bidirectional iterator
 template<typename I>
-  constexpr bool Bidirectional_iterator()
+  concept bool Bidirectional_iterator()
   {
     return Forward_iterator<I>()
         && requires (I i)
@@ -121,7 +99,7 @@ template<typename I>
 
 // Random access iterator
 template<typename I>
-  constexpr bool Random_access_iterator()
+  concept bool Random_access_iterator()
   {
     return Bidirectional_iterator<I>()
         && requires (I i, I j, Difference_type<I> n) {
@@ -139,7 +117,7 @@ template<typename I>
 
 // Range
 template<typename R>
-  constexpr bool Range()
+  concept bool Range()
   {
     return requires (R range) {
       std::begin(range);
@@ -153,25 +131,25 @@ template<typename R>
   using Iterator_type = decltype(std::begin(std::declval<R>()));
 
 template<typename R>
-  constexpr bool Input_range()
+  concept bool Input_range()
   {
     return Range<R>() && Input_iterator<Iterator_type<R>>();
   }
 
 template<typename R>
-  constexpr bool Forward_range()
+  concept bool Forward_range()
   {
     return Range<R>() && Forward_iterator<Iterator_type<R>>();
   }
 
 template<typename R>
-  constexpr bool Bidirectional_range()
+  concept bool Bidirectional_range()
   {
     return Range<R>() && Bidirectional_iterator<Iterator_type<R>>();
   }
 
 template<typename R>
-  constexpr bool Random_access_range()
+  concept bool Random_access_range()
   {
     return Range<R>() && Random_access_iterator<Iterator_type<R>>();
   }

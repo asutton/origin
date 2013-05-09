@@ -4,5 +4,4 @@
 # LICENSE.txt or http://www.opensource.org/licenses/mit-license.php for terms
 # and conditions.
 
-add_subdirectory(core)
-add_subdirectory(iterator)
+add_subdirectory(concepts.test)
