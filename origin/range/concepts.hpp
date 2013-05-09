@@ -9,8 +9,7 @@
 
 #include <origin/iterator/concepts.hpp>
 
-namespace origin
-{
+namespace origin {
 
 // Range
 template<typename R>

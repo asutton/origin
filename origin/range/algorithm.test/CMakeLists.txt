@@ -4,5 +4,6 @@
 # LICENSE.txt or http://www.opensource.org/licenses/mit-license.php for terms
 # and conditions.
 
-add_subdirectory(concepts.test)
-add_subdirectory(algorithm.test)
+add_run_test (range_algo_all_of all_of.cpp)
+
+

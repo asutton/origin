@@ -9,7 +9,7 @@
 
 #include <algorithm>
 
-#include "iterator.hpp"
+#include "concepts.hpp"
 
 namespace origin {
 
@@ -98,19 +98,14 @@ template<typename R, typename T>
 
 // all of
 
-template<typename I, typename P>
-  requires Query<I, P>()
-    I all_of(I first, I last, P pred)
+template<typename R, typename P>
+  // requires Query_range<R, P>()
+    bool all_of(R&& range, P pred)
     {
-      return std::all_of(first, last, pred);
+      return std::all_of(std::begin(range), std::end(range), pred);
     }
 
-template<typename R, typename P>
-  requires Query_range<R, P>()
-    Iterator_type<R> all_of(R&& range)
-    {
-      return std::all_of(std::begin(range), std::end(range));
-    }
+#if 0
 
 // any of
 
@@ -145,8 +140,8 @@ template<typename R, typename P>
     }
 
 // for each
-template<Input_iterator I, typename F>
-  requires Function<F, Value_type<I>>()
+template<typename I, typename F>
+  requires Input_iterator<I>() && Function<F, Value_type<I>>()
     F for_each(I first, I last, F fn)
     {
       return std::for_each(first, last, fn);      
@@ -177,7 +172,7 @@ template<typename I, typename P>
       return std::find_if(first, last, pred);
     }
 
-template<Input_range R, typename P>
+template<typename R, typename P>
   requires Query_range<R, P>()
     Iterator_type<R> find_if(R&& range, P pred)
     {
@@ -186,14 +181,14 @@ template<Input_range R, typename P>
 
 // find if not
 
-template<Input_iterator I, typename P>
+template<typename I, typename P>
   requires Query<I, P>()
     I find_if_not (I first, I last, P pred)
     {
       return std::find_if_not(first, last, pred);
     }
 
-template<Input_range R, typename P>
+template<typename R, typename P>
   requires Query_range<R, P>()
     Iterator_type<R> find_if_not(R&& range, P pred)
     {
@@ -204,7 +199,7 @@ template<Input_range R, typename P>
 
 // find first
 
-template<Input_iterator I1, Forward_iterator I2>
+template<typename I1, typename I2>
   requires Indirectly_equal<I1, I2>()
     I1 find_first(I1 first1, I1 last1, I2 first2, I2 last2)
     {
@@ -314,6 +309,8 @@ template<typename R, typename Ord>
     {
       return std::sort(std::begin(range), std::end(range), comp);
     }
+
+#endif
 
 } // namesapce origin
 
