@@ -7,9 +7,27 @@
 #ifndef ORIGIN_ITERATOR_HPP
 #define ORIGIN_ITERATOR_HPP
 
+#include <iterator>
+
 #include <origin/core/concepts.hpp>
 
 namespace origin {
+
+namespace iterator_impl {
+template<typename T>
+  struct get_iterator_category;
+
+template<typename T>
+  struct get_iterator_category<T*> { using type = std::random_access_iterator_tag; };
+
+template<typename T>
+  requires requires () { typename T::iterator_category; }
+    struct get_iterator_category<T> { using type = typename T::iterator_category; };
+} // namespace iterator_impl
+
+// Iteraetor_category
+template<typename I>
+  using Iterator_category = typename iterator_impl::get_iterator_category<I>::type;
 
 // Readable
 template<typename I>
@@ -82,7 +100,8 @@ template<typename I, typename T>
 template<typename I>
   concept bool Forward_iterator()
   {
-    return Readable<I>() && Incrementable<I>();
+    return Readable<I>() && Incrementable<I>()
+        && Derived<Iterator_category<I>, std::forward_iterator_tag>();
   }
 
 // Bidirectional iterator
