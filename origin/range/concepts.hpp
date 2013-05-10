@@ -24,13 +24,20 @@ template<typename R>
 
 // Iterator type
 template<typename R>
-  using Iterator_type = decltype(std::begin(std::declval<R>()));
+  using Iterator_type = decltype(std::begin(std::declval<R&>()));
 
 // Input_range
 template<typename R>
   concept bool Input_range()
   {
     return Range<R>() && Input_iterator<Iterator_type<R>>();
+  }
+
+// Output_range
+template<typename R, typename T>
+  concept bool Output_range()
+  {
+    return Range<R>() && Output_iterator<Iterator_type<R>, T>();
   }
 
 // Forward_range

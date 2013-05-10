@@ -5,3 +5,5 @@
 # and conditions.
 
 add_run_test(range_range range.cpp)
+add_run_test(range_input_range input_range.cpp)
+add_run_test(range_output_range output_range.cpp)
