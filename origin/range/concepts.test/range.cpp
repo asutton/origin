@@ -14,6 +14,8 @@ using Fwd = std::forward_list<int>;
 using List = std::list<int>;
 using Vec = std::vector<int>;
 
+static_assert(origin::Range<int[1]>(), "");
+static_assert(origin::Range<int(&)[1]>(), "");
 static_assert(origin::Range<Fwd>(), "");
 static_assert(origin::Range<Vec>(), "");
 static_assert(origin::Range<List>(), "");

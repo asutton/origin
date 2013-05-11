@@ -33,30 +33,31 @@ template<typename R>
 // The bounded range class encapsulates an iterator range bounded 
 // by a pair of iterators.
 template <typename I>
-  class bounded_range
-  {
-  public:
-    using iterator = I;
+  requires Iterator<I>()
+    class bounded_range
+    {
+    public:
+      using iterator = I;
 
-    // A default-constructed range is empty.
-    bounded_range() 
-      : first(), last(first)
-    { }
-  
-    // Initialize the range with a lower bound, f, and an upper
-    // bound, l.
-    bounded_range(I f, I l)
-      : first(f), last(l)
-    { }
+      // A default-constructed range is empty.
+      bounded_range() 
+        : first(), last(first)
+      { }
     
-    // Iterators
-    iterator begin() const { return first; }
-    iterator end() const { return last; }
-    
-  private:
-    I first;
-    I last;
-  };
+      // Initialize the range with a lower bound, f, and an upper
+      // bound, l.
+      bounded_range(I f, I l)
+        : first(f), last(l)
+      { }
+      
+      // Iterators
+      iterator begin() const { return first; }
+      iterator end() const { return last; }
+      
+    private:
+      I first;
+      I last;
+    };
 
 } // namespace origin
 

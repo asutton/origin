@@ -15,7 +15,7 @@ namespace origin {
 template<typename R>
   concept bool Range()
   {
-    return requires (R range) {
+    return requires (R& range) {
       std::begin(range);
       std::end(range);
       requires Same<decltype(std::begin(range)), decltype(std::end(range))>();

@@ -99,7 +99,7 @@ template<typename R, typename T>
 // all of
 
 template<typename R, typename P>
-  // requires Query_range<R, P>()
+  requires Input_range<R>() && Query_range<R, P>()
     bool all_of(R&& range, P pred)
     {
       return std::all_of(std::begin(range), std::end(range), pred);

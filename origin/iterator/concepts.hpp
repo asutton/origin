@@ -87,7 +87,8 @@ template<typename I>
 template<typename I>
   concept bool Iterator()
   {
-    return requires(I i) {
+    return Equality_comparable<I>()
+        && requires(I i) {
              {++i} -> I&;
              {*i};
            };
