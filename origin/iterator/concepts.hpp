@@ -83,6 +83,16 @@ template<typename I>
            };
   }
 
+// Iterator
+template<typename I>
+  concept bool Iterator()
+  {
+    return requires(I i) {
+             {++i} -> I&;
+             {*i};
+           };
+  }
+
 // Input iterator
 template<typename I>
   concept bool Input_iterator()

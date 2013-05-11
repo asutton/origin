@@ -10,12 +10,13 @@
 
 #include <origin/range/concepts.hpp>
 
+using In = std::istream_iterator<int>;
 using Fwd = std::forward_list<int>;
 using List = std::list<int>;
 using Vec = std::vector<int>;
 
 static_assert(origin::Output_range<Fwd, int>(), "");
-static_assert(origin::Output_range<Vec, int>(), "");
 static_assert(origin::Output_range<List, int>(), "");
+static_assert(origin::Output_range<Vec, int>(), "");
 
 int main() { }
