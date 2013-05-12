@@ -19,12 +19,17 @@ template<typename R>
       std::begin(range);
       std::end(range);
       requires Same<decltype(std::begin(range)), decltype(std::end(range))>();
+      requires Iterator<decltype(std::begin(range))>();
     };
   }
 
-// Iterator type
+// Iterator_type
 template<typename R>
   using Iterator_type = decltype(std::begin(std::declval<R&>()));
+
+// Size_type
+template<typename R>
+  using Size_type = Make_unsigned<Difference_type<Iterator_type<R>>>;
 
 // Input_range
 template<typename R>

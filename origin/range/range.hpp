@@ -19,7 +19,7 @@ namespace origin {
 
 template<typename R>
   requires Range<R>()
-    inline std::size_t size(R&& range)
+    inline Size_type<R> size(R&& range)
     {
       using std::begin;
       using std::end;

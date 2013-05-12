@@ -13,7 +13,7 @@
 
 namespace origin {
 
-// Indirectly movable
+// Indirectly_movable
 template<typename I, typename O>
   constexpr bool Indirectly_movable()
   {
@@ -21,7 +21,7 @@ template<typename I, typename O>
         && Output_iterator<O, Value_type<I>&&>();
   }
 
-// Indirectly copyable
+// Indirectly_copyable
 template<typename I, typename O>
   constexpr bool Indirectly_copyable()
   {
@@ -29,7 +29,7 @@ template<typename I, typename O>
         && Output_iterator<O, Value_type<I>>();
   }
 
-// Indirectly swappable
+// Indirectly_swappable
 template<typename I1, typename I2>
   constexpr bool Indirectly_swappable()
   {
@@ -39,7 +39,7 @@ template<typename I1, typename I2>
         && Movable<Value_type<I2>>();
   }
 
-// Indirectly equal
+// Indirectly_equal
 template<typename I1, typename I2>
   constexpr bool Indirectly_equal()
   {
@@ -48,7 +48,7 @@ template<typename I1, typename I2>
         && Equality_comparable<Value_type<I1>, Value_type<I2>>();
   }
 
-// Indirectly ordered
+// Indirectly_ordered
 template<typename I1, typename I2>
   constexpr bool Indirectly_ordered()
   {
@@ -57,7 +57,7 @@ template<typename I1, typename I2>
         && Weakly_ordered<Value_type<I1>, Value_type<I2>>();
   }
 
-// Indirectly comparable
+// Indirectly_comparable
 template<typename I1, typename I2, typename _Compare>
   constexpr bool Indirectly_comparable()
   {
@@ -69,41 +69,115 @@ template<typename I1, typename I2, typename _Compare>
 
 // Non-modifiying algorithms
 
-// Concepts
-
+// Iter_query
 template<typename I, typename P>
-  constexpr bool Query()
+  constexpr bool Iter_query()
   {
     return Input_iterator<I>() && Predicate<P, Value_type<I>>();
   }
 
+// Range_query
 template<typename R, typename P>
-  constexpr bool Query_range()
+  constexpr bool Range_query()
   {
-    return Range<Main_type<R>>() && Query<Iterator_type<R>, P>();
-  }
-
-template<typename I, typename T>
-  constexpr bool Find()
-  {
-    return Input_iterator<I>() && Equality_comparable<Value_type<I>, T>();
-  }
-
-template<typename R, typename T>
-  constexpr bool Find_range()
-  {
-    return Range<Main_type<R>>() && Find<Iterator_type<R>, T>();
+    return Range<Main_type<R>>() && Iter_query<Iterator_type<R>, P>();
   }
 
 
 // all of
-
 template<typename R, typename P>
-  requires Input_range<R>() && Query_range<R, P>()
-    bool all_of(R&& range, P pred)
+  requires Range_query<R, P>()
+    inline bool all_of(R&& range, P pred)
     {
-      return std::all_of(std::begin(range), std::end(range), pred);
+      using std::begin;
+      using std::end;
+      return std::all_of(begin(range), end(range), pred);
     }
+
+// any_of
+template<typename R, typename P>
+  requires Range_query<R, P>()
+    inline bool any_of(R&& range, P pred)
+    {
+      using std::begin;
+      using std::end;
+      return std::any_of(begin(range), end(range), pred);
+    }
+
+// none_of
+template<typename R, typename P>
+  requires Range_query<R, P>()
+    inline bool none_of(R&& range, P pred)
+    {
+      using std::begin;
+      using std::end;
+      return std::none_of(begin(range), end(range), pred);
+    }
+
+// Iter_search
+template<typename I, typename T>
+  constexpr bool Iter_search()
+  {
+    return Input_iterator<I>() && Equality_comparable<Value_type<I>, T>();
+  }
+
+// Range_search
+template<typename R, typename T>
+  constexpr bool Range_search()
+  {
+    return Range<R>() && Iter_search<Iterator_type<R>, T>();
+  }
+
+// find
+template<typename R, typename T>
+  requires Range_search<R, T>()
+    inline Iterator_type<R> find(R&& range, const T& value)
+    {
+      using std::begin;
+      using std::end;
+      return std::find(begin(range), end(range), value);
+    }
+
+// find_if
+template<typename R, typename P>
+  requires Range_query<R, P>()
+    inline Iterator_type<R> find_if(R&& range, P pred)
+    {
+      using std::begin;
+      using std::end;
+      return std::find_if(begin(range), end(range), pred);
+    }
+
+// find_if_not
+template<typename R, typename P>
+  requires Range_query<R, P>()
+    inline Iterator_type<R> find_if_not(R&& range, P pred)
+    {
+      using std::begin;
+      using std::end;
+      return std::find_if_not(begin(range), end(range), pred);
+    }
+
+// count
+template<typename R, typename T>
+  requires Range_search<R, T>()
+    inline Size_type<R> count(R&& range, const T& value)
+    {
+      using std::begin;
+      using std::end;
+      return std::count(begin(range), end(range), value);
+    }
+
+// count_if
+template<typename R, typename P>
+  requires Range_query<R, P>()
+    inline Size_type<R> count_if(R&& range, P pred)
+    {
+      using std::begin;
+      using std::end;
+      return std::count_if(begin(range), end(range), pred);
+    }
+
 
 #if 0
 

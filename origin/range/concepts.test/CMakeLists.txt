@@ -10,3 +10,6 @@ add_run_test(range_output_range output_range.cpp)
 add_run_test(range_forward_range forward_range.cpp)
 add_run_test(range_bidirectional_range bidirectional_range.cpp)
 add_run_test(range_random_access_range random_access_range.cpp)
+
+add_run_test(range_iterator_type iterator_type.cpp)
+add_run_test(range_size_type size_type.cpp)

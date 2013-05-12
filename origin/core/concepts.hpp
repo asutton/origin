@@ -10,6 +10,8 @@
 #include <type_traits>
 #include <utility>
 
+#include "traits.hpp"
+
 namespace origin {
 
 // Same
@@ -267,12 +269,9 @@ template<typename F, typename T, typename U>
 
 // Miscellaneous associated types
 
-// Main type
+// Main_type
 template<typename T>
-  using Main_type = typename std::remove_cv<
-                      typename std::remove_reference<T>::type
-                    >::type;
-
+  using Main_type = Remove_cv<Remove_reference<T>>;
 
 namespace core_impl
 {
