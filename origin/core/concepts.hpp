@@ -229,7 +229,7 @@ template<typename R, typename T, typename U>
     return Relation<R, T>()
         && Relation<R, U>()
         && Common<T, U>()
-        && requires (T t, U u) {
+        && requires (R r, T t, U u) {
              {r(t, u)} -> bool;
              {r(u, t)} -> bool;
            };

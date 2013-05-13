@@ -58,12 +58,12 @@ template<typename I1, typename I2>
   }
 
 // Indirectly_comparable
-template<typename I1, typename I2, typename _Compare>
+template<typename I1, typename I2, typename C>
   constexpr bool Indirectly_comparable()
   {
     return Input_iterator<I1>() 
         && Input_iterator<I2>()
-        && Relation<_Compare, Value_type<I1>, Value_type<I2>>();
+        && Relation<C, Value_type<I1>, Value_type<I2>>();
   }
 
 
@@ -188,213 +188,62 @@ template<typename R, typename P>
       return std::count_if(begin(range), end(range), pred);
     }
 
-
-#if 0
-
-// any of
-
-template<typename I, typename P>
-  requires Query<I, P>()
-    I any_of(I first, I last, P pred)
-    {
-      return std::any_of(first, last, pred);
-    }
-
-template<typename R, typename P>
-  requires Query_range<R, P>()
-    Iterator_type<R> any_of(R&& range)
-    {
-      return std::any_of(std::begin(range), std::end(range));
-    }
-
-// none of
-
-template<typename I, typename P>
-  requires Query<I, P>()
-    I none_of(I first, I last, P pred)
-    {
-      return std::none_of(first, last, pred);
-    }
-
-template<typename R, typename P>
-  requires Query_range<R, P>()
-    Iterator_type<R> none_of(R&& range)
-    {
-      return std::none_of(std::begin(range), std::end(range));
-    }
-
-// for each
-template<typename I, typename F>
-  requires Input_iterator<I>() && Function<F, Value_type<I>>()
-    F for_each(I first, I last, F fn)
-    {
-      return std::for_each(first, last, fn);      
-    }
-
-// find
-
-template<typename I, typename T>
-  requires Find<I, T>()
-    I find(I first, I last, const T& value)
-    {
-      return std::find(first, last, value);
-    }
-
-template<typename R, typename T>
-  requires Find_range<R, T>()
-    Iterator_type<R> find(R&& range, const T& value)
-    {
-      return std::find(std::begin(range), std::end(range));
-    }
-
-// find if
-
-template<typename I, typename P>
-  requires Query<I, P>()
-    I find_if(I first, I last, P pred)
-    {
-      return std::find_if(first, last, pred);
-    }
-
-template<typename R, typename P>
-  requires Query_range<R, P>()
-    Iterator_type<R> find_if(R&& range, P pred)
-    {
-      return std::find_if(std::begin(range), std::end(range));
-    }
-
-// find if not
-
-template<typename I, typename P>
-  requires Query<I, P>()
-    I find_if_not (I first, I last, P pred)
-    {
-      return std::find_if_not(first, last, pred);
-    }
-
-template<typename R, typename P>
-  requires Query_range<R, P>()
-    Iterator_type<R> find_if_not(R&& range, P pred)
-    {
-      return std::find_if_not(std::begin(range), std::end(range), pred);
-    }
-
-// find end
-
-// find first
-
-template<typename I1, typename I2>
-  requires Indirectly_equal<I1, I2>()
-    I1 find_first(I1 first1, I1 last1, I2 first2, I2 last2)
-    {
-      return std::find_first(first1, last1, first2, last2);
-    }
-
-template<Input_iterator I1, Forward_iterator I2, typename R>
-  requires Indirectly_comparable<I1, I2, R>()
-    I1 find_first(I1 first1, I1 last1, I2 first2, I2 last2, R comp)
-    {
-      return std::find_first(first1, last1, first2, last2, comp);
-    }
-
-template<Input_range R1, Forward_range R2>
-  requires Indirectly_equal_range<R1, R2, R>()
-    Iterator_type<R1> find_first (R1&& range1, R2&& range2)
-    {
-      return std::find_find(std::begin(first1), std::end(last1),
-                            std::begin(first2), std::end(last2));
-    }
-
-template<Input_range R1, Forward_range R2, typename R>
-  requires Indirectly_comparable_range<R1, R2, R>()
-    Iterator_type<R1> find_first (R1&& range1, R2&& range2, R comp)
-    {
-      return std::find_find(std::begin(first1), std::end(last1),
-                            std::begin(first2), std::end(last2), comp);
-    }
-
-// Sorting algorithms
-
-// Concepts
-template<typename I>
-  constexpr bool Sortable()
-  {
-    return Permutable<I>() 
-        && Forward_iterator<I>()
-        && Weakly_ordered<Value_type<I>>();
-  }
-
-template<typename I, typename R>
-  constexpr bool Sortable()
-  {
-    return Forward_iterator<I>()
-        && Permutable<I>()
-        && Relation<R, Value_type<I>>();
-  }
-
 template<typename R>
-  constexpr bool Sortable_range()
-  {
-    return Range<Main_type<R>>() && Sortable<Iterator_type<R>>();
-  }
-
-template<typename R, typename Ord>
-  constexpr bool Sortable_range()
-  {
-    return Range<R>() && Sortable<Iterator_type<R>, Ord>();
-  }
-
-
-// Mergeable
-template<typename I1, typename I2, typename O>
-  constexpr bool Mergeable()
-  {
-    return Indirectly_ordered<I1, I2>()
-        && Indirectly_copyable<I1, O>()
-        && Indirectly_copyable<I2, O>();
-  }
-
-template<typename I1, typename I2, typename O, typename R>
-  constexpr bool Mergeable()
-  {
-    return Indirectly_comparable<I1, I2, R>()
-        && Indirectly_copyable<I1, O>()
-        && Indirectly_copyable<I2, O>();
-  }
-
-
-
-// sort
-
-template<Random_access_iterator I>
-  requires Sortable<I>()
-    void sort(I first, I last)
+  requires Forward_range<R>() && Equality_comparable<Value_type<R>>()
+    inline Iterator_type<R> adjacent_find(R&& range)
     {
-      return std::sort(first, last);
+      using std::begin;
+      using std::end;
+      return std::adjacent_find(begin(range), end(range));
     }
 
-template<Random_access_iterator I, typename Ord>
-  requires Sortable<I, Ord>()
-    void sort(I first, I last, Ord comp)
+template<typename R, typename C>
+  requires Forward_range<R>() && Relation<C, Value_type<R>>()
+    inline Iterator_type<R> adjacent_find(R&& range, C comp)
     {
-      return std::sort(first, last, comp);
+      using std::begin;
+      using std::end;
+      return std::adjacent_find(begin(range), end(range), comp);
     }
 
-template<typename R>
-  requires Sortable_range<R>()
-    void sort(R&& range)
+// Indirectly_range_equal
+template<typename R1, typename R2>
+  concept bool Indirectly_range_equal()
+  {
+    return Range<R1>() 
+        && Range<R2>() 
+        && Indirectly_equal<Iterator_type<R1>, Iterator_type<R2>>();
+  }
+
+// Indirectly_range_comparable
+template<typename R1, typename R2, typename C>
+  concept bool Indirectly_range_comparable()
+  {
+    return Range<R1>() 
+        && Range<R2>() 
+        && Indirectly_comparable<Iterator_type<R1>, Iterator_type<R2>, C>();
+  }
+
+// mismatch
+template<typename R1, typename R2>
+  requires Indirectly_range_equal<R1, R2>()
+    inline std::pair<Iterator_type<R1>, Iterator_type<R2>>
+    mismatch(R1&& range1, R2&& range2)
     {
-      return std::sort(std::begin(range), std::end(range));
+      using std::begin;
+      using std::end;
+      return std::mismatch(begin(range1), end(range1), begin(range2));
     }
 
-template<typename R, typename Ord>
-  requires Sortable_range<R, Ord>()
-    void sort(R&& range, Ord comp)
+template<typename R1, typename R2, typename C>
+  // requires Indirectly_range_comparable<R1, R2, C>()
+    inline std::pair<Iterator_type<R1>, Iterator_type<R2>>
+    mismatch(R1&& range1, R2&& range2, C comp)
     {
-      return std::sort(std::begin(range), std::end(range), comp);
+      using std::begin;
+      using std::end;
+      return std::mismatch(begin(range1), end(range1), begin(range2), comp);
     }
-
-#endif
 
 } // namesapce origin
 

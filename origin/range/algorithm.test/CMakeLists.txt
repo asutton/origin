@@ -13,4 +13,5 @@ add_run_test(range_algo_find_if find_if.cpp)
 add_run_test(range_algo_find_if_not find_if_not.cpp)
 add_run_test(range_algo_count count.cpp)
 add_run_test(range_algo_count_if count_if.cpp)
-
+add_run_test(range_algo_adjacent_find adjacent_find.cpp)
+add_run_test(range_algo_mismatch mismatch.cpp)
