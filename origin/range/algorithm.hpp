@@ -236,7 +236,7 @@ template<typename R1, typename R2>
     }
 
 template<typename R1, typename R2, typename C>
-  // requires Indirectly_range_comparable<R1, R2, C>()
+  requires Indirectly_range_comparable<R1, R2, C>()
     inline std::pair<Iterator_type<R1>, Iterator_type<R2>>
     mismatch(R1&& range1, R2&& range2, C comp)
     {
@@ -245,6 +245,77 @@ template<typename R1, typename R2, typename C>
       return std::mismatch(begin(range1), end(range1), begin(range2), comp);
     }
 
+
+// equal
+template<typename R1, typename R2>
+  requires Indirectly_range_equal<R1, R2>()
+    inline bool
+    equal(R1&& range1, R2&& range2)
+    {
+      using std::begin;
+      using std::end;
+      return std::equal(begin(range1), end(range1), begin(range2));
+    }
+
+template<typename R1, typename R2, typename C>
+  requires Indirectly_range_comparable<R1, R2, C>()
+    inline bool
+    equal(R1&& range1, R2&& range2, C comp)
+    {
+      using std::begin;
+      using std::end;
+      return std::equal(begin(range1), end(range1), begin(range2), comp);
+    }
+
+// find_first_of
+template<typename R1, typename R2>
+  requires Forward_range<R2>() && Indirectly_range_equal<R1, R2>()
+    inline Iterator_type<R1> 
+    find_first_of(R1&& range1, R2&& range2)
+    {
+      using std::begin;
+      using std::end;
+      return std::find_first_of(begin(range1), end(range1), 
+                                begin(range2), end(range2));
+    }
+
+template<typename R1, typename R2, typename C>
+  requires Forward_range<R2>() && Indirectly_range_comparable<R1, R2, C>()
+    inline Iterator_type<R1> 
+    find_first_of(R1&& range1, R2&& range2, C comp)
+    {
+      using std::begin;
+      using std::end;
+      return std::find_first_of(begin(range1), end(range1), 
+                                begin(range2), end(range2), comp);
+    }
+
+// find_end
+template<typename R1, typename R2>
+  requires Forward_range<R1>()
+        && Forward_range<R2>() 
+        && Indirectly_range_equal<R1, R2>()
+    inline Iterator_type<R1> 
+    find_end(R1&& range1, R2&& range2)
+    {
+      using std::begin;
+      using std::end;
+      return std::find_end(begin(range1), end(range1), 
+                           begin(range2), end(range2));
+    }
+
+template<typename R1, typename R2, typename C>
+  requires Forward_range<R1>()
+        && Forward_range<R2>() 
+        && Indirectly_range_comparable<R1, R2, C>()
+    inline Iterator_type<R1> 
+    find_end(R1&& range1, R2&& range2, C comp)
+    {
+      using std::begin;
+      using std::end;
+      return std::find_end(begin(range1), end(range1), 
+                           begin(range2), end(range2), comp);
+    }
 } // namesapce origin
 
 #endif
