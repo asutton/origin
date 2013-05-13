@@ -69,6 +69,16 @@ template<typename I1, typename I2, typename _Compare>
 
 // Non-modifiying algorithms
 
+// for_each
+template<typename R, typename F>
+  requires Input_range<R>() && Function<F, Value_type<R>>()
+    inline F for_each(R&& range, F fn)
+    {
+      using std::begin;
+      using std::end;
+      return std::for_each(begin(range), end(range), fn);
+    }
+
 // Iter_query
 template<typename I, typename P>
   constexpr bool Iter_query()

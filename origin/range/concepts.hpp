@@ -27,10 +27,6 @@ template<typename R>
 template<typename R>
   using Iterator_type = decltype(std::begin(std::declval<R&>()));
 
-// Size_type
-template<typename R>
-  using Size_type = Make_unsigned<Difference_type<Iterator_type<R>>>;
-
 // Input_range
 template<typename R>
   concept bool Input_range()

@@ -26,6 +26,19 @@ template<typename R>
       return std::distance(begin(range), end(range));
     }
 
+// -------------------------------------------------------------------------- //
+// Range base
+//
+// The range base class provides appropriate typedefs for the value and
+// size type for range adaptors.
+template<typename I>
+  requires Iterator<I>()
+    struct range_base
+    {
+      using value_type = Value_type<I>;
+      using size_type = Make_unsigned<Difference_type<I>>;
+    };
+
 
 // -------------------------------------------------------------------------- //
 // Bounded Range
@@ -34,7 +47,7 @@ template<typename R>
 // by a pair of iterators.
 template <typename I>
   requires Iterator<I>()
-    class bounded_range
+    class bounded_range : public range_base<I>
     {
     public:
       using iterator = I;

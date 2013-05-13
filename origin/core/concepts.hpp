@@ -273,55 +273,75 @@ template<typename F, typename T, typename U>
 template<typename T>
   using Main_type = Remove_cv<Remove_reference<T>>;
 
-namespace core_impl
-{
-  template<typename T>
-    struct get_value_type;
+namespace core_impl {
+template<typename T>
+  struct get_value_type;
 
-  template<typename T>
-    struct get_value_type<T*> { using type = T; };
+template<typename T>
+  struct get_value_type<T*> { using type = T; };
 
-  template<typename T>
-    struct get_value_type<const T*> { using type = T; };
+template<typename T>
+  struct get_value_type<const T*> { using type = T; };
 
-  template<typename T>
-    struct get_value_type<T[]> { using type = T; };
+template<typename T>
+  struct get_value_type<T[]> { using type = T; };
 
-  template<typename T, std::size_t N>
-    struct get_value_type<T[N]> { using type = T; };
+template<typename T, std::size_t N>
+  struct get_value_type<T[N]> { using type = T; };
 
-  template<typename T>
-    requires requires () { typename T::value_type; }
-      struct get_value_type<T> { using type = typename T::value_type; };
+template<typename T>
+  requires requires () { typename T::value_type; }
+    struct get_value_type<T> { using type = typename T::value_type; };
 } // namespace core_impl
 
 // Value type
 template<typename T>
-  using Value_type = typename core_impl::get_value_type<T>::type;
+  using Value_type = typename core_impl::get_value_type<Main_type<T>>::type;
 
 
-namespace core_impl
-{
-  template<typename T>
-    struct get_difference_type;
+namespace core_impl {
+template<typename T>
+  struct get_difference_type;
 
-  template<typename T>
-    struct get_difference_type<T*> { using type = std::ptrdiff_t; };
+template<typename T>
+  struct get_difference_type<T*> { using type = std::ptrdiff_t; };
 
-  template<typename T>
-    struct get_difference_type<T[]> { using type = std::ptrdiff_t; };
+template<typename T>
+  struct get_difference_type<T[]> { using type = std::ptrdiff_t; };
 
-  template<typename T, std::size_t N>
-    struct get_difference_type<T[N]> { using type = std::ptrdiff_t; };
+template<typename T, std::size_t N>
+  struct get_difference_type<T[N]> { using type = std::ptrdiff_t; };
 
-  template<typename T>
-    requires requires () { typename T::difference_type; }
-      struct get_difference_type<T> { using type = typename T::difference_type; };
+template<typename T>
+  requires requires () { typename T::difference_type; }
+    struct get_difference_type<T> { using type = typename T::difference_type; };
 } // namespace core_impl
 
 // Difference_type
 template<typename T>
-  using Difference_type = typename core_impl::get_difference_type<T>::type;
+  using Difference_type = typename core_impl::get_difference_type<Main_type<T>>::type;
+
+namespace core_impl {
+template<typename T>
+  struct get_size_type;
+
+template<typename T>
+  struct get_size_type<T*> { using type = std::size_t; };
+
+template<typename T>
+  struct get_size_type<T[]> { using type = std::size_t; };
+
+template<typename T, std::size_t N>
+  struct get_size_type<T[N]> { using type = std::size_t; };
+
+template<typename T>
+  requires requires () { typename T::size_type; }
+    struct get_size_type<T> { using type = typename T::size_type; };  
+} // namespace core_impl
+
+// Size_type
+template<typename T>
+  using Size_type = typename core_impl::get_size_type<Main_type<T>>::type;
 
 } // namespace origin
 

@@ -13,3 +13,4 @@ add_run_test(range_random_access_range random_access_range.cpp)
 
 add_run_test(range_iterator_type iterator_type.cpp)
 add_run_test(range_size_type size_type.cpp)
+add_run_test(range_value_type value_type.cpp)

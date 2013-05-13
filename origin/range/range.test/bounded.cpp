@@ -9,6 +9,29 @@
 
 #include <origin/range/range.hpp>
 
+template<typename R, typename T>
+  constexpr bool Has_size_type()
+  {
+    return origin::Same<origin::Size_type<R>, T>();
+  }
+
+template<typename R, typename T>
+  constexpr bool Has_value_type()
+  {
+    return origin::Same<origin::Value_type<R>, T>();
+  }
+
+template<typename R, typename T>
+  constexpr bool Has_iterator_type()
+  {
+    return origin::Same<origin::Iterator_type<R>, T>();
+  }
+
+static_assert(origin::Range<origin::bounded_range<int*>>(), "");
+static_assert(Has_size_type<origin::bounded_range<int*>, std::size_t>(), "");
+static_assert(Has_value_type<origin::bounded_range<int*>, int>(), "");
+static_assert(Has_iterator_type<origin::bounded_range<int*>, int*>(), "");
+
 template<typename I>
   void test_default()
   {
