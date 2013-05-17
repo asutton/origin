@@ -9,6 +9,7 @@ add_run_test(core_derived derived.cpp)
 add_run_test(core_convertible convertible.cpp)
 add_run_test(core_common common.cpp)
 add_run_test(core_common_type common_type.cpp)
+add_run_test(core_conditional conditional.cpp)
 
 add_run_test(core_equality_comparable equality_comparable.cpp)
 add_run_test(core_weakly_ordered weakly_ordered.cpp)

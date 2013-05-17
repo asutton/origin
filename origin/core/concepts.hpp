@@ -26,6 +26,7 @@ template<typename T, typename U>
 template<typename T, typename U>
   concept bool Convertible() { return __is_convertible_to(T, U); }
 
+
 // Common
 template<typename T, typename U>
   concept bool Common() 
@@ -38,6 +39,9 @@ template<typename T, typename U>
   requires Common<T, U>()
     using Common_type = decltype(true ? std::declval<T>() : std::declval<U>());
 
+// Conditional
+template<typename T>
+  concept bool Conditional() { return requires (T p) { p ? true : false; }; }
 
 // Relational Concepts
 

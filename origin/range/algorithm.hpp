@@ -70,8 +70,8 @@ template<typename I1, typename I2, typename C>
 // Non-modifiying algorithms
 
 // for_each
-template<typename R, typename F>
-  requires Input_range<R>() && Function<F, Value_type<R>>()
+template<Input_range R, typename F>
+  requires Function<F, Value_type<R>>()
     inline F for_each(R&& range, F fn)
     {
       using std::begin;
@@ -95,7 +95,7 @@ template<typename R, typename P>
 
 
 // all of
-template<typename R, typename P>
+template<Input_range R, typename P>
   requires Range_query<R, P>()
     inline bool all_of(R&& range, P pred)
     {
@@ -105,7 +105,7 @@ template<typename R, typename P>
     }
 
 // any_of
-template<typename R, typename P>
+template<Input_range R, typename P>
   requires Range_query<R, P>()
     inline bool any_of(R&& range, P pred)
     {
@@ -115,7 +115,7 @@ template<typename R, typename P>
     }
 
 // none_of
-template<typename R, typename P>
+template<Input_range R, typename P>
   requires Range_query<R, P>()
     inline bool none_of(R&& range, P pred)
     {
@@ -139,7 +139,7 @@ template<typename R, typename T>
   }
 
 // find
-template<typename R, typename T>
+template<Input_range R, typename T>
   requires Range_search<R, T>()
     inline Iterator_type<R> find(R&& range, const T& value)
     {
@@ -149,7 +149,7 @@ template<typename R, typename T>
     }
 
 // find_if
-template<typename R, typename P>
+template<Input_range R, typename P>
   requires Range_query<R, P>()
     inline Iterator_type<R> find_if(R&& range, P pred)
     {
@@ -159,7 +159,7 @@ template<typename R, typename P>
     }
 
 // find_if_not
-template<typename R, typename P>
+template<Input_range R, typename P>
   requires Range_query<R, P>()
     inline Iterator_type<R> find_if_not(R&& range, P pred)
     {
@@ -169,7 +169,7 @@ template<typename R, typename P>
     }
 
 // count
-template<typename R, typename T>
+template<Input_range R, typename T>
   requires Range_search<R, T>()
     inline Size_type<R> count(R&& range, const T& value)
     {
@@ -179,7 +179,7 @@ template<typename R, typename T>
     }
 
 // count_if
-template<typename R, typename P>
+template<Input_range R, typename P>
   requires Range_query<R, P>()
     inline Size_type<R> count_if(R&& range, P pred)
     {
@@ -188,8 +188,8 @@ template<typename R, typename P>
       return std::count_if(begin(range), end(range), pred);
     }
 
-template<typename R>
-  requires Forward_range<R>() && Equality_comparable<Value_type<R>>()
+template<Forward_range R>
+  requires Equality_comparable<Value_type<R>>()
     inline Iterator_type<R> adjacent_find(R&& range)
     {
       using std::begin;
@@ -197,8 +197,8 @@ template<typename R>
       return std::adjacent_find(begin(range), end(range));
     }
 
-template<typename R, typename C>
-  requires Forward_range<R>() && Relation<C, Value_type<R>>()
+template<Forward_range R, typename C>
+  requires Relation<C, Value_type<R>>()
     inline Iterator_type<R> adjacent_find(R&& range, C comp)
     {
       using std::begin;
@@ -225,7 +225,7 @@ template<typename R1, typename R2, typename C>
   }
 
 // mismatch
-template<typename R1, typename R2>
+template<Input_range R1, Input_range R2>
   requires Indirectly_range_equal<R1, R2>()
     inline std::pair<Iterator_type<R1>, Iterator_type<R2>>
     mismatch(R1&& range1, R2&& range2)
@@ -235,7 +235,7 @@ template<typename R1, typename R2>
       return std::mismatch(begin(range1), end(range1), begin(range2));
     }
 
-template<typename R1, typename R2, typename C>
+template<Input_range R1, Input_range R2, typename C>
   requires Indirectly_range_comparable<R1, R2, C>()
     inline std::pair<Iterator_type<R1>, Iterator_type<R2>>
     mismatch(R1&& range1, R2&& range2, C comp)
@@ -247,7 +247,7 @@ template<typename R1, typename R2, typename C>
 
 
 // equal
-template<typename R1, typename R2>
+template<Input_range R1, Input_range R2>
   requires Indirectly_range_equal<R1, R2>()
     inline bool
     equal(R1&& range1, R2&& range2)
@@ -257,7 +257,7 @@ template<typename R1, typename R2>
       return std::equal(begin(range1), end(range1), begin(range2));
     }
 
-template<typename R1, typename R2, typename C>
+template<Input_range R1, Input_range R2, typename C>
   requires Indirectly_range_comparable<R1, R2, C>()
     inline bool
     equal(R1&& range1, R2&& range2, C comp)
@@ -268,8 +268,8 @@ template<typename R1, typename R2, typename C>
     }
 
 // find_first_of
-template<typename R1, typename R2>
-  requires Forward_range<R2>() && Indirectly_range_equal<R1, R2>()
+template<Input_range R1, Forward_range R2>
+  requires Indirectly_range_equal<R1, R2>()
     inline Iterator_type<R1> 
     find_first_of(R1&& range1, R2&& range2)
     {
@@ -279,8 +279,8 @@ template<typename R1, typename R2>
                                 begin(range2), end(range2));
     }
 
-template<typename R1, typename R2, typename C>
-  requires Forward_range<R2>() && Indirectly_range_comparable<R1, R2, C>()
+template<Input_range R1, Forward_range R2, typename C>
+  requires Indirectly_range_comparable<R1, R2, C>()
     inline Iterator_type<R1> 
     find_first_of(R1&& range1, R2&& range2, C comp)
     {
@@ -291,10 +291,8 @@ template<typename R1, typename R2, typename C>
     }
 
 // find_end
-template<typename R1, typename R2>
-  requires Forward_range<R1>()
-        && Forward_range<R2>() 
-        && Indirectly_range_equal<R1, R2>()
+template<Forward_range R1, Forward_range R2>
+  requires Indirectly_range_equal<R1, R2>()
     inline Iterator_type<R1> 
     find_end(R1&& range1, R2&& range2)
     {
@@ -304,10 +302,8 @@ template<typename R1, typename R2>
                            begin(range2), end(range2));
     }
 
-template<typename R1, typename R2, typename C>
-  requires Forward_range<R1>()
-        && Forward_range<R2>() 
-        && Indirectly_range_comparable<R1, R2, C>()
+template<Forward_range R1, Forward_range R2, typename C>
+  requires Indirectly_range_comparable<R1, R2, C>()
     inline Iterator_type<R1> 
     find_end(R1&& range1, R2&& range2, C comp)
     {
@@ -316,6 +312,7 @@ template<typename R1, typename R2, typename C>
       return std::find_end(begin(range1), end(range1), 
                            begin(range2), end(range2), comp);
     }
+
 } // namesapce origin
 
 #endif
