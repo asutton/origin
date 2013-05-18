@@ -5,6 +5,7 @@
 // and conditions.
 
 #include <memory>
+
 #include <origin/core/concepts.hpp>
 
 // Integral types are conditional types

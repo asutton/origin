@@ -26,7 +26,6 @@ template<typename T, typename U>
 template<typename T, typename U>
   concept bool Convertible() { return __is_convertible_to(T, U); }
 
-
 // Common
 template<typename T, typename U>
   concept bool Common() 
@@ -43,6 +42,29 @@ template<typename T, typename U>
 template<typename T>
   concept bool Conditional() { return requires (T p) { p ? true : false; }; }
 
+namespace core_impl {
+template<typename T>
+  concept bool User_defined_logical()
+  {
+    return Class_type<T>() 
+        && requires (T a, T b) {
+             {a && b} -> T;
+             {a || b} -> T;
+             {!a} -> T;
+           };
+  }
+} // namespace core_impl
+
+// Declarations
+
+// Boolean
+template<typename T> 
+  concept bool Boolean()
+  {
+    return Conditional<T>()
+        && not core_impl::User_defined_logical<T>();
+  }
+
 // Relational Concepts
 
 // Equality comparable
@@ -50,8 +72,8 @@ template<typename T>
   concept bool Equality_comparable()
   {
     return requires (T a, T b) {
-             {a == b} -> bool;
-             {a != b} -> bool;
+             a == b; requires Boolean<decltype(a == b)>();
+             a != b; requires Boolean<decltype(a != b)>();
            };
   }
 
@@ -63,10 +85,10 @@ template<typename T, typename U>
         && Equality_comparable<U>() 
         && Common<T, U>() 
         && requires (T t, T u) {
-            {t == u} -> bool;
-            {u == t} -> bool;
-            {t != u} -> bool;
-            {u != t} -> bool;
+             t == u; requires Boolean<decltype(t == u)>();
+             u == t; requires Boolean<decltype(u == t)>();
+             t != u; requires Boolean<decltype(t != u)>();
+             u != t; requires Boolean<decltype(u != t)>();
           };
   }
 
@@ -75,10 +97,10 @@ template<typename T>
   concept bool Weakly_ordered()
   {
     return requires (T a, T b) {
-             {a < b} -> bool;
-             {a > b} -> bool;
-             {a <= b} -> bool;
-             {a >= b} -> bool;
+             a < b;  requires Boolean<decltype(a < b)>();
+             a > b;  requires Boolean<decltype(a > b)>();
+             a <= b; requires Boolean<decltype(a <= b)>();
+             a >= b; requires Boolean<decltype(a >= b)>();
            };
   }
 
@@ -90,14 +112,14 @@ template<typename T, typename U>
         && Weakly_ordered<U>() 
         && Common<T, U>() 
         && requires (T t, T u) {
-            {t < u} -> bool;
-            {u < t} -> bool;
-            {t > u} -> bool;
-            {u > t} -> bool;
-            {t <= u} -> bool;
-            {u <= t} -> bool;
-            {t >= u} -> bool;
-            {u <= t} -> bool;
+             t < u;  requires Boolean<decltype(t < u)>();
+             u < t;  requires Boolean<decltype(u < t)>();
+             t > u;  requires Boolean<decltype(t > u)>();
+             u > t;  requires Boolean<decltype(u > t)>();
+             t <= u; requires Boolean<decltype(t <= u)>();
+             u <= t; requires Boolean<decltype(u <= t)>();
+             t >= u; requires Boolean<decltype(t >= u)>();
+             u <= t; requires Boolean<decltype(u >= t)>();
       };
   }
 
@@ -272,10 +294,6 @@ template<typename F, typename T, typename U>
 
 
 // Miscellaneous associated types
-
-// Main_type
-template<typename T>
-  using Main_type = Remove_cv<Remove_reference<T>>;
 
 namespace core_impl {
 template<typename T>
