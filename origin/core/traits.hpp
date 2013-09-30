@@ -23,35 +23,43 @@ template<typename T>
 
 // Floating_point_type
 template<typename T>
-  concept bool Floating_point_type() { return std::is_floating_point<T>::value; }
+  concept bool Floating_point_type() { 
+    return std::is_floating_point<T>::value; 
+  }
 
 // Array_type
 template<typename T>
-  concept bool Array_type() { return std::is_array<T>::value; }
+  concept bool Array_type() { 
+    return std::is_array<T>::value; 
+  }
 
 // Pointer_type
 template<typename T>
-  concept bool Pointer_type() { return std::is_pointer<T>::value; }
+  concept bool Pointer_type() { 
+    return std::is_pointer<T>::value; 
+  }
 
 // Lvalue_reference_type
 template<typename T>
-  concept bool Lvalue_reference_type() { return std::is_lvalue_reference<T>::value; }
+  concept bool Lvalue_reference_type() { 
+    return std::is_lvalue_reference<T>::value; 
+  }
 
 // Rvalue_reference_type
 template<typename T>
-  concept bool Rvalue_reference_type() { return std::is_rvalue_reference<T>::value; }
+  concept bool Rvalue_reference_type() { 
+    return std::is_rvalue_reference<T>::value; 
+  }
 
 // Member_object_pointer_type
 template<typename T>
-  concept bool Member_object_pointer_type() 
-  { 
+  concept bool Member_object_pointer_type() {
     return std::is_member_object_pointer<T>::value; 
   }
 
 // Member_function_pointer_type
 template<typename T>
-  concept bool Member_function_pointer_type() 
-  { 
+  concept bool Member_function_pointer_type() {
     return std::is_member_function_pointer<T>::value; 
   }
 
@@ -108,7 +116,9 @@ template<typename T>
 
 // Member_pointer_type
 template<typename T>
-  concept bool Member_pointer_type() { return std::is_member_pointer<T>::value; }
+  concept bool Member_pointer_type() { 
+    return std::is_member_pointer<T>::value; 
+  }
 
 
 // Type properties
@@ -124,7 +134,9 @@ template<typename T>
 
 // Qualified_type
 template<typename T>
-  concept bool Qualified_type() { return Const_type<T>() || Volatile_type<T>(); }
+  concept bool Qualified_type() { 
+    return Const_type<T>() || Volatile_type<T>(); 
+  }
 
 
 // Type transformations
@@ -188,6 +200,12 @@ template<typename T>
 // Add_pointer
 template<typename T>
   using Add_pointer = typename std::add_pointer<T>::type;
+
+
+// Decay
+template<typename T>
+  using Decay = typename std::decay<T>::type;
+
 
 // Main_type
 template<typename T>

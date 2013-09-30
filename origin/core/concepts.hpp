@@ -26,17 +26,24 @@ template<typename T, typename U>
 template<typename T, typename U>
   concept bool Convertible() { return __is_convertible_to(T, U); }
 
+// Common type
+//
+// If there exists some type C such that C is the common type of all
+// T in Ts..., then C is the Common_type of Ts...
+template<typename... Ts>
+  using Common_type = typename std::common_type<Ts...>::type;
+
 // Common
-template<typename T, typename U>
-  concept bool Common() 
-  { 
-    return requires (T t, U u) { true ? t : u; }; 
+//
+// True iff there exists some type C such that C is the common type
+// of each T in Ts....
+template<typename... Ts>
+  concept bool Common() {
+    return requires () { 
+      Common_type<Ts...>; // FIXME: Had best be a type requirement...
+    }; 
   }
 
-// Common type
-template<typename T, typename U>
-  requires Common<T, U>()
-    using Common_type = decltype(true ? std::declval<T>() : std::declval<U>());
 
 // Conditional
 template<typename T>

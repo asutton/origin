@@ -8,8 +8,7 @@
 
 // True when Common_type<T, U> is the same as C.
 template<typename T, typename U, typename C>
-constexpr bool Has_common_type()
-{
+constexpr bool Has_common_type() {
   return origin::Same<origin::Common_type<T, U>, C>();
 }
 
@@ -27,4 +26,4 @@ static_assert(Has_common_type<signed int, unsigned int, unsigned int>(), "");
 
 // TODO: Write more tests.
 
-int main() { return 0; }
+int main() { }
