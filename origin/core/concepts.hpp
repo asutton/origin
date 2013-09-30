@@ -44,8 +44,9 @@ template<typename... Ts>
     }; 
   }
 
-
 // Conditional
+//
+// True iff an expression of type T can be contextually converted to bool.
 template<typename T>
   concept bool Conditional() { return requires (T p) { p ? true : false; }; }
 
@@ -65,6 +66,11 @@ template<typename T>
 // Declarations
 
 // Boolean
+//
+// True iff T is a Conditional type that is not a user-defined logical
+// type. That is T must not overload the &&, ||, and ! operators. 
+//
+// Note that we do not test for the presence of overloads in the library.
 template<typename T> 
   concept bool Boolean()
   {
