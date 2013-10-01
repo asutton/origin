@@ -15,24 +15,24 @@ namespace origin {
 
 // Indirectly_movable
 template<typename I, typename O>
-  constexpr bool Indirectly_movable()
-  {
+  concept bool 
+  Indirectly_movable() {
     return Input_iterator<I>()
         && Output_iterator<O, Value_type<I>&&>();
   }
 
 // Indirectly_copyable
 template<typename I, typename O>
-  constexpr bool Indirectly_copyable()
-  {
+  concept bool 
+  Indirectly_copyable() {
     return Indirectly_movable<I, O>()
         && Output_iterator<O, Value_type<I>>();
   }
 
 // Indirectly_swappable
 template<typename I1, typename I2>
-  constexpr bool Indirectly_swappable()
-  {
+  concept bool 
+  Indirectly_swappable() {
     return Indirectly_movable<I1, I2>()
         && Indirectly_movable<I2, I1>()
         && Movable<Value_type<I1>>() 
@@ -41,8 +41,8 @@ template<typename I1, typename I2>
 
 // Indirectly_equal
 template<typename I1, typename I2>
-  constexpr bool Indirectly_equal()
-  {
+  concept bool 
+  Indirectly_equal() {
     return Input_iterator<I1>() 
         && Input_iterator<I2>()
         && Equality_comparable<Value_type<I1>, Value_type<I2>>();
@@ -50,8 +50,8 @@ template<typename I1, typename I2>
 
 // Indirectly_ordered
 template<typename I1, typename I2>
-  constexpr bool Indirectly_ordered()
-  {
+  concept bool 
+  Indirectly_ordered() {
     return Input_iterator<I1>() 
         && Input_iterator<I2>()
         && Weakly_ordered<Value_type<I1>, Value_type<I2>>();
@@ -59,84 +59,110 @@ template<typename I1, typename I2>
 
 // Indirectly_comparable
 template<typename I1, typename I2, typename C>
-  constexpr bool Indirectly_comparable()
-  {
+  concept bool 
+  Indirectly_comparable() {
     return Input_iterator<I1>() 
         && Input_iterator<I2>()
         && Relation<C, Value_type<I1>, Value_type<I2>>();
   }
 
-
-// Non-modifiying algorithms
-
-// for_each
-template<Input_range R, typename F>
-  requires Function<F, Value_type<R>>()
-    inline F for_each(R&& range, F fn)
-    {
-      using std::begin;
-      using std::end;
-      return std::for_each(begin(range), end(range), fn);
-    }
-
 // Iter_query
+//
+// TODO: Shouldn't this be in the algorithm library?
 template<typename I, typename P>
-  constexpr bool Iter_query()
-  {
+  concept bool 
+  Iter_query() {
     return Input_iterator<I>() && Predicate<P, Value_type<I>>();
   }
 
 // Range_query
 template<typename R, typename P>
-  constexpr bool Range_query()
-  {
+  concept bool 
+  Range_query() {
     return Range<Main_type<R>>() && Iter_query<Iterator_type<R>, P>();
   }
 
-
-// all of
-template<Input_range R, typename P>
-  requires Range_query<R, P>()
-    inline bool all_of(R&& range, P pred)
-    {
-      using std::begin;
-      using std::end;
-      return std::all_of(begin(range), end(range), pred);
-    }
-
-// any_of
-template<Input_range R, typename P>
-  requires Range_query<R, P>()
-    inline bool any_of(R&& range, P pred)
-    {
-      using std::begin;
-      using std::end;
-      return std::any_of(begin(range), end(range), pred);
-    }
-
-// none_of
-template<Input_range R, typename P>
-  requires Range_query<R, P>()
-    inline bool none_of(R&& range, P pred)
-    {
-      using std::begin;
-      using std::end;
-      return std::none_of(begin(range), end(range), pred);
-    }
-
 // Iter_search
 template<typename I, typename T>
-  constexpr bool Iter_search()
-  {
+  concept bool Iter_search() {
     return Input_iterator<I>() && Equality_comparable<Value_type<I>, T>();
   }
 
 // Range_search
 template<typename R, typename T>
-  constexpr bool Range_search()
-  {
+  concept bool Range_search() {
     return Range<R>() && Iter_search<Iterator_type<R>, T>();
   }
+
+
+// Non-modifiying algorithms
+
+// for_each (range)
+template<Input_range R, typename F>
+  requires Function<F, Value_type<R>>()
+    inline F 
+    for_each(R&& range, F fn) {
+      return std::for_each(std::begin(range), std::end(range), fn);
+    }
+
+// for_each (initializer_list)
+template<typename T, typename F>
+  requires Function<F, T>()
+    inline F
+    for_each(std::initializer_list<T> list, F fn) {
+      return std::for_each(list.begin(), list.end(), fn);
+    }
+
+
+// all_of (range)
+template<Input_range R, typename P>
+  requires Range_query<R, P>()
+    inline bool 
+    all_of(R&& range, P pred) {
+      return std::all_of(std::begin(range), std::end(range), pred);
+    }
+
+// all_of (initializer_list)
+template<typename T, typename P>
+  requires Predicate<P, T>()
+    inline bool 
+    all_of(std::initializer_list<T> list, P pred) {
+      return std::all_of(list.begin(), list.end(), pred);
+    }
+
+
+// any_of (range)
+template<Input_range R, typename P>
+  requires Range_query<R, P>()
+    inline bool any_of(R&& range, P pred) {
+      return std::any_of(std::begin(range), std::end(range), pred);
+    }
+
+// any_of (initializer_list)
+template<typename T, typename P>
+  requires Predicate<P, T>()
+    inline bool 
+    any_of(std::initializer_list<T> list, P pred) {
+      return std::any_of(list.begin(), list.end(), pred);
+    }
+
+
+// none_of (range)
+template<Input_range R, typename P>
+  requires Range_query<R, P>()
+    inline bool 
+    none_of(R&& range, P pred) {
+      return std::none_of(std::begin(range), std::end(range), pred);
+    }
+
+// none_of (initializer_list)
+template<typename T, typename P>
+  requires Predicate<P, T>()
+    inline bool
+    none_of(std::initializer_list<T> list, P pred) {
+      return std::none_of(list.begin(), list.end(), pred);
+    }
+
 
 // find
 template<Input_range R, typename T>

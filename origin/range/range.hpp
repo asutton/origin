@@ -43,7 +43,7 @@ template<Iterator I>
 //
 // The bounded range class encapsulates an iterator range bounded 
 // by a pair of iterators.
-template <Iterator I>
+template<Iterator I>
   class bounded_range : public range_base<I>
   {
   public:
