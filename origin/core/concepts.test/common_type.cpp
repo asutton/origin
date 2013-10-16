@@ -4,6 +4,7 @@
 // LICENSE.txt or http://www.opensource.org/licenses/mit-license.php for terms
 // and conditions.
 
+
 #include <origin/core/concepts.hpp>
 
 // True when Common_type<T, U> is the same as C.
