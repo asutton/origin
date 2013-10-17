@@ -9,6 +9,13 @@
 
 #include <origin/range/algorithm.hpp>
 
+template<origin::Input_stream S, typename P>
+  inline bool
+  my_all_of(S&& stream, P pred) {
+    return origin::all_of(origin::Range(stream), pred);
+  }
+
+
 bool pos(int n) { return n > 0; }
 
 int main() 
@@ -21,4 +28,6 @@ int main()
 
   const std::vector<int>& cv = v;
   assert(origin::all_of(cv, pos));
+
+  // static_assert(origin::Formatted_input_stream<std::istream, int>(), "");
 }

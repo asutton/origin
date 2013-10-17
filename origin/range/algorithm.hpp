@@ -10,6 +10,8 @@
 #include <algorithm>
 
 #include "concepts.hpp"
+#include "range.hpp"
+#include "stream.hpp"
 
 namespace origin {
 
@@ -129,7 +131,6 @@ template<typename T, typename P>
     all_of(std::initializer_list<T> list, P pred) {
       return std::all_of(list.begin(), list.end(), pred);
     }
-
 
 // any_of (range)
 template<Input_range R, typename P>

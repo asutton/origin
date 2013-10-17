@@ -8,6 +8,7 @@
 #define ORIGIN_CORE_CONCEPTS_HPP
 
 #include <type_traits>
+#include <iosfwd>
 #include <utility>
 
 #include "traits.hpp"
@@ -380,6 +381,11 @@ template<typename T, std::size_t N>
 template<typename T>
   requires requires () { typename T::value_type; }
     struct get_value_type<T> { using type = typename T::value_type; };
+
+// Make iostreams have a value type.
+template<typename T>
+  requires Derived<T, std::ios_base>()
+    struct get_value_type<T> { using type = typename T::char_type; };
 
 template<typename T>
   using value_type = typename get_value_type<Strip<T>>::type;
