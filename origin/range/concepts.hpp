@@ -18,8 +18,8 @@ template<typename R>
     return requires (R& range) {
       std::begin(range);
       std::end(range);
-      // requires Same<decltype(std::begin(range)), decltype(std::end(range))>();
-      // requires Iterator<decltype(std::begin(range))>();
+      requires Same<decltype(std::begin(range)), decltype(std::end(range))>();
+      requires Iterator<decltype(std::begin(range))>();
     };
   }
 

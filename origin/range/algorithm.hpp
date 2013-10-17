@@ -79,8 +79,7 @@ template<typename I, typename P>
 template<typename R, typename P>
   concept bool 
   Range_query() {
-    // return Range<Common_type<R>>() && Iter_query<Iterator_type<R>, P>();
-    return true;
+    return Range<R>() && Iter_query<Iterator_type<R>, P>();
   }
 
 // Iter_search

@@ -321,6 +321,33 @@ template<typename T>
 template<typename T>
   using Decay = typename std::decay<T>::type;
 
+
+namespace core_impl {
+// Strip references and qualifiers from T.
+//
+// TODO: Are there any other types that we can't allow to decay?
+template<typename T>
+  struct strip_refquals : std::decay<T> { };
+
+template<typename T>
+  struct strip_refquals<T[]> { using type = T[]; };
+
+template<typename T, std::size_t N>
+  struct strip_refquals<T[N]> { using type = T[N]; };
+
+template<typename R, typename... Ts>
+  struct strip_refquals<R(Ts...)> { using type = R(Ts...); };
+
+template<typename T>
+  using strip = typename strip_refquals<T>::type;
+} // namespace core_impl
+
+/// For any type T, returns a non-qualified, non-reference type U. This
+/// facility is primarily intended to remove qualifiers and references
+/// that appear in forwarded arguments.
+template<typename T>
+  using Strip = core_impl::strip<T>;
+
 } // namespace origin
 
 #endif

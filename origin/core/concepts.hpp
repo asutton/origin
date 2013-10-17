@@ -382,7 +382,7 @@ template<typename T>
     struct get_value_type<T> { using type = typename T::value_type; };
 
 template<typename T>
-  using value_type = typename get_value_type<Common_type<T>>::type;
+  using value_type = typename get_value_type<Strip<T>>::type;
 } // namespace core_impl
 
 // Value type
@@ -408,7 +408,7 @@ template<typename T>
     struct get_difference_type<T> { using type = typename T::difference_type; };
 
 template<typename T>
-  using difference_type = typename get_difference_type<Common_type<T>>::type;
+  using difference_type = typename get_difference_type<Strip<T>>::type;
 } // namespace core_impl
 
 // Difference_type
@@ -433,7 +433,7 @@ template<typename T>
     struct get_size_type<T> { using type = typename T::size_type; };  
 
 template<typename T>
-  using size_type = typename get_size_type<Common_type<T>>::type;
+  using size_type = typename get_size_type<Strip<T>>::type;
 } // namespace core_impl
 
 // Size_type
