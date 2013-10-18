@@ -360,6 +360,31 @@ template<typename F, typename T, typename U>
   }
 
 
+// A type is input streamable if it can be extracted from a formatted
+// input stream derived from std::istream.
+template<typename T>
+  concept bool
+  Input_streamable() {
+    return requires(std::istream& s, T x) {
+      s >> x;
+    };
+  }
+
+template<typename T>
+  concept bool
+  Output_streamable() {
+    return requires(std::ostream& s, T x) {
+      s << x;
+    };
+  }
+
+template<typename T>
+  concept bool
+  Streamable() {
+    return Input_streamable<T>() and Output_streamable<T>();
+  }
+
+
 // Miscellaneous associated types
 
 namespace core_impl {

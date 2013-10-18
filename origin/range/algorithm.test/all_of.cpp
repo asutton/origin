@@ -29,5 +29,4 @@ int main()
   const std::vector<int>& cv = v;
   assert(origin::all_of(cv, pos));
 
-  // static_assert(origin::Formatted_input_stream<std::istream, int>(), "");
 }

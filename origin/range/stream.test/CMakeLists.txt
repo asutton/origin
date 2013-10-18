@@ -4,7 +4,6 @@
 # LICENSE.txt or http://www.opensource.org/licenses/mit-license.php for terms
 # and conditions.
 
-add_subdirectory(concepts.test)
-add_subdirectory(range.test)
-add_subdirectory(stream.test)
-add_subdirectory(algorithm.test)
+add_run_test(stream_concepts concepts.cpp)
+add_run_test(stream_typed_istream typed_istream.cpp)
+
