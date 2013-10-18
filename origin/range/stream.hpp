@@ -67,8 +67,8 @@ template<typename S, typename T>
   concept bool
   Primitive_ostream() {
     return requires(S& s, T t) {
-             s.put(t);
-           };
+      s.put(t);
+    };
   }
 
 } // namespace stream_impl
@@ -185,6 +185,10 @@ template<typename S, typename T>
       // Conditional
       explicit operator bool() const { return (bool)is; }
 
+      // Returns the underlying stream.
+      S&       stream()       { return is; }
+      const S& stream() const { return is; }
+
     private:
       S& is;
       T val;
@@ -208,18 +212,16 @@ template<typename S, typename T>
       typed_ostream(S& os)
         : os(os) { }
 
-      typed_ostream& put(const T& x) {
-        os << x;
-        return *this;
-      }
-
-      typed_ostream put(T&& x) {
-        os << std::move(x);
-        return *this;
-      }
+      // Copy or move the value x into the stream
+      void put(const T& x) { os << x; }
+      void put(T&& x)      { os << std::move(x); }
 
       // Conditional
       explicit operator bool() const { return (bool)os; }
+
+      // Returns the underlying stream.
+      S&       stream()       { return os; }
+      const S& stream() const { return os; }
 
     private:
       S& os;
@@ -288,18 +290,73 @@ template<Input_stream S>
     S& is;
   };
 
+
+// A replacement for std::ostream_iterator.
+template<Output_stream S>
+  struct ostream_iterator {
+    using value_type = Value_type<S>;
+    using difference_type = std::ptrdiff_t;
+
+    ostream_iterator()
+      : os(nullptr) { }
+
+    ostream_iterator(S& s)
+      : os(&s) { }
+
+    // Dereference only to support the syntax *i = x;
+    ostream_iterator& operator*() { return *this; }
+
+    // Allow copy/move assignment from the value type to support
+    // the syntax *i = x.
+    ostream_iterator& operator=(const value_type& x) {
+      origin::put(*os, x);
+      if (!*os)
+        os = nullptr;
+      return *this;
+    }
+
+    ostream_iterator& operator=(value_type&& x) {
+      origin::put(*os, std::move(x));
+      if (!*os)
+        os = nullptr;
+      return *this;
+    }
+
+    // Incrementing does not advance the stream.
+    ostream_iterator& operator++() { return *this; }
+
+    S* os;
+  };
+
+// Returns true only when the arguments have the same underlying
+// stream object.
+template<Output_stream S>
+  inline bool
+  operator==(ostream_iterator<S> a, ostream_iterator<S> b) {
+    return a.os == b.os;
+  }
+
+// Returns true when the arguments have different underlying stream
+// objects.
+template<Output_stream S>
+  inline bool
+  operator!=(ostream_iterator<S> a, ostream_iterator<S> b) {
+    return a.os != b.os;
+  }
+
+
 // The ostream range transforms an output stream into a range of output
 // iterators.
 template<Output_stream S>
   struct ostream_range {
     using value_type = Value_type<S>;
-    using iterator = std::ostream_iterator<value_type>;
+    using iterator = ostream_iterator<S>;
 
     ostream_range(S& s)
       : os(s) { }
 
     auto begin() const { return iterator(os); }
-    auto end() const { return iterator(os); }
+    auto end() const { return iterator(); }
 
     S& os;
   };
@@ -311,6 +368,7 @@ template<Input_stream S>
 
 template<Output_stream S>
   ostream_range<S> Range(S& os) { return {os}; }
+
 
 } // namespace origin
 

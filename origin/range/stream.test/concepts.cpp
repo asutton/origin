@@ -57,4 +57,12 @@ static_assert(origin::Input_stream<Int_istream>(), "");
 static_assert(origin::Input_stream<Int_isstream>(), "");
 static_assert(origin::Input_stream<Int_ifstream>(), "");
 
+using Int_ostream = origin::typed_ostream<Ostream, int>;
+using Int_osstream = origin::typed_ostream<Osstream, int>;
+using Int_ofstream = origin::typed_ostream<Ofstream, int>;
+
+static_assert(origin::Output_stream<Int_ostream>(), "");
+static_assert(origin::Output_stream<Int_osstream>(), "");
+static_assert(origin::Output_stream<Int_ofstream>(), "");
+
 int main() { }

@@ -6,4 +6,7 @@
 
 add_run_test(stream_concepts concepts.cpp)
 add_run_test(stream_typed_istream typed_istream.cpp)
+add_run_test(stream_typed_ostream typed_ostream.cpp)
+add_run_test(stream_istream_range istream_range.cpp)
+add_run_test(stream_ostream_range ostream_range.cpp)
 
