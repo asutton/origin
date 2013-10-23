@@ -31,7 +31,7 @@ namespace stream_impl {
 //
 // Another approach would be to define the primitive operations in terms
 // of disjunction and then build and abstraction over that.
-
+//
 // For now, we make no guarantees about the result of those operations.
 
 // A primitive stream is a class that provides two members: peek and
@@ -49,6 +49,9 @@ template<typename S>
 // operation, ignore. This is only provided when the underlying stream
 // can more efficiently advance by ignoring values than getting and
 // discarding them.
+//
+// The reason for this concept is that std::basic_istingstream does
+// not support the interface.
 template<typename S>
   concept bool
   Ignorable_istream() {
@@ -57,10 +60,6 @@ template<typename S>
       s.get();
       s.ingore();
     };
-    // return Primitive_istream<S>() 
-    //    and requires(S& s) {
-    //          s.ignore();
-    //        };
   }
 
 template<typename S, typename T>
@@ -369,6 +368,15 @@ template<Input_stream S>
 template<Output_stream S>
   ostream_range<S> Range(S& os) { return {os}; }
 
+
+// Range-based for loop adaptors
+template<typename S>
+  requires Input_stream<S>() or Output_stream<S>()
+    auto begin(S& is) { return Range(is).begin(); }
+
+template<typename S>
+  requires Input_stream<S>() or Output_stream<S>()
+    auto end(S& is) { return Range(is).end(); }
 
 } // namespace origin
 

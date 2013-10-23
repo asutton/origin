@@ -14,7 +14,8 @@ namespace origin {
 // -------------------------------------------------------------------------- //
 // Range Concepts                                                [range.concept]
 
-// Range
+// A range is a sequence of elements denoted by a pair of iterators.
+// These iterators are accessed using begin() and end()/.
 template<typename R>
   concept bool 
   Range() {

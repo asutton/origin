@@ -10,6 +10,8 @@
 
 #include <origin/range/stream.hpp>
 
+// Tests the Range adaptor for (typed) istreams.
+
 int main() {
   std::string s = "1 2 3 4 5";
   std::istringstream ss(s);
@@ -27,4 +29,7 @@ int main() {
   assert(*i == 4); ++i;
   assert(*i == 5); ++i;
   assert(i == r.end());
+
+  // TODO: Check that a range over istringstream guarantees
+  // iteration over a character array.
 }
