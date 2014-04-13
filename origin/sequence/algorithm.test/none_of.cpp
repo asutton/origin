@@ -6,14 +6,13 @@
 
 #include <cassert>
 
-#include <origin/range/algorithm.hpp>
+#include <origin/sequence/algorithm.hpp>
 
 bool pos(int n) { return n > 0; }
 
-int main() 
-{
+int main() {
   int a[3] { 1, 2, 3 };
-  assert(origin::all_of(a + 3, pos));
-  assert(origin::all_of(a, pos));
-  assert(origin::all_of({1, 2, 3}, pos));
+  assert(origin::none_of(a, a + 3, pos));
+  assert(origin::none_of(a, pos));
+  assert(origin::none_of({1, 2, 3}, pos));
 }

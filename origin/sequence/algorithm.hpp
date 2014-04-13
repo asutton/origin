@@ -275,53 +275,153 @@ template<typename T, typename P>
 
 // -------------------------------------------------------------------------- //
 // Count If                                                   [algo.count_if] //
+//
+//    count_if(first, last, pred, init)
+//    count_if(first, last, pred)
+//    count_if(range, pred, init)
+//    count_if(range, pred)
+//
+// NOTE: The set of operations is extnded from those in the standard by
+// allowing an initial value (required only to be Advanceable) to be 
+// provided. When not provided, the count starts from 0.
+
+template<Input_iterator I, typename S, typename P, Advanceable J>
+  requires Sentinel<S, I>() and Invokable_predicate<P, Value_type<I>>()
+    inline Difference_type<I>
+    count_if(I first, S last, P pred, J value) {
+      auto&& p = Invokable(pred);
+      while (first != last) {
+        if (p(*first)) ++value;
+        ++first;
+      }
+      return value;
+    }
 
 template<Input_iterator I, typename S, typename P>
   requires Sentinel<S, I>() and Invokable_predicate<P, Value_type<I>>()
     inline Difference_type<I>
     count_if(I first, S last, P pred) {
-      auto&& p = Invokable(pred);
-      Difference_type<I> n = 0;
-      while (first != last) {
-        if (p(*first))
-          ++n;
-        ++first;
-      }
-      return n;
+      using J = Difference_type<I>;
+      return origin::count_if(first, last, pred, J{0});
+    }
+
+template<Input_range R, typename P, Advanceable J>
+  requires Invokable_predicate<P, Value_type<R>>()
+    inline Size_type<R> 
+    count_if(R&& range, P pred, J value) {
+      return origin::count_if(std::begin(range), std::end(range), pred, value);
     }
 
 template<Input_range R, typename P>
   requires Invokable_predicate<P, Value_type<R>>()
     inline Size_type<R> 
     count_if(R&& range, P pred) {
-      return origin::count_if(std::begin(range), std::end(range), pred);
+      using J = Size_type<R>;
+      return origin::count_if(std::begin(range), std::end(range), pred, J{0});
+    }
+
+template<typename T, typename P, Advanceable J>
+  requires Invokable_predicate<P, T>()
+    inline std::size_t
+    count_if(std::initializer_list<T> list, P pred, J value) {
+      return origin::count_if(list.begin(), list.end(), pred, value);
     }
 
 template<typename T, typename P>
   requires Invokable_predicate<P, T>()
     inline std::size_t
     count_if(std::initializer_list<T> list, P pred) {
-      return origin::count_if(list.begin(), list.end(), pred);
+      return origin::count_if(list.begin(), list.end(), pred, std::size_t{0});
+    }
+
+// -------------------------------------------------------------------------- //
+// Count If Not                                           [algo.count_if_not] //
+//
+//    count_if_not(first, last, pred, init)
+//    count_if_not(first, last, pred)
+//    count_if_not(range, pred, init)
+//    count_if_not(range, pred)
+
+
+template<Input_iterator I, typename S, typename P, Advanceable J>
+  requires Sentinel<S, I>() and Invokable_predicate<P, Value_type<I>>()
+    inline Difference_type<I>
+    count_if_not(I first, S last, P pred, J value) {
+      auto&& p = Invokable(pred);
+      while (first != last) {
+        if (not p(*first)) ++value;
+        ++first;
+      }
+      return value;
+    }
+
+template<Input_iterator I, typename S, typename P>
+  requires Sentinel<S, I>() and Invokable_predicate<P, Value_type<I>>()
+    inline Difference_type<I>
+    count_if_not(I first, S last, P pred) {
+      using J = Difference_type<I>;
+      return origin::count_if_not(first, last, pred, J{0});
+    }
+
+template<Input_range R, typename P, Advanceable J>
+  requires Invokable_predicate<P, Value_type<R>>()
+    inline Size_type<R> 
+    count_if_not(R&& range, P pred, J value) {
+      return origin::count_if_not(std::begin(range), std::end(range), pred, value);
+    }
+
+template<Input_range R, typename P>
+  requires Invokable_predicate<P, Value_type<R>>()
+    inline Size_type<R> 
+    count_if_not(R&& range, P pred) {
+      using J = Size_type<R>;
+      return origin::count_if_not(std::begin(range), std::end(range), pred, J{0});
+    }
+
+template<typename T, typename P, Advanceable J>
+  requires Invokable_predicate<P, T>()
+    inline std::size_t
+    count_if_not(std::initializer_list<T> list, P pred, J value) {
+      return origin::count_if_not(list.begin(), list.end(), pred, value);
+    }
+
+template<typename T, typename P>
+  requires Invokable_predicate<P, T>()
+    inline std::size_t
+    count_if_not(std::initializer_list<T> list, P pred) {
+      return origin::count_if_not(list.begin(), list.end(), pred, std::size_t{0});
     }
 
 // -------------------------------------------------------------------------- //
 // Find                                                           [algo.find] //
 //
-//      none_of(first, last, fn)
-//      none_of(range, fn)
+//      find(first, last, value)
+//      find(range, value)
+//
+// TODO: Consider adding overloads that accept a binary relation
 
-// find
-template<Input_range R, typename T>
-  requires Range_search<R, T>()
-    inline Iterator_type<R> find(R&& range, const T& value)
-    {
-      using std::begin;
-      using std::end;
-      return std::find(begin(range), end(range), value);
+template<Input_iterator I, typename S, typename T>
+  requires Sentinel<I, T>() and Equality_comparable<T, Value_type<I>>()
+    inline I
+    find(I first, S last, const T& value) {
+      while (first != last and *first != value)
+        ++first;
+      return first;
     }
 
+template<Input_range R, typename T>
+  requires Equality_comparable<T, Value_type<R>>()
+    inline Iterator_type<R> 
+    find(R&& range, const T& value) {
+      return origin::find(std::begin(range), std::end(range), value);
+    }
 
-// count
+// -------------------------------------------------------------------------- //
+// Count                                                         [algo.count] //
+//
+//      count(first, last, fn)
+//      count(range, fn)
+
 template<Input_range R, typename T>
   requires Range_search<R, T>()
     inline Size_type<R> count(R&& range, const T& value)
