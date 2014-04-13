@@ -5,5 +5,4 @@
 # and conditions.
 
 add_subdirectory(core)
-add_subdirectory(iterator)
-add_subdirectory(range)
+add_subdirectory(sequence)

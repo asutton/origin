@@ -5,4 +5,7 @@
 # and conditions.
 
 add_subdirectory(concepts.test)
-add_subdirectory(function.test)
+add_subdirectory(range.test)
+add_subdirectory(algorithm.test)
+
+# add_subdirectory(stream.test)
