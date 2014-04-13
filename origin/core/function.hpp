@@ -29,7 +29,7 @@ template<typename F>
 
 template<typename R, typename T>
   inline auto
-  Invokable(R T::* p) { return std::mem_fun(p); }
+  Invokable(R T::* p) { return std::mem_fn(p); }
 
 // The type returned by Invokable(f).
 template<typename F>
