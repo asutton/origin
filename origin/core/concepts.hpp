@@ -285,37 +285,29 @@ template<typename T>
 // Function
 template<typename F, typename... Args>
   concept bool 
-  Function()
-  {
+  Function() {
     return Copy_constructible<F>()
-        && requires (F f, Args... args) {
-             f(args...);
-           };
+       and requires (F f, Args... args) { f(args...); };
   }
 
 // Predicate
 template<typename P, typename... Args>
   concept bool 
-  Predicate()
-  {
-    return requires (P pred, Args... args) {
-             {pred(args...)} -> bool;
-           };
+  Predicate() {
+    return requires (P pred, Args... args) { {pred(args...)} -> bool; };
   }
 
 // Relation
 template<typename R, typename T>
   concept bool 
-  Relation()
-  {
+  Relation() {
     return Predicate<R, T, T>();
   }
 
 // Relation (cross-type)
 template<typename R, typename T, typename U>
   concept bool 
-  Relation()
-  {
+  Relation() {
     return Relation<R, T>()
         && Relation<R, U>()
         && Common<T, U>()
@@ -328,8 +320,7 @@ template<typename R, typename T, typename U>
 // Unary_operation
 template<typename F, typename T>
   concept bool 
-  Unary_operation()
-  {
+  Unary_operation() {
     return requires (F f, T a) {
              {f(a)} -> T;
            };
@@ -338,8 +329,7 @@ template<typename F, typename T>
 // Binary_operation
 template<typename F, typename T>
   concept bool 
-  Binary_operation()
-  {
+  Binary_operation() {
     return requires (F f, T a, T b) {
              {f(a, b)} -> T;
            };
@@ -348,8 +338,7 @@ template<typename F, typename T>
 // Binary_operation (cross-type)
 template<typename F, typename T, typename U>
   concept bool 
-  Binary_operation()
-  {
+  Binary_operation() {
     return Binary_operation<F, T>()
         && Binary_operation<F, U>()
         && Common<T, U>()

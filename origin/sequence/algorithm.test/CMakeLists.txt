@@ -5,9 +5,9 @@
 # and conditions.
 
 add_run_test(range_algo_for_each for_each.cpp)
+add_run_test(range_algo_all_of all_of.cpp)
+add_run_test(range_algo_any_of any_of.cpp)
 
-# add_run_test(range_algo_all_of all_of.cpp)
-# add_run_test(range_algo_any_of any_of.cpp)
 # add_run_test(range_algo_none_of none_of.cpp)
 # add_run_test(range_algo_find find.cpp)
 # add_run_test(range_algo_find_if find_if.cpp)
