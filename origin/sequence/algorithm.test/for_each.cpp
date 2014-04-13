@@ -5,17 +5,37 @@
 // and conditions.
 
 #include <cassert>
+#include <iostream>
 #include <vector>
 
 #include <origin/sequence/algorithm.hpp>
 
-void twice(int& x) { x *= 2; }
+struct trip_count {
+  trip_count() : n(0) { }
+
+  template<typename T>
+    void operator()(const T&) { ++n; }
+  
+  int n = 0;
+};
+
+struct S {
+  void f() { ++x; }
+  int x = 0;
+};
 
 int main() 
 {
   int a[3] { 1, 2, 3 };
-  assert(origin::for_each(a, twice));
-  assert(a[0] == 2);
-  assert(a[1] == 4);
-  assert(a[2] == 6);
+
+  // std::cout << origin::for_each(a, a + 3, trip_count{}).n << '\n';
+
+  assert(origin::for_each(a, a + 3, trip_count{}).n == 3);
+  assert(origin::for_each(a, trip_count{}).n == 3);
+  assert(origin::for_each({1, 2, 3}, trip_count{}).n == 3);
+
+  S s[3];
+  origin::for_each(s, s + 3, &S::f);
+  origin::for_each(s, &S::f);
+  assert(s[0].x == 2 and s[1].x == 2 and s[2].x == 2);
 }

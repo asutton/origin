@@ -24,8 +24,8 @@ template<typename F, typename... Args>
 // Invoke                                                            [fn.invoke]
 
 template<typename F>
-  inline F
-  Invokable(F fn) { return fn; }
+  inline decltype(auto)
+  Invokable(F&& fn) { return fn; }
 
 template<typename R, typename T>
   inline auto

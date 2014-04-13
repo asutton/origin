@@ -9,6 +9,8 @@
 
 #include <algorithm>
 
+#include <origin/core/type.hpp>
+#include <origin/core/function.hpp>
 #include <origin/sequence/concepts.hpp>
 
 namespace origin {
@@ -103,35 +105,47 @@ template<typename R, typename T>
 //
 //      for_each(first, last, fn)
 //      for_each(range, fn)
-//      for_each({...}, fn)
 
 template<Input_iterator I, typename S, typename F>
-  requires Sentinel<S, I>() and Function<F, Value_type<I>>()
+  requires Sentinel<S, I>() and Invokable<F, Value_type<I>>()
     inline F
-    for_each(I first, S last, F fn) {
+    for_each_impl(I first, S last, F fn) {
+      auto&& fn_ = Invokable(fn);
       while (first != last) {
-        fn(*first);
+        fn_(*first);
         ++first;
       }
       return fn;
     }
 
+template<Input_iterator I, typename S, typename F>
+  requires Sentinel<S, I>() and Invokable<F, Value_type<I>>()
+    inline F
+    for_each(I first, S last, F fn) {
+      return for_each_impl(first, last, fn);
+    }
+
 template<Input_range R, typename F>
-  requires Function<F, Value_type<R>>()
+  requires Invokable<F, Value_type<R>>()
     inline F 
     for_each(R&& range, F fn) {
-      return origin::for_each(std::begin(range), std::end(range), fn);
+      return for_each_impl(std::begin(range), std::end(range), fn);
     }
 
 template<typename T, typename F>
-  requires Function<F, T>()
+  requires Invokable<F, T>()
     inline F
     for_each(std::initializer_list<T> list, F fn) {
-      return std::for_each(list.begin(), list.end(), fn);
+      return for_each_impl(list.begin(), list.end(), fn);
     }
 
 
-// all_of (range)
+// -------------------------------------------------------------------------- //
+// For Each                                                      [algo.for_each]
+//
+//      all_of(first, last, fn)
+//      all_of(range, fn)
+
 template<Input_range R, typename P>
   requires Range_query<R, P>()
     inline bool 
