@@ -97,6 +97,23 @@ template<typename R, typename T>
     return Range<R>() && Iterator_search<Iterator_type<R>, T>();
   }
 
+// Indirectly_range_equal
+template<typename R1, typename R2>
+  concept bool Indirectly_range_equal()
+  {
+    return Range<R1>() 
+        && Range<R2>() 
+        && Indirectly_equal<Iterator_type<R1>, Iterator_type<R2>>();
+  }
+
+// Indirectly_range_comparable
+template<typename R1, typename R2, typename C>
+  concept bool Indirectly_range_comparable()
+  {
+    return Range<R1>() 
+        && Range<R2>() 
+        && Indirectly_comparable<Iterator_type<R1>, Iterator_type<R2>, C>();
+  }
 
 // Non-modifiying algorithms
 
@@ -398,7 +415,7 @@ template<typename T, typename P>
 //      find(first, last, value)
 //      find(range, value)
 //
-// TODO: Consider adding overloads that accept a binary relation
+// TODO: Consider adding overloads that accept a binary relation.
 
 template<Input_iterator I, typename S, typename T>
   requires Sentinel<I, T>() and Equality_comparable<T, Value_type<I>>()
@@ -419,79 +436,155 @@ template<Input_range R, typename T>
 // -------------------------------------------------------------------------- //
 // Count                                                         [algo.count] //
 //
-//      count(first, last, fn)
-//      count(range, fn)
+//      count(first, last, value, n)
+//      count(first, last, value)
+//      count(range, value, n)
+//      count(range, value)
+//
+// TODO: Consider adding overloads that accept a binary relation.
 
-template<Input_range R, typename T>
-  requires Range_search<R, T>()
-    inline Size_type<R> count(R&& range, const T& value)
-    {
-      using std::begin;
-      using std::end;
-      return std::count(begin(range), end(range), value);
+template<Input_iterator I, typename S, typename T, Advanceable N>
+  requires Sentinel<S, I>() and Equality_comparable<T, Value_type<I>>()
+    inline N
+    count(I first, S last, const T& value, N n) {
+      while (first != last) {
+        if (*first == value) ++n;
+      }
+      return n;
     }
 
+template<Input_iterator I, typename S, typename T>
+  requires Sentinel<S, I>() and Equality_comparable<T, Value_type<I>>()
+    inline Difference_type<I>
+    count(I first, S last, const T& value) {
+      Difference_type<I> n = 0;
+      return origin::count(first, last, value, n);
+    }
 
+template<Input_range R, typename T, Advanceable N>
+  requires Equality_comparable<Value_type<R>, T>()
+    inline Size_type<R> 
+    count(R&& range, const T& value, N n) {
+      return origin::count(std::begin(range), std::end(range), value, n);
+    }
+
+template<Input_range R, typename T>
+  requires Equality_comparable<Value_type<R>, T>()
+    inline Size_type<R> 
+    count(R&& range, const T& value) {
+      Size_type<R> n = 0;
+      return origin::count(std::begin(range), std::end(range), value, n);
+    }
+
+template<typename T, typename U, Advanceable N>
+  requires Equality_comparable<T, U>()
+    inline std::size_t
+    count(std::initializer_list<T> list, const T& value, N n) {
+      return origin::count(list.begin(), list.end(), value, n);
+    }
+
+template<typename T, typename U>
+  requires Equality_comparable<T, U>()
+    inline std::size_t
+    count(std::initializer_list<T> list, const T& value) {
+      std::size_t n = 0;
+      return origin::count(list.begin(), list.end(), value);
+    }
+
+// -------------------------------------------------------------------------- //
+// Adjacent Find                                              [algo.adj_find] //
+//
+
+template<Forward_iterator I, typename S, typename C>
+  requires Sentinel<S, I>() and Equality_comparable<Value_type<I>>()
+    inline I
+    adjacent_find(I first, S last, C comp) {
+      if (first == last) return first;
+      I prev = first;
+      ++first;
+      while (first != last and comp(*prev, *first)) {
+        ++prev;
+        ++first;
+      }
+      return prev;
+    }
+
+template<Forward_iterator I, typename S>
+  requires Sentinel<S, I>() and Equality_comparable<Value_type<I>>()
+    inline I
+    adjacent_find(I first, S last) {
+      return origin::adjacent_find(first, last, eq());
+    }
 
 template<Forward_range R>
   requires Equality_comparable<Value_type<R>>()
-    inline Iterator_type<R> adjacent_find(R&& range)
-    {
-      using std::begin;
-      using std::end;
-      return std::adjacent_find(begin(range), end(range));
+    inline Iterator_type<R> 
+    adjacent_find(R&& range) {
+      return origin::adjacent_find(std::begin(range), std::end(range), eq());
     }
 
 template<Forward_range R, typename C>
   requires Relation<C, Value_type<R>>()
-    inline Iterator_type<R> adjacent_find(R&& range, C comp)
-    {
-      using std::begin;
-      using std::end;
-      return std::adjacent_find(begin(range), end(range), comp);
+    inline Iterator_type<R> 
+    adjacent_find(R&& range, C comp) {
+      return origin::adjacent_find(std::begin(range), std::end(range), comp);
     }
 
-// Indirectly_range_equal
-template<typename R1, typename R2>
-  concept bool Indirectly_range_equal()
-  {
-    return Range<R1>() 
-        && Range<R2>() 
-        && Indirectly_equal<Iterator_type<R1>, Iterator_type<R2>>();
+template<Equality_comparable T>
+  inline const T*
+  adjacent_find(std::initializer_list<T> list) {
+    return origin::adjacent_find(list.begin(), list.end(), eq());
   }
 
-// Indirectly_range_comparable
-template<typename R1, typename R2, typename C>
-  concept bool Indirectly_range_comparable()
-  {
-    return Range<R1>() 
-        && Range<R2>() 
-        && Indirectly_comparable<Iterator_type<R1>, Iterator_type<R2>, C>();
-  }
+template<typename T, typename C>
+  requires Relation<C, T>()
+    inline const T*
+    adjacent_find(std::initializer_list<T> list, C comp) {
+      return origin::adjacent_find(list.begin(), list.end(), comp);
+    }
 
-// mismatch
-template<Input_range R1, Input_range R2>
-  requires Indirectly_range_equal<R1, R2>()
-    inline std::pair<Iterator_type<R1>, Iterator_type<R2>>
-    mismatch(R1&& range1, R2&& range2)
-    {
-      using std::begin;
-      using std::end;
-      return std::mismatch(begin(range1), end(range1), begin(range2));
+
+// -------------------------------------------------------------------------- //
+// Mismatch                                                   [algo.mismatch] //
+
+template<Input_iterator I1, Input_iterator I2, typename C>
+  requires Relation<Value_type<I1>, Value_type<I2>>()
+    inline std::pair<I1, I2>
+    mismatch(I1 first1, I1 last1, I2 first2, C comp) {
+      while (first1 != last1 and comp(*first1, *first2)) {
+        ++first1;
+        ++first2;
+      }
+      return {first1, first2};
+    }
+
+template<Input_iterator I1, Input_iterator I2>
+  requires Equality_comparable<Value_type<I1>, Value_type<I2>>()
+    inline std::pair<I1, I2>
+    mismatch(I1 first1, I1 last1, I2 first2) {
+      return origin::mismatch(first1, last1, first2, eq());
     }
 
 template<Input_range R1, Input_range R2, typename C>
-  requires Indirectly_range_comparable<R1, R2, C>()
+  requires Relation<C, Value_type<R1>, Value_type<R2>>()
     inline std::pair<Iterator_type<R1>, Iterator_type<R2>>
-    mismatch(R1&& range1, R2&& range2, C comp)
-    {
-      using std::begin;
-      using std::end;
-      return std::mismatch(begin(range1), end(range1), begin(range2), comp);
+    mismatch(R1&& range1, R2&& range2, C comp) {
+      return std::mismatch(std::begin(range1), std::end(range1), 
+                           std::begin(range2), comp);
+    }
+
+template<Input_range R1, Input_range R2>
+  requires Equality_comparable<Value_type<R1>, Value_type<R2>>()
+    inline std::pair<Iterator_type<R1>, Iterator_type<R2>>
+    mismatch(R1&& range1, R2&& range2) {
+      return origin::mismatch(std::begin(range1), std::end(range1), 
+                              std::begin(range2), eq());
     }
 
 
-// equal
+// -------------------------------------------------------------------------- //
+// Equal                                                         [algo.equal] //
+
 template<Input_range R1, Input_range R2>
   requires Indirectly_range_equal<R1, R2>()
     inline bool
