@@ -14,6 +14,19 @@
 namespace origin {
 
 // -------------------------------------------------------------------------- //
+// Function Objects                                                  [fn.object]
+//
+// TODO: Write my own function objects.
+
+inline std::equal_to<>      eq() { return {}; }
+inline std::not_equal_to<>  ne() { return {}; }
+inline std::less<>          lt() { return {}; }
+inline std::greater<>       gt() { return {}; }
+inline std::less_equal<>    ge() { return {}; }
+inline std::greater_equal<> le() { return {}; }
+
+
+// -------------------------------------------------------------------------- //
 // Result Type                                                       [fn.result]
 
 template<typename F, typename... Args>
