@@ -27,6 +27,8 @@ static_assert(origin::Convertible<int, int&&>(), "");
 static_assert(origin::Convertible<int&, int>(), "");
 static_assert(origin::Convertible<const int&, int>(), "");
 
+static_assert(origin::Convertible<void, void>(), "");
+
 // TODO: Write more tests. Obviously...
 
 int main() { return 0; }
