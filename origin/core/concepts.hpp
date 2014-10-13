@@ -67,31 +67,7 @@ template<typename T>
   concept bool 
   Conditional() { return requires (T p) { p ? true : false; }; }
 
-namespace core_impl {
-template<typename T>
-  concept bool 
-  User_defined_logical()
-  {
-    return Class_type<T>() 
-        && requires (T a, T b) {
-             {a && b} -> T;
-             {a || b} -> T;
-             {!a} -> T;
-           };
-  }
-} // namespace core_impl
 
-// Declarations
-
-// Is true if and only if T is a Conditional type but not a user-defined 
-// logical type. That is T must not overload the &&, ||, and ! operators. 
-//
-// TODO: Is there a way to determine the user has overloaded an operator?
-template<typename T> 
-  concept bool 
-  Boolean() {
-    return Conditional<T>() && not core_impl::User_defined_logical<T>();
-  }
 
 // Relational Concepts
 
@@ -104,8 +80,8 @@ template<typename T>
   concept bool 
   Equality_comparable() {
     return requires (T a, T b) {
-             a == b; requires Boolean<decltype(a == b)>();
-             a != b; requires Boolean<decltype(a != b)>();
+             { a == b } -> bool;
+             { a != b } -> bool;
            };
   }
 
@@ -122,10 +98,10 @@ template<typename T, typename U>
         && Equality_comparable<U>() 
         && Common<T, U>() 
         && requires (T t, T u) {
-             t == u; requires Boolean<decltype(t == u)>();
-             u == t; requires Boolean<decltype(u == t)>();
-             t != u; requires Boolean<decltype(t != u)>();
-             u != t; requires Boolean<decltype(u != t)>();
+             { t == u } -> bool;
+             { u == t } -> bool;
+             { t != u } -> bool;
+             { u != t } -> bool;
           };
   }
 
@@ -139,10 +115,10 @@ template<typename T>
   Weakly_ordered()
   {
     return requires (T a, T b) {
-             a < b;  requires Boolean<decltype(a < b)>();
-             a > b;  requires Boolean<decltype(a > b)>();
-             a <= b; requires Boolean<decltype(a <= b)>();
-             a >= b; requires Boolean<decltype(a >= b)>();
+             { a < b } -> bool;
+             { a > b } -> bool;
+             { a <= b } -> bool;
+             { a >= b } -> bool;
            };
   }
 
@@ -154,14 +130,14 @@ template<typename T, typename U>
         && Weakly_ordered<U>() 
         && Common<T, U>() 
         && requires (T t, T u) {
-             t < u;  requires Boolean<decltype(t < u)>();
-             u < t;  requires Boolean<decltype(u < t)>();
-             t > u;  requires Boolean<decltype(t > u)>();
-             u > t;  requires Boolean<decltype(u > t)>();
-             t <= u; requires Boolean<decltype(t <= u)>();
-             u <= t; requires Boolean<decltype(u <= t)>();
-             t >= u; requires Boolean<decltype(t >= u)>();
-             u <= t; requires Boolean<decltype(u >= t)>();
+             { t < u } -> bool;
+             { u < t } -> bool;
+             { t > u } -> bool;
+             { u > t } -> bool;
+             { t <= u } -> bool;
+             { u <= t } -> bool;
+             { t >= u } -> bool;
+             { u <= t } -> bool;
       };
   }
 
@@ -193,8 +169,8 @@ template<typename T>
 // Is true if and only if an object of type T can be constructed with
 // the types of arguments in Args.
 template<typename T, typename... Args>
-  concept bool Constructible() 
-  { 
+  concept bool 
+  Constructible() {
     return Destructible<T>() && std::is_constructible<T, Args...>::value; 
   }
 
@@ -392,9 +368,9 @@ template<typename T>
 template<typename T, std::size_t N>
   struct get_value_type<T[N]> { using type = T; };
 
-template<typename T>
-  requires requires () { typename T::value_type; }
-    struct get_value_type<T> { using type = typename T::value_type; };
+// template<typename T>
+//   requires requires () { typename T::value_type; }
+//     struct get_value_type<T> { using type = typename T::value_type; };
 
 // Make iostreams have a value type.
 template<typename T>
