@@ -13,26 +13,30 @@ namespace origin {
 
 // Primary type categories
 
-// Is true if an only if T is possibly cv-qualified `void.`
+// Returns true if an only if `T` is possibly cv-qualified `void.`
 template<typename T>
   concept bool 
   Void_type() { return std::is_void<T>::value; }
 
-// Is true if an only if T is a possibly cv-qualified integral
+// Returns true if an only if `T` is a possibly cv-qualified integral
 // type. The integral types are:
 //
 // * `bool`
-// * `char`, `signed char`, `unsigned char`, `wchar_t`, `char16_t`, `char32_t`
+// * `char`, `signed char`, `unsigned char`
+// * `wchar_t`, `char16_t`, `char32_t`
 // * `short`, `unsigned short`
 // * `int`, `unsigned int`
 // * `long`, `unsigned long`
 // * `long long`, `unsigned long long`
-// * `extended integral types`
+// * any extended integral types
+//
+// Note that the set of extended integral types is implementation
+// defined.
 template<typename T>
   concept bool 
   Integral_type() { return std::is_integral<T>::value; }
 
-// Is true if and only if T is a (possibly cv-qualified) floating 
+// Returns true if and only if T is a (possibly cv-qualified) floating 
 // point type. The floating point types are:
 //
 // * `float`
