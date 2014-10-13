@@ -29,8 +29,6 @@ add_run_test(core_semiregular semiregular.cpp)
 add_run_test(core_regular regular.cpp)
 add_run_test(core_ordered ordered.cpp)
 
-add_run_test(core_boolean boolean.cpp)
-
 add_run_test(core_function function.cpp)
 add_run_test(core_predicate predicate.cpp)
 add_run_test(core_relation relation.cpp)
