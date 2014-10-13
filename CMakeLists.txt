@@ -8,7 +8,7 @@ cmake_minimum_required(VERSION 2.8)
 
 # Set the project, required language, and default flags.
 project(origin CXX)
-set(CMAKE_CXX_FLAGS -std=c++1y)
+set(CMAKE_CXX_FLAGS -std=c++1z)
 
 enable_testing()
 
