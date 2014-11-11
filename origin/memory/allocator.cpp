@@ -9,7 +9,7 @@ namespace origin {
 namespace {
 
 // The global default allocator.
-new_allocator alloc_;
+allocator alloc_;
 
 } // namespace
 

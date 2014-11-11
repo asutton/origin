@@ -10,14 +10,10 @@ namespace origin {
 inline
 allocator::~allocator() { }
 
-
-// ---------------------------------------------------------------------------//
-// New allocator
-
 inline void*
-new_allocator::allocate(int n) { return ::operator new(n); }
+allocator::allocate(int n) { return ::operator new(n); }
 
 inline void
-new_allocator::deallocate(void* p) { ::operator delete(p); }
+allocator::deallocate(void* p) { ::operator delete(p); }
 
 } // namespace

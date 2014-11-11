@@ -12,7 +12,7 @@
 namespace origin {
 
 // ---------------------------------------------------------------------------//
-// Abstract allocator 
+// Allocator 
 
 // An allocator is a resource type that is responsible for the acquisition
 // and release of memory. It is an abstract base class.
@@ -23,24 +23,11 @@ namespace origin {
 // sets of operations are actually being required.
 struct allocator {
   virtual ~allocator();
-  virtual void* allocate(int) = 0;
-  virtual void deallocate(void*) = 0;
+  virtual void* allocate(int);
+  virtual void deallocate(void*);
 };
 
 allocator& default_allocator();
-
-
-// ---------------------------------------------------------------------------//
-// New allocator
-
-// The new allocator acquires memory using the `new` operator
-// and releases it using the `delete` operator.
-//
-// TODO: find a better name for this?
-struct new_allocator : allocator {
-  void* allocate(int);
-  void deallocate(void*);
-};
 
 } // namespace
 
