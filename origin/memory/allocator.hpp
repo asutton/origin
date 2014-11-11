@@ -7,92 +7,43 @@
 
 #include <origin/core/concepts.hpp>
 
+#include <memory>
+
 namespace origin {
 
-// A type `A` is an allocator when it provides the methods necessary to
-// allocate and deallocate memory. Allocators are semiregular types;
-// they are copyable, but are not required to be equality comparable.
-template<typename A>
-  concept bool Allocator() {
-    return Semiregular<A>() and requires(A a, std::size_t n, void* p) {
-      { a.allocate(n) } -> void*;
-      { a.deallocate(p, n) } -> void;
-    };
-  }
+// ---------------------------------------------------------------------------//
+// Abstract allocator 
 
-namespace allocator_impl {
-
-struct interface {
-  virtual ~interface() = default;
-  
-  // Semiregular
-  virtual interface* copy() = 0;
-  
-  // Allocator
+// An allocator is a resource type that is responsible for the acquisition
+// and release of memory. It is an abstract base class.
+//
+// TODO: Write better docs.
+//
+// TODO: Look at recent allocator specifications to determine what
+// sets of operations are actually being required.
+struct allocator {
+  virtual ~allocator();
   virtual void* allocate(int) = 0;
-  virtual void deallocate(void*, int) = 0;
+  virtual void deallocate(void*) = 0;
 };
 
-template<Allocator A>
-  struct binder : interface {
-    binder(const A& a) : alloc(a) { }
-
-    virtual binder* 
-    copy() { return new binder(alloc); }
-
-    virtual void* 
-    allocate(int n) { return alloc.allocate(n); }
-    
-    virtual void 
-    deallocate(void* p, int n) { alloc.deallocate(p, n); }
-
-    A alloc;
-  };
-
-} // namespace memory_impl
+allocator& default_allocator();
 
 
-// The allocator class defines the runtime version of the Allocator
-// concept.
+// ---------------------------------------------------------------------------//
+// New allocator
+
+// The new allocator acquires memory using the `new` operator
+// and releases it using the `delete` operator.
 //
-// TODO: Document this.
-//
-// TODO: In full generality, the allocator should take an allocator
-// since it dyanamically allocates memory.
-class allocator {
-public:
-  template<Allocator A>
-    allocator(const A&);
-
-  allocator(const allocator&);
-  ~allocator();
-
+// TODO: find a better name for this?
+struct new_allocator : allocator {
   void* allocate(int);
-  void deallocate(void* p, int n = 0);
-
-private:
-  allocator_impl::interface* impl_;
+  void deallocate(void*);
 };
-
-
-template<Allocator A>
-  inline
-  allocator::allocator(const A& a)
-    : impl_(new allocator_impl::binder<A>(a)) { }
-
-inline
-allocator::allocator(const allocator& x)
-  : impl_(x.impl_->copy()) { }
-
-inline
-allocator::~allocator() { delete impl_; }
-
-inline void*
-allocator::allocate(int n) { return impl_->allocate(n); }
-
-inline void
-allocator::deallocate(void* p, int n) { return impl_->deallocate(p, n); }
 
 } // namespace
+
+#include <origin/memory/allocator.ipp>
 
 #endif

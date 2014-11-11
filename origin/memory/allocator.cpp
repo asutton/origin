@@ -3,3 +3,18 @@
 // and conditions.
 
 #include "allocator.hpp"
+
+namespace origin {
+
+namespace {
+
+// The global default allocator.
+new_allocator alloc_;
+
+} // namespace
+
+// Returns the default allocator.
+allocator& 
+default_allocator() { return alloc_; }
+
+} // namespace origin
