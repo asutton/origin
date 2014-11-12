@@ -21,3 +21,5 @@ add_run_test(range_algo_count_if count_if.cpp)
 # add_run_test(range_algo_equal equal.cpp)
 # add_run_test(range_algo_find_first_of find_first_of.cpp)
 # add_run_test(range_algo_find_end find_end.cpp)
+
+add_run_test(seq_algo_copy copy.cpp)

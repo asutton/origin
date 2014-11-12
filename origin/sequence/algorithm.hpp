@@ -651,6 +651,30 @@ template<Forward_range R1, Forward_range R2, typename C>
                            begin(range2), end(range2), comp);
     }
 
+
+// -------------------------------------------------------------------------- //
+// Modifying algorithms
+
+// FIXME: Indirectly copyable is specified in the wrong order.
+
+template<Input_iterator I, Output_iterator<Value_type<I>> O>
+  O copy(I first, I last, O out) {
+    while (first != last) {
+      *out = *first;
+      ++first;
+      ++out;
+    }
+    return out;
+  }
+
+template<Input_range R1, Output_range<Value_type<R1>> R2>
+  Iterator_type<R2>
+  copy(R1&& in, R2&& out) {
+    using std::begin;
+    using std::end;
+    return copy(begin(in), end(in), begin(out));
+  }
+
 } // namesapce origin
 
 #endif
