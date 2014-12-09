@@ -2,8 +2,6 @@
 # LICENSE.txt or http://www.opensource.org/licenses/mit-license.php for terms
 # and conditions.
 
-add_subdirectory(core)
-add_subdirectory(memory)
-add_subdirectory(numeric)
-add_subdirectory(sequence)
-add_subdirectory(data)
+add_library(origin-numeric numeric.cpp algebra.cpp)
+
+add_subdirectory(algebra.test)

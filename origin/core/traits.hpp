@@ -130,18 +130,16 @@ template<typename T>
 // both integral and floating point types.
 template<typename T>
   concept bool 
-  Arithmetic_type()
-  {
+  Arithmetic_type() {
     return Integral_type<T>() || Floating_point_type<T>();
   }
 
 // Is true if and only if T is a fundamental type. The fundamental types are 
 // the built-in types of the programming language and include:
-//
-// * void
-// * nullptr_t
-// * arithmetic types
-// * cv-qualified variants of those types.
+//   * void
+//   * nullptr_t
+//   * arithmetic types
+//   * cv-qualified variants of those types.
 template<typename T>
   concept bool 
   Fundamental_type() { return std::is_fundamental<T>::value; }

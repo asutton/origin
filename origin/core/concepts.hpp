@@ -361,7 +361,7 @@ template<typename F, typename T, typename U>
 
 
 // -------------------------------------------------------------------------- //
-// Streaming concepts                                        [concepts.iostream]
+// Streaming concepts                                       [concepts.stream] //
 //
 // The I/O streaming concepts relate types the std::istream and
 // std::ostream streaming facilities. 
