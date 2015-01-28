@@ -172,9 +172,7 @@ template<typename R>
              Sentinel_type<R>;
              {std::begin(range)} -> Iterator_type<R>;
              {std::end(range)} -> Sentinel_type<R>;
-           } 
-       and Iterator<Iterator_type<R>>()
-       and Sentinel<Sentinel_type<R>, Iterator_type<R>>();
+           };
   }
 
 
