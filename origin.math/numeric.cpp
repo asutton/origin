@@ -2,4 +2,4 @@
 // LICENSE.txt or http://www.opensource.org/licenses/mit-license.php for terms
 // and conditions.
 
-#include <origin/math/numeric.hpp>
+#include <origin.math/numeric.hpp>

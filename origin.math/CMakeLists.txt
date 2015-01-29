@@ -1,7 +1,9 @@
-# Copyright (c) 2008-2014 Andrew Sutton
-#
 # This file is distributed under the MIT License. See the accompanying file
 # LICENSE.txt or http://www.opensource.org/licenses/mit-license.php for terms
 # and conditions.
 
-add_library(origin-math numeric.cpp mean.cpp)
+cmake_minimum_required(VERSION 3.0)
+
+include_directories(..)
+
+add_library(origin-math numeric.cpp stats.cpp)

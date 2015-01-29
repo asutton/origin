@@ -5,10 +5,12 @@
 #ifndef ORIGIN_MATH_NUMERIC_HPP
 #define ORIGIN_MATH_NUMERIC_HPP
 
-#include <origin/sequence/concepts.hpp>
-#include <origin/sequence/algorithms.hpp>
+// #include <origin/sequence/concepts.hpp>
+// #include <origin/sequence/algorithms.hpp>
 
-#include <numeric_limits>
+#include <algorithm>
+#include <functional>
+#include <limits>
 #include <cmath>
 
 // The numeric module provides basic algorithms for operations on numeric
@@ -28,22 +30,30 @@
 
 namespace origin {
 
+// FIXME: Do not define this:
+
+template<typename T>
+  using Value_type = typename T::value_type;
+
+
 // -------------------------------------------------------------------------- //
 // Numeric values                                                   [num.values]
 
+// Returns true if the Integral value n is even.
+template<typename T>
+  inline bool even(T n) { return n % 2 == 0; }
+
+// Returns true if the Integral value n is odd.
+template<typename T>
+  inline bool odd(T n) { return n % 2 == 1; }
+
 // Returns true if n is an infinite value. Note that n could be positive
 // or negative infinity.
+//
+// TODO: This is not general.
 template<typename T>
   inline bool
   is_infinity(T n) { return std::isinf(n); }
-
-template<typename T>
-  inline bool
-  is_positive_infinity(T n) { return n > 0 && is_infinity(n); }
-
-template<typename T>
-  inline bool
-  is_negative_infinity(T n) { return n < 0 && is_infinity(n); }
 
 
 // -------------------------------------------------------------------------- //

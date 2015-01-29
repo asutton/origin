@@ -21,3 +21,4 @@ endmacro()
 include_directories(.)
 
 add_subdirectory(origin)
+add_subdirectory(origin.math)
