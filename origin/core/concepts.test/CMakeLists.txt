@@ -1,5 +1,3 @@
-# Copyright (c) 2008-2013 Andrew Sutton
-#
 # This file is distributed under the MIT License. See the accompanying file
 # LICENSE.txt or http://www.opensource.org/licenses/mit-license.php for terms
 # and conditions.
@@ -28,8 +26,6 @@ add_run_test(core_copyable copyable.cpp)
 add_run_test(core_semiregular semiregular.cpp)
 add_run_test(core_regular regular.cpp)
 add_run_test(core_ordered ordered.cpp)
-
-add_run_test(core_boolean boolean.cpp)
 
 add_run_test(core_function function.cpp)
 add_run_test(core_predicate predicate.cpp)

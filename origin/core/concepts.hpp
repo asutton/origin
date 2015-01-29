@@ -1,5 +1,3 @@
-// Copyright (c) 2008-2013 Andrew Sutton
-//
 // This file is distributed under the MIT License. See the accompanying file
 // LICENSE.txt or http://www.opensource.org/licenses/mit-license.php for terms
 // and conditions.
@@ -15,21 +13,25 @@
 
 namespace origin {
 
-// Is true if and only if T and U are the same type.
+// A type `T` is the same as a type `U` if 
 template<typename T, typename U>
   concept bool 
   Same() { return __is_same_as(T, U); }
+
 
 // Is true if and only if T is derived from U or is the same as U.
 template<typename T, typename U>
   concept bool 
   Derived() { return __is_base_of(U, T); }
 
-// Is true if and only if T can be implicitly converted to U through
-// a user-defined conversion sequence.
+
+// A type `T` is convertible to another type `U` if an object
+// `t` of type `T` can be returned from a function whose return 
+// type is `U`. 
 template<typename T, typename U>
   concept bool 
   Convertible() { return __is_convertible_to(T, U); }
+
 
 // Represents the common type of a sequence of type arguments. More
 // precisely, if there exists some type C such that each type T in Ts
@@ -61,60 +63,38 @@ template<typename... Ts>
     }; 
   }
 
+
 // True if and only if an expression of type T can be contextually 
 // converted to bool.
 template<typename T>
   concept bool 
   Conditional() { return requires (T p) { p ? true : false; }; }
 
-namespace core_impl {
-template<typename T>
-  concept bool 
-  User_defined_logical()
-  {
-    return Class_type<T>() 
-        && requires (T a, T b) {
-             {a && b} -> T;
-             {a || b} -> T;
-             {!a} -> T;
-           };
-  }
-} // namespace core_impl
 
-// Declarations
-
-// Is true if and only if T is a Conditional type but not a user-defined 
-// logical type. That is T must not overload the &&, ||, and ! operators. 
+// -------------------------------------------------------------------------- //
+// Relational concepts                                           [concepts.comp]
 //
-// TODO: Is there a way to determine the user has overloaded an operator?
-template<typename T> 
-  concept bool 
-  Boolean() {
-    return Conditional<T>() && not core_impl::User_defined_logical<T>();
-  }
+// The relational concepts define requirements on types that can be
+// compared using the C++ relational operators.
 
-// Relational Concepts
 
-// Is true if and only if arguments of type T can be compared using the 
-// `==` and `!=` operators.
+// A type T is equality comparable if its values can be compared using
+// oerators `==` and `!=`.
 //
 // Types modeling this concept must ensure that the `==` operator
-// returns true only when the arguments have the same value. 
+// returns true only when the arguments have the same value and that
+// `!=` is the logical inverse of `==`.
 template<typename T>
   concept bool 
   Equality_comparable() {
     return requires (T a, T b) {
-             a == b; requires Boolean<decltype(a == b)>();
-             a != b; requires Boolean<decltype(a != b)>();
+             { a == b } -> bool;
+             { a != b } -> bool;
            };
   }
 
-// Is true if and only if arguments of types T and U share a common type
-// and can be compared using the == and != operators.
-//
-// Pairs of types modeling this concept must ensure the `==` operator
-// returns true only when the arguments, when converted to their common
-// type, and those converted values are the same.
+// A pair of types T and U are (cross-type) equality comparable 
+// only when ...
 template<typename T, typename U>
   concept bool 
   Equality_comparable() {
@@ -122,31 +102,34 @@ template<typename T, typename U>
         && Equality_comparable<U>() 
         && Common<T, U>() 
         && requires (T t, T u) {
-             t == u; requires Boolean<decltype(t == u)>();
-             u == t; requires Boolean<decltype(u == t)>();
-             t != u; requires Boolean<decltype(t != u)>();
-             u != t; requires Boolean<decltype(u != t)>();
+             { t == u } -> bool;
+             { u == t } -> bool;
+             { t != u } -> bool;
+             { u != t } -> bool;
           };
   }
 
-// Is true if and only if arguments of type T can be compared using the
-// inequality operators `<`, `>`, `<=`, and `>=`.
+// A type T is weakly ordered when it can be compared using the
+// operators `<`, `>`, `<=`, and `>=`.
 //
-// Types modeling this concept must ensure that the `<` operator defines
-// a strict weak order.
+// TODO: Document semantics.
+//
+// Note that in a weakly ordered type, for all objects `a` and `b`
+// of type `T`, when `a <= b` and `b <= a`, `a` and `b` are
+// equivalent, but they are not known to be equal.
 template<typename T>
   concept bool 
   Weakly_ordered()
   {
     return requires (T a, T b) {
-             a < b;  requires Boolean<decltype(a < b)>();
-             a > b;  requires Boolean<decltype(a > b)>();
-             a <= b; requires Boolean<decltype(a <= b)>();
-             a >= b; requires Boolean<decltype(a >= b)>();
+             { a < b } -> bool;
+             { a > b } -> bool;
+             { a <= b } -> bool;
+             { a >= b } -> bool;
            };
   }
 
-// Weakly ordered
+// TODO: Document me.
 template<typename T, typename U>
   concept bool Weakly_ordered()
   {
@@ -154,25 +137,29 @@ template<typename T, typename U>
         && Weakly_ordered<U>() 
         && Common<T, U>() 
         && requires (T t, T u) {
-             t < u;  requires Boolean<decltype(t < u)>();
-             u < t;  requires Boolean<decltype(u < t)>();
-             t > u;  requires Boolean<decltype(t > u)>();
-             u > t;  requires Boolean<decltype(u > t)>();
-             t <= u; requires Boolean<decltype(t <= u)>();
-             u <= t; requires Boolean<decltype(u <= t)>();
-             t >= u; requires Boolean<decltype(t >= u)>();
-             u <= t; requires Boolean<decltype(u >= t)>();
+             { t < u } -> bool;
+             { u < t } -> bool;
+             { t > u } -> bool;
+             { u > t } -> bool;
+             { t <= u } -> bool;
+             { u <= t } -> bool;
+             { t >= u } -> bool;
+             { u <= t } -> bool;
       };
   }
 
-// Totally ordered
+// A type `T` is totally ordered when it is both equality comparable
+// and weakly ordered.
+//
+// Types modeling this concept must guarantee that, for all `a` and
+// `b` of type `T`, when `a <= b` and `b <= a`, `a == b`.
 template<typename T>
   concept bool Totally_ordered()
   {
     return Equality_comparable<T>() && Weakly_ordered<T>();
   }
 
-// Totally ordered
+// TODO: Document me.
 template<typename T, typename U>
   concept bool Totally_ordered()
   {
@@ -183,7 +170,11 @@ template<typename T, typename U>
   }
 
 
-// Regular types
+// -------------------------------------------------------------------------- //
+// Regular types                                                 [concepts.type]
+//
+// There are a number of concepts that contributed (piecewise) to the
+// definition of regular types.
 
 // Is true if a variable of type T can be destroyed.
 template<typename T>
@@ -193,8 +184,8 @@ template<typename T>
 // Is true if and only if an object of type T can be constructed with
 // the types of arguments in Args.
 template<typename T, typename... Args>
-  concept bool Constructible() 
-  { 
+  concept bool 
+  Constructible() {
     return Destructible<T>() && std::is_constructible<T, Args...>::value; 
   }
 
@@ -207,10 +198,12 @@ template<typename T>
   concept bool 
   Default_constructible() { return Constructible<T>(); }
 
+
 // Is true if and only if an object of type T can be move constructed.
 template<typename T>
   concept bool 
   Move_constructible() { return Constructible<T, T&&>(); }
+
 
 // Is true if and only if an object of type T can be copy constructed.
 template<typename T>
@@ -227,10 +220,12 @@ template<typename T, typename U>
   concept bool 
   Assignable() { return std::is_assignable<T, U>::value; }
 
+
 // Is true if and only if an object of type T can be move assigned.
 template<typename T>
   concept bool 
   Move_assignable() { return Assignable<T&, T&&>(); }
+
 
 // Is true if and only if an object of type T can be copy assigned.
 template<typename T>
@@ -256,23 +251,32 @@ template<typename T>
     return Copy_constructible<T>() && Copy_assignable<T>();
   }
 
-// Is true if and only if T is a semiregular type. A semiregular type
-// is both default constructible and copyable.
+
+// A type is a semiregular type if it is default constructible and
+// copyable. Alternatively, a semiregular type is a regular type that
+// is not equality comparable.
+//
+// The semiregular type represents types like C structures, which can
+// be default constructed and copied, but have no default definition
+// of equality.
 template<typename T>
   concept bool 
   Semiregular() {
     return Default_constructible<T>() && Copyable<T>();
   }
 
-// Is true if T is a regular type. A regular type is a semiregular type
-// that is also equality comparable.
+
+// A type `T` is regular when it is semiregular and equality comparable.
+// Regular types can be used like most scalar types, although they
+// are not guaranteed to be ordered (comparble with `<`).
 template<typename T>
   concept bool 
   Regular() {
     return Semiregular<T>() && Equality_comparable<T>();
   }
 
-// Is true if T is an ordered type. An ordered type is a 
+
+// A type is ordered if it is a regular type that is also totally ordered.
 template<typename T>
   concept bool 
   Ordered() {
@@ -280,7 +284,14 @@ template<typename T>
   }
 
 
-// Functional types
+// -------------------------------------------------------------------------- //
+// Function concepts                                               [concepts.fn]
+//
+// The function concepts describe requirements on types that can be
+// called as functions using the syntax 'f(args...)', where 'f' is
+// the function-like type and 'args' is a (possibly empty) sequence
+// of arguments.
+
 
 // Function
 template<typename F, typename... Args>
@@ -349,6 +360,13 @@ template<typename F, typename T, typename U>
   }
 
 
+// -------------------------------------------------------------------------- //
+// Streaming concepts                                       [concepts.stream] //
+//
+// The I/O streaming concepts relate types the std::istream and
+// std::ostream streaming facilities. 
+
+
 // A type is input streamable if it can be extracted from a formatted
 // input stream derived from std::istream.
 template<typename T>
@@ -359,6 +377,8 @@ template<typename T>
     };
   }
 
+// A type is output streamable if it can be extracted from a formatted
+// output stream dervied from std::ostream.
 template<typename T>
   concept bool
   Output_streamable() {
@@ -367,6 +387,7 @@ template<typename T>
     };
   }
 
+// A type is streamable if it is both input and output streamable.
 template<typename T>
   concept bool
   Streamable() {
@@ -377,6 +398,7 @@ template<typename T>
 // Miscellaneous associated types
 
 namespace core_impl {
+
 template<typename T>
   struct get_value_type;
 
@@ -403,6 +425,7 @@ template<typename T>
 
 template<typename T>
   using value_type = typename get_value_type<Strip<T>>::type;
+
 } // namespace core_impl
 
 // Value type
@@ -411,6 +434,7 @@ template<typename T>
 
 
 namespace core_impl {
+
 template<typename T>
   struct get_difference_type;
 
@@ -429,6 +453,7 @@ template<typename T>
 
 template<typename T>
   using difference_type = typename get_difference_type<Strip<T>>::type;
+
 } // namespace core_impl
 
 // Difference_type
@@ -454,6 +479,7 @@ template<typename T>
 
 template<typename T>
   using size_type = typename get_size_type<Strip<T>>::type;
+
 } // namespace core_impl
 
 // Size_type
