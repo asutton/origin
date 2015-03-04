@@ -4,12 +4,15 @@
 
 #include <origin/core/concepts.hpp>
 
+template<typename T, typename U> void test();
 
-static_assert(origin::Assignable<int&, int>(), "");
-static_assert(origin::Assignable<int&, const int>(), "");
-static_assert(origin::Assignable<int&, volatile int>(), "");
-static_assert(origin::Assignable<int&, const volatile int>(), "");
+template<typename T, typename U>
+  requires origin::Assignable<int&, int>()
+void test() { }
 
-// TODO: Write more tests
-
-int main() { return 0; }
+int main() { 
+  test<int&, int>();
+  test<int&, const int>();
+  test<int&, volatile int>();
+  test<int&, const volatile int>();
+}

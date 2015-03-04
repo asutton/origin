@@ -30,7 +30,7 @@ template<typename T, typename U>
 // type is `U`. 
 template<typename T, typename U>
   concept bool 
-  Convertible() { return __is_convertible_to(T, U); }
+  Convertible() { return std::is_convertible<T, U>::value; }
 
 
 // Represents the common type of a sequence of type arguments. More
@@ -59,7 +59,7 @@ template<typename... Ts>
   concept bool 
   Common() {
     return requires () { 
-      Common_type<Ts...>; // FIXME: This better be a type requirement.
+      typename Common_type<Ts...>; // FIXME: This better be a type requirement.
     }; 
   }
 

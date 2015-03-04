@@ -75,7 +75,7 @@ template<typename I>
 template<typename I>
   concept bool Incrementable() {
     return requires (I i) {
-             Difference_type<I>;
+             typename Difference_type<I>;
              {++i} -> I&;
              {i++} -> I;
            };
@@ -168,8 +168,8 @@ template<typename R>
   concept bool 
   Range() {
     return requires (R& range) {
-             Iterator_type<R>;
-             Sentinel_type<R>;
+             typename Iterator_type<R>;
+             typename Sentinel_type<R>;
              {std::begin(range)} -> Iterator_type<R>;
              {std::end(range)} -> Sentinel_type<R>;
            } 
