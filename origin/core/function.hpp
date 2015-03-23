@@ -12,7 +12,7 @@
 namespace origin {
 
 // -------------------------------------------------------------------------- //
-// Function Objects                                                  [fn.object]
+// Function Objects                                               [fn.object] //
 //
 // TODO: Write my own function objects.
 
@@ -25,7 +25,7 @@ inline std::greater_equal<> le() { return {}; }
 
 
 // -------------------------------------------------------------------------- //
-// Result Type                                                       [fn.result]
+// Result Type                                                    [fn.result] //
 
 template<typename F, typename... Args>
   using Result_type = decltype(std::declval<F>()(std::declval<Args>()...));
@@ -35,38 +35,29 @@ template<typename F, typename... Args>
 // Invoke                                                         [fn.invoke] //
 
 
-namespace core
-{
-
-// Returns the object responsible for invoking a function of
-// type F. For member functions, this returns a mem_fn object
-// that can be used like a regular function.
+// The make_invokable funciton returns the object responsible 
+// for invoking a function of type F. For member functions, this 
+// returns a mem_fn object that can be used like a regular function.
 template<typename F>
 inline decltype(auto)
-invoker(F&& fn) { return fn; }
+make_invokable(F&& fn) { return fn; }
 
+// Adaptor for member functions.
 template<typename R, typename T>
 inline auto
-invoker(R T::* p) { return std::mem_fn(p); }
-
-} // namespace core
+make_invokable(R T::* p) { return std::mem_fn(p); }
 
 
-// Given an invokable type F, this yields the type 
-// resposible for invoking it as a free function.
-template<typename F>
-using Invokable_type = decltype(core::invoker(std::declval<F>()));
-
-
+// A type F is invokable if it can...
 template<typename F, typename... Args>
 concept bool 
 Invokable() 
 {
   return requires(F fn, Args... args) {
-    core::invoker(fn);
-  }
-  && Function<Invokable_type<F>, Args...>();
+    make_invokable(decay(fn))(args...);
+  };
 }
+
 
 // A type P is an invokable predicate if it is Invokable and its result
 // type is convertible to bool.

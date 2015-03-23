@@ -13,8 +13,13 @@ namespace origin
 // A helper function used to create rvalues from local
 // parameters. This is not defined and never used outside
 // of unevaluated operands.
-template<typename T> typename std::add_rvalue_reference<T> rvalue(T const&);
+template<typename T> typename std::add_rvalue_reference<T>::type rvalue(T const&);
 
+
+// A helper function used to create decayed values
+// from arguments of various types. This is not defined
+// and never used outside of unevaluated operands.
+template<typename T> typename std::decay<T>::type decay(T&&);
 
 // -------------------------------------------------------------------------- //
 // Primary type categories                                    [trait.primary] //
@@ -351,7 +356,7 @@ namespace core
 template<typename T, typename U>
 concept bool is_convertible_no_void()
 {
-  return requires (T t) { { rvalue(t) } -> U; };
+  return requires (T t) { {t} -> U; };
 }
 
 // Whenever we can't determine convertibility by constraints,

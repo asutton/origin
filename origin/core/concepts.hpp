@@ -5,11 +5,11 @@
 #ifndef ORIGIN_CORE_CONCEPTS_HPP
 #define ORIGIN_CORE_CONCEPTS_HPP
 
+#include "traits.hpp"
+
 #include <type_traits>
 #include <iosfwd>
 #include <utility>
-
-#include "traits.hpp"
 
 namespace origin 
 {
@@ -48,20 +48,25 @@ Same()
 //
 // Examples:
 //
-//    Convertible<int, int>()       | satisfied
-//    Convertible<int, int const>() | satisfied
-//    Convertible<int const, int>() | not satisfied
+//    Convertible<int, int>()       ~> satisfied
+//    Convertible<int, int const>() ~> satisfied
+//    Convertible<int const, int>() ~> not satisfied
 //
 // Notes:
 //
 // This cannot be implemented without specializations to 
 // handle the void cases. As a result, we delegate to a 
 // custom implementation of the trait.
+//
+// FIXME: The current implmentation in traits.hpp does not
+// current implement the full set of cases that the std
+// type trait defines.
 template<typename T, typename U>
 concept bool 
 Convertible() 
 {
-  return core::is_convertible<T, U>::value;
+  // return core::is_convertible<T, U>::value;
+  return std::is_convertible<T, U>::value;
 }
 
 // The `Derived` concept requires type `T` to be derived
@@ -75,12 +80,12 @@ Convertible()
 //    struct D1 : B { };
 //    class D2 : B { };
 //
-//    Derived<D1, B>() | satsified
-//    Derived<D2, B>() | not satisfied
+//    Derived<D1, B>() ~> satsified
+//    Derived<D2, B>() ~> not satisfied
 template<typename T, typename U>
 concept bool 
 Derived() 
-{ 
+{
   return __is_base_of(U, T) && Convertible<T, U>();
 }
 

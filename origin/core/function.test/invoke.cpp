@@ -23,12 +23,15 @@ struct S {
 };
 
 static_assert(origin::Invokable<decltype(even), int>(), "");
+
 static_assert(origin::Invokable<even_fn, int>(), "");
 
 static_assert(origin::Invokable<decltype(&S::f), S*>(), "");
 static_assert(origin::Invokable<decltype(&S::fc), const S*>(), "");
 static_assert(origin::Invokable<decltype(&S::g), S*, int>(), "");
 
-static_assert(origin::Invokable<decltype(even), X>(), "");
+static_assert(!origin::Invokable<decltype(even), X>(), "");
 
-int main() { }
+int main() 
+{ 
+}
