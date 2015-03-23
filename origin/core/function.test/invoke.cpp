@@ -11,7 +11,8 @@ struct X { };
 
 bool even(int n) { return n % 2 == 0; }
 
-struct even_fn {
+struct even_fn 
+{
   bool operator()(int n) const { return even(n); }
 };
 
@@ -28,6 +29,6 @@ static_assert(origin::Invokable<decltype(&S::f), S*>(), "");
 static_assert(origin::Invokable<decltype(&S::fc), const S*>(), "");
 static_assert(origin::Invokable<decltype(&S::g), S*, int>(), "");
 
-static_assert(not origin::Invokable<decltype(even), X>(), "");
+static_assert(origin::Invokable<decltype(even), X>(), "");
 
 int main() { }

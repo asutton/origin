@@ -18,7 +18,7 @@ class S2 {
 
 static_assert(origin::Destructible<int>(), "");
 static_assert(origin::Destructible<S0>(), "");
-static_assert(not origin::Destructible<S1>(), "");
-static_assert(not origin::Destructible<S2>(), "");
+static_assert(!origin::Destructible<S1>(), "");
+static_assert(!origin::Destructible<S2>(), "");
 
 int main() { return 0; }

@@ -32,32 +32,41 @@ template<typename F, typename... Args>
 
 
 // -------------------------------------------------------------------------- //
-// Invoke                                                            [fn.invoke]
+// Invoke                                                         [fn.invoke] //
 
+
+namespace core
+{
+
+// Returns the object responsible for invoking a function of
+// type F. For member functions, this returns a mem_fn object
+// that can be used like a regular function.
 template<typename F>
-  inline decltype(auto)
-  Invokable(F&& fn) { return fn; }
+inline decltype(auto)
+invoker(F&& fn) { return fn; }
 
 template<typename R, typename T>
-  inline auto
-  Invokable(R T::* p) { return std::mem_fn(p); }
+inline auto
+invoker(R T::* p) { return std::mem_fn(p); }
 
-// The type returned by Invokable(f).
-//
-// TODO: I shouldn't need this. I should be able to write the
-// requirement as {Invokable(fn)} -> Function<Args...>;
+} // namespace core
+
+
+// Given an invokable type F, this yields the type 
+// resposible for invoking it as a free function.
 template<typename F>
-  using Invokable_type = decltype(Invokable(std::declval<F>()));
+using Invokable_type = decltype(core::invoker(std::declval<F>()));
 
 
-// A type F is Invokable with a sequence of arguments if a value of type
-// F can be converted to a callable type and called with arguments of the
-// specified types.
 template<typename F, typename... Args>
-  concept bool Invokable() {
-    return requires(F fn) { Invokable(fn); }
-       and Function<Invokable_type<F>, Args...>();
+concept bool 
+Invokable() 
+{
+  return requires(F fn, Args... args) {
+    core::invoker(fn);
   }
+  && Function<Invokable_type<F>, Args...>();
+}
 
 // A type P is an invokable predicate if it is Invokable and its result
 // type is convertible to bool.

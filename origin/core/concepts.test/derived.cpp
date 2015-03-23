@@ -4,16 +4,13 @@
 
 #include <origin/core/concepts.hpp>
 
-struct A { };
-struct B : A { };
-class C : private A { };
+struct B { };
+struct D1 : B { };
+class D2 : B { };
 
-static_assert(origin::Derived<A, A>(), "");
-static_assert(origin::Derived<B, A>(), "");
-
-// FIXME: Should we be able to see private inheritance? As a
-// concept, I'd think not!
-static_assert(origin::Derived<C, A>(), "");
+static_assert(origin::Derived<B, B>(), "");
+static_assert(origin::Derived<D1, B>(), "");
+static_assert(!origin::Derived<D2, B>(), "");
 
 // TODO: write tests for virtual inheritance.
 

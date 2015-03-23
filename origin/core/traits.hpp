@@ -7,50 +7,69 @@
 
 #include <type_traits>
 
-namespace origin {
+namespace origin 
+{
 
-// Primary type categories
+// A helper function used to create rvalues from local
+// parameters. This is not defined and never used outside
+// of unevaluated operands.
+template<typename T> typename std::add_rvalue_reference<T> rvalue(T const&);
 
-// Returns true if an only if `T` is possibly cv-qualified `void.`
+
+// -------------------------------------------------------------------------- //
+// Primary type categories                                    [trait.primary] //
+
+
+// The `Void` concept is satisfied when `T` is cv-`void.`
 template<typename T>
-  concept bool 
-  Void_type() { return std::is_void<T>::value; }
+concept bool 
+Void_type() 
+{ 
+  return std::is_void<T>::value; 
+}
 
-// Returns true if an only if `T` is a possibly cv-qualified integral
-// type. The integral types are:
+
+// The `Integral` concept is satisfied when `T` is a
+// cv-integral type. The integral types are:
 //
-// * `bool`
-// * `char`, `signed char`, `unsigned char`
-// * `wchar_t`, `char16_t`, `char32_t`
-// * `short`, `unsigned short`
-// * `int`, `unsigned int`
-// * `long`, `unsigned long`
-// * `long long`, `unsigned long long`
-// * any extended integral types
+//    - `bool`
+//    - `char`, `signed char`, `unsigned char`
+//    - `wchar_t`, `char16_t`, `char32_t`
+//    - `short`, `unsigned short`
+//    - `int`, `unsigned int`
+//    - `long`, `unsigned long`
+//    - `long long`, `unsigned long long`
+//    - any extended integral types
 //
-// Note that the set of extended integral types is implementation
-// defined.
+// Note that the set of extended integral types is 
+// implementation defined.
 template<typename T>
-  concept bool 
-  Integral_type() { return std::is_integral<T>::value; }
+concept bool 
+Integral_type() 
+{ 
+  return std::is_integral<T>::value; 
+}
+
 
 // Returns true if and only if T is a (possibly cv-qualified) floating 
 // point type. The floating point types are:
 //
-// * `float`
-// * `double`
-// * `long double`
+//    - `float`
+//    - `double`
+//    - `long double`
 template<typename T>
-  concept bool 
-  Floating_point_type() { 
-    return std::is_floating_point<T>::value; 
-  }
+concept bool 
+Floating_point_type() 
+{ 
+  return std::is_floating_point<T>::value; 
+}
+
 
 // Is true if and only if T is an array type of known or unknown 
 // bounds. Array types include those with the following form:
 //
-// * `T[]`
-// * `T[M]`
+//    - `T[]`
+//    - `T[M]`
 //
 // where `T` is a type and `N` is an integral constant expression.
 template<typename T>
@@ -321,6 +340,30 @@ template<typename T>
 template<typename T>
   using Decay = typename std::decay<T>::type;
 
+
+// -------------------------------------------------------------------------- //
+//                            Relations on types
+
+namespace core
+{
+// Heavy lifting for determining convertibility when the
+// types are not void.
+template<typename T, typename U>
+concept bool is_convertible_no_void()
+{
+  return requires (T t) { { rvalue(t) } -> U; };
+}
+
+// Whenever we can't determine convertibility by constraints,
+// delegate the standard type trait. This should be rare.
+template<typename T, typename U>
+struct is_convertible : std::is_convertible<T, U> { };
+
+template<typename T, typename U>
+  requires is_convertible_no_void<T, U>()
+struct is_convertible<T, U> : std::true_type { };
+
+} // namespace core
 
 namespace core_impl {
 // Strip references and qualifiers from T.

@@ -11,153 +11,216 @@
 
 #include "traits.hpp"
 
-namespace origin {
+namespace origin 
+{
 
-// A type `T` is the same as a type `U` if 
+// -------------------------------------------------------------------------- //
+// Language support concepts                                  [concepts.lang] //
+//
+// There are a small number of concepts inherently tied
+// to the language. These include concepts that determine
+// when types are equivalent, convertible, and derived, or
+// share a common type.
+
+
+// The `Same` concept requires types `T` and `U` to be 
+// equivalent.
+//
+// Examples:
+//
+//    Same<int, int>()       | satsified
+//    Same<int, int const>() | not satisfied
 template<typename T, typename U>
-  concept bool 
-  Same() { return __is_same_as(T, U); }
+concept bool 
+Same() 
+{ 
+  return __is_same_as(T, U); 
+}
 
-
-// Is true if and only if T is derived from U or is the same as U.
+// A type `T` is convertible to another type `U` an expression
+// of type `T` is implicitly convertible to `U`. That is,
+// the concept is satisfied if the following declaration is
+// well-formed:
+//
+//    U u = t;
+//
+// where `t` is an expression of type `T`.
+//
+// Examples:
+//
+//    Convertible<int, int>()       | satisfied
+//    Convertible<int, int const>() | satisfied
+//    Convertible<int const, int>() | not satisfied
+//
+// Notes:
+//
+// This cannot be implemented without specializations to 
+// handle the void cases. As a result, we delegate to a 
+// custom implementation of the trait.
 template<typename T, typename U>
-  concept bool 
-  Derived() { return __is_base_of(U, T); }
+concept bool 
+Convertible() 
+{
+  return core::is_convertible<T, U>::value;
+}
 
-
-// A type `T` is convertible to another type `U` if an object
-// `t` of type `T` can be returned from a function whose return 
-// type is `U`. 
+// The `Derived` concept requires type `T` to be derived
+// from type `U`. Note that this is not the same as simply
+// testing that `U` is a base class of `T`. Expressions
+// of type `T` must also be convertible to `U`.
+//
+// Examples:
+//
+//    struct B { };
+//    struct D1 : B { };
+//    class D2 : B { };
+//
+//    Derived<D1, B>() | satsified
+//    Derived<D2, B>() | not satisfied
 template<typename T, typename U>
-  concept bool 
-  Convertible() { return std::is_convertible<T, U>::value; }
+concept bool 
+Derived() 
+{ 
+  return __is_base_of(U, T) && Convertible<T, U>();
+}
 
 
-// Represents the common type of a sequence of type arguments. More
-// precisely, if there exists some type C such that each type T in Ts
-// can be converted to C, then C is the common type of all T in Ts.
+// The `Common_type` alias represents common type of a 
+// sequence of type arguments. 
 //
-// There are two common uses of the Common_type facility: defining
-// requirements on heterogeneously typed templates, and extracting a
-// meaningful type for concept checking in the presence of perfect
-// forwarding.
-//
-// Note that in cases where forwarding is used, the unary Common_type
-// provides the type against which concept checking should be done.
-// For example:
-//
-//      template<typename T>
-//        requires<Object<Common_type<T>>()
-//          void f(T&& x);
-//
-// The Common_type wil
+// See the definition of std::common_type for details.
 template<typename... Ts>
-  using Common_type = typename std::common_type<Ts...>::type;
+using Common_type = typename std::common_type<Ts...>::type;
 
-// True if and only if there exists a common type of Ts.
+
+// The `Common` concept is satisfied when the common type of
+// the sequence `Ts` exists.
 template<typename... Ts>
-  concept bool 
-  Common() {
-    return requires () { 
-      typename Common_type<Ts...>; // FIXME: This better be a type requirement.
-    }; 
-  }
-
-
-// True if and only if an expression of type T can be contextually 
-// converted to bool.
-template<typename T>
-  concept bool 
-  Conditional() { return requires (T p) { p ? true : false; }; }
+concept bool 
+Common() 
+{
+  return requires { typename Common_type<Ts...>; };
+}
 
 
 // -------------------------------------------------------------------------- //
-// Relational concepts                                           [concepts.comp]
+// Relational concepts                                        [concepts.comp] //
 //
-// The relational concepts define requirements on types that can be
-// compared using the C++ relational operators.
+// The relational concepts define requirements on types
+// that can be compared using the C++ relational operators.
 
 
-// A type T is equality comparable if its values can be compared using
-// oerators `==` and `!=`.
+// A type `T` is equality comparable if expressions 
+// of that type can be compared using the operators
+// `==` and `!=`.
 //
-// Types modeling this concept must ensure that the `==` operator
-// returns true only when the arguments have the same value and that
-// `!=` is the logical inverse of `==`.
+// For all expressions `a` and `b` for which `a == b` 
+// returns true, we say that `a` and `b` are *equal*. 
+// 
+// The // expression `a != b` shall be true if and only 
+// if `a` and `b` are not equal.
 template<typename T>
-  concept bool 
-  Equality_comparable() {
-    return requires (T a, T b) {
-             { a == b } -> bool;
-             { a != b } -> bool;
-           };
-  }
+concept bool 
+Equality_comparable() {
+  return requires (T a, T b) {
+    { a == b } -> bool;
+    { a != b } -> bool;
+  };
+}
 
-// A pair of types T and U are (cross-type) equality comparable 
-// only when ...
+
+// A type `T` is weakly ordered if expressions of that
+// type can compared using the operators `<`, `>`, `<=`, 
+// and `>=`.
+//
+// For all expressions `a` and `b` for which `a == b` 
+// returns true, we say that `a` is said to be *less* 
+// than `b`. 
+// 
+// The expression `a > b` shall be true if and only if
+// `b` is less than `a.`
+//
+// The expression `a <= b` shall be true if and only if
+// `b` is not less than `a`.
+//
+// The expression `a >= b` shall be true if and only if
+// `a` is not less than `b`.
+//
+// For all exprssions `a` and `b` for which `a <= b` and
+// `b <= a` are true, `a` and `b` are said to be *equivalent*.
+template<typename T>
+concept bool 
+Weakly_ordered()
+{
+  return requires (T a, T b) {
+    { a < b } -> bool;
+    { a > b } -> bool;
+    { a <= b } -> bool;
+    { a >= b } -> bool;
+  };
+}
+
+
+// A type `T` is totally ordered when it is both equality 
+// comparable and weakly ordered.
+//
+// For all exprssions `a` and `b` for which `a <= b` and
+// `b <= a` are true, `a == b` shall be true. Said otherwise,
+// all expressions that are equivalent are equal.
+template<typename T>
+concept bool Totally_ordered()
+{
+  return Equality_comparable<T>() && Weakly_ordered<T>();
+}
+
+
+// -------------------------------------------------------------------------- //
+// Cross-type relational concepts                            [concepts.xcomp] //
+//
+// The cross-type relational concepts support the comparison
+// of values having different types.
+
+
+// A pair of types `T` and `U` are (cross-type) equality 
+// comparable they share an equality comparable common type 
+// and every possible invocation of the `==` and `!=` 
+// operators with arguments of type `T` and `U` is equal to 
+// first converting those arguments to the common type.
 template<typename T, typename U>
-  concept bool 
-  Equality_comparable() {
-    return Equality_comparable<T>() 
-        && Equality_comparable<U>() 
-        && Common<T, U>() 
-        && requires (T t, T u) {
-             { t == u } -> bool;
-             { u == t } -> bool;
-             { t != u } -> bool;
-             { u != t } -> bool;
-          };
-  }
+concept bool 
+Equality_comparable() 
+{
+  return Equality_comparable<T>() 
+      && Equality_comparable<U>() 
+      && Common<T, U>() 
+      && requires (T t, T u) {
+           { t == u } -> bool;
+           { u == t } -> bool;
+           { t != u } -> bool;
+           { u != t } -> bool;
+        };
+}
 
-// A type T is weakly ordered when it can be compared using the
-// operators `<`, `>`, `<=`, and `>=`.
-//
-// TODO: Document semantics.
-//
-// Note that in a weakly ordered type, for all objects `a` and `b`
-// of type `T`, when `a <= b` and `b <= a`, `a` and `b` are
-// equivalent, but they are not known to be equal.
-template<typename T>
-  concept bool 
-  Weakly_ordered()
-  {
-    return requires (T a, T b) {
-             { a < b } -> bool;
-             { a > b } -> bool;
-             { a <= b } -> bool;
-             { a >= b } -> bool;
-           };
-  }
 
 // TODO: Document me.
 template<typename T, typename U>
-  concept bool Weakly_ordered()
-  {
-    return Weakly_ordered<T>() 
-        && Weakly_ordered<U>() 
-        && Common<T, U>() 
-        && requires (T t, T u) {
-             { t < u } -> bool;
-             { u < t } -> bool;
-             { t > u } -> bool;
-             { u > t } -> bool;
-             { t <= u } -> bool;
-             { u <= t } -> bool;
-             { t >= u } -> bool;
-             { u <= t } -> bool;
-      };
-  }
+concept bool Weakly_ordered()
+{
+  return Weakly_ordered<T>() 
+      && Weakly_ordered<U>() 
+      && Common<T, U>() 
+      && requires (T t, T u) {
+           { t < u } -> bool;
+           { u < t } -> bool;
+           { t > u } -> bool;
+           { u > t } -> bool;
+           { t <= u } -> bool;
+           { u <= t } -> bool;
+           { t >= u } -> bool;
+           { u <= t } -> bool;
+    };
+}
 
-// A type `T` is totally ordered when it is both equality comparable
-// and weakly ordered.
-//
-// Types modeling this concept must guarantee that, for all `a` and
-// `b` of type `T`, when `a <= b` and `b <= a`, `a == b`.
-template<typename T>
-  concept bool Totally_ordered()
-  {
-    return Equality_comparable<T>() && Weakly_ordered<T>();
-  }
 
 // TODO: Document me.
 template<typename T, typename U>
@@ -171,15 +234,20 @@ template<typename T, typename U>
 
 
 // -------------------------------------------------------------------------- //
-// Regular types                                                 [concepts.type]
+// Regular types                                              [concepts.type] //
 //
 // There are a number of concepts that contributed (piecewise) to the
 // definition of regular types.
 
+
 // Is true if a variable of type T can be destroyed.
 template<typename T>
-  concept bool 
-  Destructible() { return std::is_destructible<T>::value; }
+concept bool 
+Destructible() 
+{ 
+  // return std::is_destructible<T>::value;
+  return requires (T* t) { t->~T(); };
+}
 
 // Is true if and only if an object of type T can be constructed with
 // the types of arguments in Args.
