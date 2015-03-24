@@ -21,52 +21,212 @@ template<typename T> typename std::add_rvalue_reference<T>::type rvalue(T const&
 // and never used outside of unevaluated operands.
 template<typename T> typename std::decay<T>::type decay(T&&);
 
+
 // -------------------------------------------------------------------------- //
 // Primary type categories                                    [trait.primary] //
 
 
-// The `Void` concept is satisfied when `T` is cv-`void.`
+namespace core
+{
+
+// is void
+template<typename T> 
+struct is_void_impl : std::false_type { };
+
+template<> 
+struct is_void_impl<void> : std::true_type { };
+
+template<typename T> 
+struct is_void
+  : is_void_impl<typename std::remove_cv<T>::type>
+{ };
+
+
+// is narrow character
+template<typename T>
+struct is_narrow_character_impl : std::false_type { };
+
+template<typename T>
+  requires __is_same_as(T, char) 
+        || __is_same_as(T, signed char)
+        || __is_same_as(T, unsigned char)
+struct is_narrow_character_impl<T> : std::true_type { };
+
+template<typename T>
+struct is_narrow_character
+  : is_narrow_character_impl<typename std::remove_cv<T>::type>
+{ };
+
+
+// is character type
+template<typename T>
+struct is_character_impl : std::false_type { };
+
+template<typename T>
+  requires __is_same_as(T, char) 
+        || __is_same_as(T, signed char)
+        || __is_same_as(T, unsigned char)
+        || __is_same_as(T, char16_t)
+        || __is_same_as(T, char32_t)
+        || __is_same_as(T, wchar_t)
+struct is_character_impl<T> : std::true_type { };
+
+template<typename T>
+struct is_character
+  : is_character_impl<typename std::remove_cv<T>::type>
+{ };
+
+
+// is signed integer
+template<typename T>
+struct is_signed_integer_impl : std::false_type { };
+
+template<typename T>
+  requires __is_same_as(T, signed char) 
+        || __is_same_as(T, short int)
+        || __is_same_as(T, int)
+        || __is_same_as(T, long int)
+        || __is_same_as(T, long long int)
+struct is_signed_integer_impl<T> : std::true_type { };
+
+template<typename T>
+struct is_signed_integer
+  : is_signed_integer_impl<typename std::remove_cv<T>::type>
+{ };
+
+
+// is signed integer
+template<typename T>
+struct is_unsigned_integer_impl : std::false_type { };
+
+template<typename T>
+  requires __is_same_as(T, unsigned char) 
+        || __is_same_as(T, unsigned short int)
+        || __is_same_as(T, unsigned int)
+        || __is_same_as(T, unsigned long int)
+        || __is_same_as(T, unsigned long long int)
+struct is_unsigned_integer_impl<T> : std::true_type { };
+
+template<typename T>
+struct is_unsigned_integer
+  : is_unsigned_integer_impl<typename std::remove_cv<T>::type>
+{ };
+
+
+// is bool
+template<typename T> 
+struct is_bool_impl : std::false_type { };
+
+template<> 
+struct is_bool_impl<bool> : std::true_type { };
+
+template<typename T> 
+struct is_bool
+  : is_bool_impl<typename std::remove_cv<T>::type>
+{ };
+
+
+// is floating point
+template<typename T>
+struct is_floating_point_impl : std::false_type { };
+
+template<typename T>
+  requires __is_same_as(T, float) 
+        || __is_same_as(T, double)
+        || __is_same_as(T, long double)
+struct is_floating_point_impl<T> : std::true_type { };
+
+template<typename T>
+struct is_floating_point
+  : is_floating_point_impl<typename std::remove_cv<T>::type>
+{ };
+
+} // namespace core
+
+
+// This concept is satisfied by the `void` type
+// and cv-qualified versions of that type.
 template<typename T>
 concept bool 
 Void_type() 
 { 
-  return std::is_void<T>::value; 
+  return core::is_void<T>::value;
 }
 
 
-// The `Integral` concept is satisfied when `T` is a
-// cv-integral type. The integral types are:
-//
-//    - `bool`
-//    - `char`, `signed char`, `unsigned char`
-//    - `wchar_t`, `char16_t`, `char32_t`
-//    - `short`, `unsigned short`
-//    - `int`, `unsigned int`
-//    - `long`, `unsigned long`
-//    - `long long`, `unsigned long long`
-//    - any extended integral types
-//
-// Note that the set of extended integral types is 
-// implementation defined.
+// The narrow character types are char, signed char, 
+// unsigned char, and cv-qualifed versions of those
+// types.
 template<typename T>
-concept bool 
-Integral_type() 
-{ 
-  return std::is_integral<T>::value; 
+concept bool
+Narrow_character_type()
+{
+  return core::is_narrow_character<T>::value;
 }
 
 
-// Returns true if and only if T is a (possibly cv-qualified) floating 
-// point type. The floating point types are:
+// The character types are the narrow character types,
+// char16_t, char32_t, wchar_t, and cv-qualified
+// versions of those types.
 //
-//    - `float`
-//    - `double`
-//    - `long double`
+// Note:
+//
+// This category is not defined by the standard. It is
+// defined here because it is useful in the definition
+// of the integral types.
 template<typename T>
-concept bool 
-Floating_point_type() 
-{ 
-  return std::is_floating_point<T>::value; 
+concept bool
+Character_type()
+{
+  return core::is_character<T>::value;
+}
+
+
+// The signed integer types are signed char, short int, 
+// int, long int, and long long int, and cv-qualified
+// versions of those types.
+template<typename T>
+concept bool
+Signed_integer_type()
+{
+  return core::is_signed_integer<T>::value;
+}
+
+
+// For each signed integer type, there is an unsigned
+// integer type. These are unsigned char, unsigned short 
+// int, unisigned int, unsigned long it, and unsigned 
+// long long int, and cv-qualified versions of those
+// types.
+template<typename T>
+concept bool
+Unsigned_inetger_type()
+{
+  return core::is_unsigned_integer<T>::value;
+}
+
+
+// The integral types include bool, the character 
+// types, the signed and unsigned integral type, and
+// cv-qualified versions of those types.
+template<typename T>
+concept bool
+Integral_type()
+{
+  return core::is_bool<T>::value
+      || core::is_character<T>::value
+      || core::is_signed_integer<T>()
+      || core::is_unsigned_integer<T>();
+}
+
+
+// The floating point types are float, double, long
+// double, and cv-qualified versions of those types.
+template<typename T>
+concept bool
+Floating_point_type()
+{
+  return core::is_floating_point<T>::value;
 }
 
 
@@ -78,66 +238,99 @@ Floating_point_type()
 //
 // where `T` is a type and `N` is an integral constant expression.
 template<typename T>
-  concept bool 
-  Array_type() { 
-    return std::is_array<T>::value; 
-  }
+concept bool 
+Array_type() 
+{ 
+  return std::is_array<T>::value; 
+}
+
 
 // Is true if and only if T is an object pointer type. Note that is
 // false for member object pointers.
 template<typename T>
-  concept bool 
-  Pointer_type() { 
-    return std::is_pointer<T>::value; 
-  }
+concept bool 
+Pointer_type() 
+{ 
+  return std::is_pointer<T>::value; 
+}
+
 
 // Is true if and only if T is an lvalue reference type.
 template<typename T>
-  concept bool 
-  Lvalue_reference_type() { 
-    return std::is_lvalue_reference<T>::value; 
-  }
+concept bool 
+Lvalue_reference_type() 
+{ 
+  return std::is_lvalue_reference<T>::value; 
+}
+
 
 // Is true if and only if T is an rvalue reference type.
 template<typename T>
-  concept bool 
-  Rvalue_reference_type() { 
-    return std::is_rvalue_reference<T>::value; 
-  }
+concept bool 
+Rvalue_reference_type() 
+{ 
+  return std::is_rvalue_reference<T>::value; 
+}
+
 
 // Is true if and only if T is a pointer to a member object.
 template<typename T>
-  concept bool 
-  Member_object_pointer_type() {
-    return std::is_member_object_pointer<T>::value; 
-  }
+concept bool 
+Member_object_pointer_type() 
+{
+  return std::is_member_object_pointer<T>::value; 
+}
+
 
 // Is true if and only if T is a pointer to a member function.
 template<typename T>
-  concept bool 
-  Member_function_pointer_type() {
-    return std::is_member_function_pointer<T>::value; 
-  }
+concept bool 
+Member_function_pointer_type() 
+{
+  return std::is_member_function_pointer<T>::value; 
+}
 
-// Is true if and only if T is an enumerated type.
-template<typename T>
-  concept bool 
-  Enum_type() { return __is_enum(T); }
 
-// Is true if and only if T is a union type.
+// The enumeration types include all declared using
+// the form `enum { ... }`.
 template<typename T>
-  concept bool 
-  Union_type() { return __is_union(T); }
+concept bool 
+Enum_type() 
+{ 
+  return __is_enum(T); 
+}
 
-// Is true if and only is a class type.
-template<typename T>
-  concept bool 
-  Class_type() { return __is_class(T); }
 
-// Is true if and only if T is a function type.
+// The union types include all those declared using
+// the form `union { ... }`.
 template<typename T>
-  concept bool 
-  Function_type() { return std::is_function<T>::value; }
+concept bool 
+Union_type() 
+{ 
+  return __is_union(T); 
+}
+
+
+// The union types include all those declared using
+// the form `struct { ... }` or `class { ... }`.
+template<typename T>
+concept bool 
+Class_type() 
+{ 
+  return __is_class(T); 
+}
+
+
+// The function types include the types of all functions, 
+// which have the form `Result(Args...)` where `Result` 
+// is a type and `Args...` is a (possibly empty) sequence 
+// of types.
+template<typename T>
+concept bool 
+Function_type() 
+{ 
+  return std::is_function<T>::value; 
+}
 
 
 // Composite type categories
@@ -145,18 +338,22 @@ template<typename T>
 // Is true if and only T is a reference type. A reference type is either 
 // an lvalue or rvalue reference type.
 template<typename T>
-  concept bool 
-  Reference_type() {
-    return Lvalue_reference_type<T>() || Rvalue_reference_type<T>();
-  }
+concept bool 
+Reference_type() 
+{
+  return Lvalue_reference_type<T>() || Rvalue_reference_type<T>();
+}
 
-// Is true if and only if T is an arithmetic type. Arithmetic types include
-// both integral and floating point types.
+
+// The arithmetic types are the integral types and
+// the floating point types.
 template<typename T>
-  concept bool 
-  Arithmetic_type() {
-    return Integral_type<T>() || Floating_point_type<T>();
-  }
+concept bool 
+Arithmetic_type() 
+{
+  return Integral_type<T>() || Floating_point_type<T>();
+}
+
 
 // Is true if and only if T is a fundamental type. The fundamental types are 
 // the built-in types of the programming language and include:
