@@ -124,114 +124,98 @@ Common()
 namespace core
 {
 
+// Returns true if T is equivalent to U when cv-qualifiers
+// are removed from both types.
+template<typename T, typename U>
+constexpr bool
+is_cv_same_as()
+{
+  return __is_same_as(std::remove_cv_t<T>, std::remove_cv_t<U>);
+}
+
+
+// Note:
+//
+// These implementation helpers are defined as constexpr 
+// functions in order to act as compile-time firewalls
+// due to the extensive use of disjunction.
+
+
 // is void
-template<typename T> 
-struct is_void_impl : std::false_type { };
+template<typename T>
+constexpr bool 
+is_void()
+{
+  return is_cv_same_as<T, void>();
+}
 
-template<> 
-struct is_void_impl<void> : std::true_type { };
 
-template<typename T> 
-struct is_void
-  : is_void_impl<typename std::remove_cv<T>::type>
-{ };
+// is bool
+template<typename T>
+constexpr bool 
+is_bool()
+{
+  return is_cv_same_as<T, bool>();
+}
 
 
 // is narrow character
 template<typename T>
-struct is_narrow_character_impl : std::false_type { };
-
-template<typename T>
-  requires __is_same_as(T, char) 
-        || __is_same_as(T, signed char)
-        || __is_same_as(T, unsigned char)
-struct is_narrow_character_impl<T> : std::true_type { };
-
-template<typename T>
-struct is_narrow_character
-  : is_narrow_character_impl<typename std::remove_cv<T>::type>
-{ };
+constexpr bool
+is_narrow_character()
+{
+  return is_cv_same_as<T, char>()
+      || is_cv_same_as<T, signed char>()
+      || is_cv_same_as<T, unsigned char>();
+}
 
 
 // is wide character
 template<typename T>
-struct is_wide_character_impl : std::false_type { };
-
-template<typename T>
-  requires __is_same_as(T, char16_t)
-        || __is_same_as(T, char32_t)
-        || __is_same_as(T, wchar_t)
-struct is_wide_character_impl<T> : std::true_type { };
-
-template<typename T>
-struct is_wide_character
-  : is_wide_character_impl<typename std::remove_cv<T>::type>
-{ };
+constexpr bool
+is_wide_character()
+{
+  return is_cv_same_as<T, char16_t>()
+      || is_cv_same_as<T, char32_t>()
+      || is_cv_same_as<T, wchar_t>();
+}
 
 
 // is signed integer
 template<typename T>
-struct is_signed_integer_impl : std::false_type { };
-
-template<typename T>
-  requires __is_same_as(T, signed char) 
-        || __is_same_as(T, short int)
-        || __is_same_as(T, int)
-        || __is_same_as(T, long int)
-        || __is_same_as(T, long long int)
-struct is_signed_integer_impl<T> : std::true_type { };
-
-template<typename T>
-struct is_signed_integer
-  : is_signed_integer_impl<typename std::remove_cv<T>::type>
-{ };
+constexpr bool
+is_signed_integer()
+{
+  return is_cv_same_as<T, signed char>()
+      || is_cv_same_as<T, short int>()
+      || is_cv_same_as<T, int>()
+      || is_cv_same_as<T, long int>()
+      || is_cv_same_as<T, long long int>();
+}
 
 
 // is signed integer
 template<typename T>
-struct is_unsigned_integer_impl : std::false_type { };
-
-template<typename T>
-  requires __is_same_as(T, unsigned char) 
-        || __is_same_as(T, unsigned short int)
-        || __is_same_as(T, unsigned int)
-        || __is_same_as(T, unsigned long int)
-        || __is_same_as(T, unsigned long long int)
-struct is_unsigned_integer_impl<T> : std::true_type { };
-
-template<typename T>
-struct is_unsigned_integer
-  : is_unsigned_integer_impl<typename std::remove_cv<T>::type>
-{ };
-
-
-// is bool
-template<typename T> 
-struct is_bool_impl : std::false_type { };
-
-template<> 
-struct is_bool_impl<bool> : std::true_type { };
-
-template<typename T> 
-struct is_bool
-  : is_bool_impl<typename std::remove_cv<T>::type>
-{ };
+constexpr bool
+is_unsigned_integer()
+{
+  return is_cv_same_as<T, unsigned char>()
+      || is_cv_same_as<T, unsigned short int>()
+      || is_cv_same_as<T, unsigned int>()
+      || is_cv_same_as<T, unsigned long int>()
+      || is_cv_same_as<T, unsigned long long int>();
+}
 
 
 // is floating point
 template<typename T>
-struct is_floating_point_impl : std::false_type { };
-
-template<typename T>
-  requires __is_same_as(T, float) 
-        || __is_same_as(T, double)
-        || __is_same_as(T, long double)
-struct is_floating_point_impl<T> : std::true_type { };
-
-template<typename T>
-struct is_floating_point
-  : is_floating_point_impl<typename std::remove_cv<T>::type>
-{ };
+constexpr bool
+is_floating_point()
+{
+  return is_cv_same_as<T, float>()
+      || is_cv_same_as<T, double>()
+      || is_cv_same_as<T, long double>();
+}
 
 } // namespace core
 
@@ -241,8 +225,8 @@ struct is_floating_point
 template<typename T>
 concept bool 
 Void_type() 
-{ 
-  return core::is_void<T>::value;
+{
+  return core::is_void<T>();
 }
 
 
@@ -253,8 +237,9 @@ template<typename T>
 concept bool
 Narrow_character_type()
 {
-  return core::is_narrow_character<T>::value;
+  return core::is_narrow_character<T>();
 }
+
 
 // The wide character types are char16_t, char32_t,
 // wchar_t, and cv-qualified versions of those types.
@@ -268,7 +253,7 @@ template<typename T>
 concept bool
 Wide_character_type()
 {
-  return core::is_wide_character<T>::value;
+  return core::is_wide_character<T>();
 }
 
 
@@ -284,8 +269,8 @@ template<typename T>
 concept bool
 Character_type()
 {
-  return core::is_narrow_character<T>::value 
-      || core::is_wide_character<T>::value;
+  return core::is_narrow_character<T>()
+      || core::is_wide_character<T>();
 }
 
 
@@ -296,7 +281,7 @@ template<typename T>
 concept bool
 Signed_integer_type()
 {
-  return core::is_signed_integer<T>::value;
+  return core::is_signed_integer<T>();
 }
 
 
@@ -309,7 +294,7 @@ template<typename T>
 concept bool
 Unsigned_integer_type()
 {
-  return core::is_unsigned_integer<T>::value;
+  return core::is_unsigned_integer<T>();
 }
 
 
@@ -320,11 +305,11 @@ template<typename T>
 concept bool
 Integral_type()
 {
-  return core::is_bool<T>::value
-      || core::is_narrow_character<T>::value
-      || core::is_wide_character<T>::value
-      || core::is_signed_integer<T>::value
-      || core::is_unsigned_integer<T>::value;
+  return core::is_bool<T>()
+      || core::is_narrow_character<T>()
+      || core::is_wide_character<T>()
+      || core::is_signed_integer<T>()
+      || core::is_unsigned_integer<T>();
 }
 
 
@@ -334,7 +319,7 @@ template<typename T>
 concept bool
 Floating_point_type()
 {
-  return core::is_floating_point<T>::value;
+  return core::is_floating_point<T>();
 }
 
 

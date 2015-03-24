@@ -8,6 +8,7 @@ add_run_test(core_convertible convertible.cpp)
 add_run_test(core_common_type common_type.cpp)
 add_run_test(core_common      common.cpp)
 
+add_run_test(core_void                  void.cpp)
 add_run_test(core_character             character.cpp)
 add_run_test(core_signed_integer        signed_integer.cpp)
 add_run_test(core_unsigned_integer      unsigned_integer.cpp)
