@@ -23,6 +23,101 @@ template<typename T> typename std::decay<T>::type decay(T&&);
 
 
 // -------------------------------------------------------------------------- //
+// Language support concepts                                  [concepts.lang] //
+//
+// There are a small number of concepts inherently tied
+// to the language. These include concepts that determine
+// when types are equivalent, convertible, and derived, or
+// share a common type.
+
+
+// The `Same` concept requires types `T` and `U` to be 
+// equivalent types.
+//
+// Examples:
+//
+//    Same<int, int>()       ~> satsified
+//    Same<int, int const>() ~> not satisfied
+template<typename T, typename U>
+concept bool 
+Same() 
+{ 
+  return __is_same_as(T, U); 
+}
+
+// A type `T` is convertible to another type `U` an expression
+// of type `T` is implicitly convertible to `U`. That is,
+// the concept is satisfied if the following declaration is
+// well-formed:
+//
+//    U u = t;
+//
+// where `t` is an expression of type `T`.
+//
+// Examples:
+//
+//    Convertible<int, int>()       ~> satisfied
+//    Convertible<int, int const>() ~> satisfied
+//    Convertible<int const, int>() ~> not satisfied
+//
+// Notes:
+//
+// This cannot be implemented without specializations to 
+// handle the void cases. As a result, we delegate to a 
+// custom implementation of the trait.
+//
+// FIXME: The current implmentation in traits.hpp does not
+// current implement the full set of cases that the std
+// type trait defines.
+template<typename T, typename U>
+concept bool 
+Convertible() 
+{
+  // return core::is_convertible<T, U>::value;
+  return std::is_convertible<T, U>::value;
+}
+
+
+// The `Derived` concept requires type `T` to be derived
+// from type `U`. Note that this is not the same as simply
+// testing that `U` is a base class of `T`. Expressions
+// of type `T` must also be convertible to `U`.
+//
+// Examples:
+//
+//    struct B { };
+//    struct D1 : B { };
+//    class D2 : B { };
+//
+//    Derived<D1, B>() ~> satsified
+//    Derived<D2, B>() ~> not satisfied
+template<typename T, typename U>
+concept bool 
+Derived() 
+{
+  return __is_base_of(U, T) && Convertible<T, U>();
+}
+
+
+// The `Common_type` alias represents common type of a 
+// sequence of type arguments. 
+//
+// See the definition of std::common_type for details.
+template<typename... Ts>
+using Common_type = typename std::common_type<Ts...>::type;
+
+
+// The `Common` concept is satisfied when the common type of
+// the sequence `Ts` exists.
+template<typename... Ts>
+concept bool 
+Common() 
+{
+  return requires { typename Common_type<Ts...>; };
+}
+
+
+// -------------------------------------------------------------------------- //
 // Primary type categories                                    [trait.primary] //
 
 
@@ -58,22 +153,19 @@ struct is_narrow_character
 { };
 
 
-// is character type
+// is wide character
 template<typename T>
-struct is_character_impl : std::false_type { };
+struct is_wide_character_impl : std::false_type { };
 
 template<typename T>
-  requires __is_same_as(T, char) 
-        || __is_same_as(T, signed char)
-        || __is_same_as(T, unsigned char)
-        || __is_same_as(T, char16_t)
+  requires __is_same_as(T, char16_t)
         || __is_same_as(T, char32_t)
         || __is_same_as(T, wchar_t)
-struct is_character_impl<T> : std::true_type { };
+struct is_wide_character_impl<T> : std::true_type { };
 
 template<typename T>
-struct is_character
-  : is_character_impl<typename std::remove_cv<T>::type>
+struct is_wide_character
+  : is_wide_character_impl<typename std::remove_cv<T>::type>
 { };
 
 
@@ -164,21 +256,36 @@ Narrow_character_type()
   return core::is_narrow_character<T>::value;
 }
 
-
-// The character types are the narrow character types,
-// char16_t, char32_t, wchar_t, and cv-qualified
-// versions of those types.
+// The wide character types are char16_t, char32_t,
+// wchar_t, and cv-qualified versions of those types.
 //
 // Note:
 //
-// This category is not defined by the standard. It is
-// defined here because it is useful in the definition
-// of the integral types.
+// This category is not defined by the C++ Standard.
+// However, it is helpful for the purpose of defining
+// relations between categories of integral types.
+template<typename T>
+concept bool
+Wide_character_type()
+{
+  return core::is_wide_character<T>::value;
+}
+
+
+// The narrow and wide character types are collectively
+// called the character types.
+//
+// Note:
+//
+// This category is not defined by the C++ Standard. 
+// However, it is helpful for the purpose of defining
+// relations between categories of integral types.
 template<typename T>
 concept bool
 Character_type()
 {
-  return core::is_character<T>::value;
+  return core::is_narrow_character<T>::value 
+      || core::is_wide_character<T>::value;
 }
 
 
@@ -200,7 +307,7 @@ Signed_integer_type()
 // types.
 template<typename T>
 concept bool
-Unsigned_inetger_type()
+Unsigned_integer_type()
 {
   return core::is_unsigned_integer<T>::value;
 }
@@ -214,9 +321,10 @@ concept bool
 Integral_type()
 {
   return core::is_bool<T>::value
-      || core::is_character<T>::value
-      || core::is_signed_integer<T>()
-      || core::is_unsigned_integer<T>();
+      || core::is_narrow_character<T>::value
+      || core::is_wide_character<T>::value
+      || core::is_signed_integer<T>::value
+      || core::is_unsigned_integer<T>::value;
 }
 
 
