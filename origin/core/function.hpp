@@ -33,7 +33,7 @@ template<typename F, typename... Args>
 
 // -------------------------------------------------------------------------- //
 // Invoke                                                         [fn.invoke] //
-
+//
 
 // The make_invokable funciton returns the object responsible 
 // for invoking a function of type F. For member functions, this 
@@ -42,18 +42,24 @@ template<typename F>
 inline decltype(auto)
 make_invokable(F&& fn) { return fn; }
 
+
 // Adaptor for member functions.
 template<typename R, typename T>
 inline auto
 make_invokable(R T::* p) { return std::mem_fn(p); }
 
 
-// A type F is invokable if it can...
+// A type F is invokable for a sequecnce of arguments Args if
+// an object f of type F can be transformed into a callable
+// object g such that g(args...).
+//
+// This is the case when make_invokable(f) is defined.
 template<typename F, typename... Args>
 concept bool 
 Invokable() 
 {
-  return requires(F fn, Args... args) {
+  return requires(F fn, Args... args) 
+  {
     make_invokable(decay(fn))(args...);
   };
 }
@@ -66,11 +72,15 @@ Invokable()
 // guarantee refinement, but as of 13.04.2014 there appears to be a
 // bug related to pack expansion that is preventing it.
 template<typename P, typename... Args>
-  concept bool Invokable_predicate() {
-    return requires(P pred, Args... args) {
-      {Invokable(pred)(args...)} -> bool;
-    };
-  }
+concept bool 
+Invokable_predicate() 
+{
+  return requires(P pred, Args... args) 
+  {
+    { make_invokable(decay(pred))(args...) } -> bool;
+  };
+}
+
 
 } // namespace origin
 
