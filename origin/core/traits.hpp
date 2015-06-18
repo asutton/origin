@@ -45,6 +45,7 @@ Same()
   return __is_same_as(T, U); 
 }
 
+
 // A type `T` is convertible to another type `U` an expression
 // of type `T` is implicitly convertible to `U`. That is,
 // the concept is satisfied if the following declaration is
@@ -119,6 +120,11 @@ Common()
 
 // -------------------------------------------------------------------------- //
 // Primary type categories                                    [trait.primary] //
+//
+// These implementation helpers are defined as constexpr 
+// functions in order to act as compile-time firewalls
+// due to the extensive use of disjunction.
+
 
 
 namespace core
@@ -132,13 +138,6 @@ is_cv_same_as()
 {
   return __is_same_as(std::remove_cv_t<T>, std::remove_cv_t<U>);
 }
-
-
-// Note:
-//
-// These implementation helpers are defined as constexpr 
-// functions in order to act as compile-time firewalls
-// due to the extensive use of disjunction.
 
 
 // is void
@@ -323,13 +322,16 @@ Floating_point_type()
 }
 
 
-// Is true if and only if T is an array type of known or unknown 
-// bounds. Array types include those with the following form:
+// Array types include those with the following form:
 //
 //    - `T[]`
 //    - `T[M]`
 //
-// where `T` is a type and `N` is an integral constant expression.
+// where `T` is a type and `N` is an integral constant 
+// expression.
+//
+// TODO: Add traits that distinguish between arrays of 
+// unknown bound and array of known bound.
 template<typename T>
 concept bool 
 Array_type() 
@@ -338,8 +340,7 @@ Array_type()
 }
 
 
-// Is true if and only if T is an object pointer type. Note that is
-// false for member object pointers.
+// A pointer type has the form `T*`.
 template<typename T>
 concept bool 
 Pointer_type() 
@@ -348,7 +349,7 @@ Pointer_type()
 }
 
 
-// Is true if and only if T is an lvalue reference type.
+// An lvalue referencee type has the form `T&`.
 template<typename T>
 concept bool 
 Lvalue_reference_type() 
@@ -357,7 +358,7 @@ Lvalue_reference_type()
 }
 
 
-// Is true if and only if T is an rvalue reference type.
+// An rvalue reference type has the form `T&&`.
 template<typename T>
 concept bool 
 Rvalue_reference_type() 
@@ -366,7 +367,8 @@ Rvalue_reference_type()
 }
 
 
-// Is true if and only if T is a pointer to a member object.
+// A pointer to a member object type has the form
+// `T (C::*)`.
 template<typename T>
 concept bool 
 Member_object_pointer_type() 
@@ -375,7 +377,9 @@ Member_object_pointer_type()
 }
 
 
-// Is true if and only if T is a pointer to a member function.
+// A pointer to a member funtion type has the form
+// `T (C::*)(Args...)` where `Args...` is a (possibly
+// empty) sequence of parameter types. 
 template<typename T>
 concept bool 
 Member_function_pointer_type() 
@@ -426,7 +430,8 @@ Function_type()
 }
 
 
-// Composite type categories
+// -------------------------------------------------------------------------- //
+// Composite type categories                                [trait.composite] //
 
 // Is true if and only T is a reference type. A reference type is either 
 // an lvalue or rvalue reference type.
@@ -448,244 +453,319 @@ Arithmetic_type()
 }
 
 
-// Is true if and only if T is a fundamental type. The fundamental types are 
-// the built-in types of the programming language and include:
-//   * void
-//   * nullptr_t
-//   * arithmetic types
-//   * cv-qualified variants of those types.
-template<typename T>
-  concept bool 
-  Fundamental_type() { return std::is_fundamental<T>::value; }
-
-// Is true if and only if T is a scalar types. The scalar types include
+// The fundamental types are the built-in types of the
+// programming language and include:
 //
-// * arithmetic types
-// * enumeration types
-// * object pointer types
-// * member pointer types
-// * nullptr_t
-// * cv-qualified variants of those types.
+//    - void,
+//    - nullptr_t,
+//    - the arithmetic types, and
+//    - cv-qualified variants of those types.
 template<typename T>
-  concept bool 
-  Scalar_type() { return std::is_scalar<T>::value; }
+concept bool 
+Fundamental_type() 
+{ 
+  return std::is_fundamental<T>::value; 
+}
 
 
-// Is true if and only if T is an object type. The object types include
+// The scalar types are:
 //
-// * scalar types
-// * array types
-// * class types
-// * union types
+//    - the arithmetic types,
+//    - enumeration types,
+//    - pointer types,
+//    - object pointer types,
+//    - member pointer types,
+//    - nullptr_t, and
+//    - cv-qualified variants of those types.
 template<typename T>
-  concept bool 
-  Object_type() { return std::is_object<T>::value; }
+concept bool 
+Scalar_type() 
+{ 
+  return std::is_scalar<T>::value; 
+}
 
-// Is true if T is a compound type. The compound types include:
+
+// An object type is one whose values can be placed
+// in memory. They are:
 //
-// ...
+//    - the scalar types,
+//    - array types,
+//    - class types,
+//    - union types, and
+//    - cv-qualified variants of those types.
 template<typename T>
-  concept bool 
-  Compound_type() { return std::is_compound<T>::value; }
+concept bool 
+Object_type() 
+{ 
+  return std::is_object<T>::value; 
+}
 
-// Is true if T is a member pointer type.
+
+// A compound type is one that is comprised of other 
+// scalar and compound types.
 template<typename T>
-  concept bool 
-  Member_pointer_type() { 
-    return std::is_member_pointer<T>::value; 
-  }
+concept bool 
+Compound_type() 
+{ 
+  return std::is_compound<T>::value; 
+}
 
 
-// Type properties
-// TODO: Finish implementing type properties
-
-// Is true if and only if T is a const-qualified type.
+// A member pointer type is either a member object
+// pointer or member function pointer.
 template<typename T>
-  concept bool 
-  Const_type() { return std::is_const<T>::value; }
+concept bool 
+Member_pointer_type() 
+{ 
+  return std::is_member_pointer<T>::value; 
+}
 
-// Is true if and only if T is a volatile-qualified type.
+// -------------------------------------------------------------------------- //
+// Type properties                                           [trait.property] //
+
+
+// A const type has the form `const T`.
 template<typename T>
-  concept bool 
-  Volatile_type() { return std::is_volatile<T>::value; }
+concept bool 
+Const_type() 
+{ 
+  return std::is_const<T>::value; 
+}
 
-// Is true if and only if T is cv-qualified.
+
+// A volatile type has the form `volatile T`.
 template<typename T>
-  concept bool 
-  Qualified_type() { 
-    return Const_type<T>() || Volatile_type<T>(); 
-  }
+concept bool 
+Volatile_type() 
+{ 
+  return std::is_volatile<T>::value; 
+}
 
-// Is true if and only if T is a trivially copy constructible type.
-// template<typename T>
-//   concept bool
-//   Trivially_copyable_type() { return std::is_trivially_copyable<T>::value; }
 
-// Is true if and only if T is a trivial type.
+// A qualified type is either a const type or a
+// volatile type.
 template<typename T>
-  concept bool 
-  Trivial_type() { return std::is_trivial<T>::value; }
+concept bool 
+Qualified_type() 
+{ 
+  return Const_type<T>() || Volatile_type<T>(); 
+}
 
-// Is true if and only if T is a standard layout type.
+
+// A trivial type is one trivially copyable and trivially 
+// default constructible.
 template<typename T>
-  concept bool
-  Standard_layout_type() { return __is_standard_layout(T); }
+concept bool 
+Trivial_type() 
+{ 
+  return std::is_trivial<T>::value; 
+}
 
-// Is true if and only if T is a plain old data (POD) type.
+
+// A standard layout type is...
 template<typename T>
-  concept bool
-  Pod_type() { return __is_pod(T); }
+concept bool
+Standard_layout_type() 
+{ 
+  return __is_standard_layout(T); 
+}
 
-// Is true if and only if T is a literal type.
+
+// A POD (plain old data) type is one whose layout is
+// compatible with the C programming language.
 template<typename T>
-  concept bool
-  Literal_type() { return __is_literal_type(T); }
+concept bool
+Pod_type() 
+{ 
+  return __is_pod(T); 
+}
 
-// Is true if and only if T is an empty type.
+// A literal type...
 template<typename T>
-  concept bool
-  Empty_type() { return __is_empty(T); }
+concept bool
+Literal_type() 
+{ 
+  return __is_literal_type(T); 
+}
 
-// Is true if and only if T is a polymorphic type.
+
+// An empty type defines has no non-static members
+// or base classes with non-static members.
 template<typename T>
-  concept bool
-  Polymorphic_type() { return __is_polymorphic(T); }
+concept bool
+Empty_type() 
+{ 
+  return __is_empty(T); 
+}
 
-// Is true if and only if T is an abstract type.
+
+// A polymorphic type has at least one virtual
+// function.
 template<typename T>
-  concept bool
-  Abstract_type() { return __is_abstract(T); }
+concept bool
+Polymorphic_type() 
+{ 
+  return __is_polymorphic(T); 
+}
 
-// Is true if and only if T is a signed arithmetic type.
+
+// An abstract type has at least one pure virtual
+// function.
 template<typename T>
-  concept bool
-  Signed_type() { return std::is_signed<T>::value; }
+concept bool
+Abstract_type() 
+{ 
+  return __is_abstract(T); 
+}
 
-// Is true if and only if T is an unsigned integral type.
+
+// The signed arithmetic types.
 template<typename T>
-  concept bool
-  Unsigned_type() { return std::is_unsigned<T>::value; }
+concept bool
+Signed_type() 
+{ 
+  return std::is_signed<T>::value; 
+}
 
 
-// Type transformations
+// The unsigned arithmetic types.
+template<typename T>
+concept bool
+Unsigned_type() 
+{ 
+  return std::is_unsigned<T>::value; 
+}
+
+
+// -------------------------------------------------------------------------- //
+// Type transformations                                     [trait.transform] //
 
 // Remove_const
 template<typename T>
-  using Remove_const = typename std::remove_const<T>::type;
+using Remove_const = typename std::remove_const<T>::type;
+
 
 // Remove_volatile
 template<typename T>
-  using Remove_volatile = typename std::remove_volatile<T>::type;
+using Remove_volatile = typename std::remove_volatile<T>::type;
+
 
 // Remove_cv
 template<typename T>
-  using Remove_cv = typename std::remove_cv<T>::type;
+using Remove_cv = typename std::remove_cv<T>::type;
+
 
 // Add_const
 template<typename T>
-  using Add_const = typename std::add_const<T>::type;
+using Add_const = typename std::add_const<T>::type;
+
 
 // Add_volatile
 template<typename T>
-  using Add_volatile = typename std::add_volatile<T>::type;
+using Add_volatile = typename std::add_volatile<T>::type;
+
 
 // Add_cv
 template<typename T>
-  using Add_cv = typename std::add_cv<T>::type;
+using Add_cv = typename std::add_cv<T>::type;
+
 
 // Remove_reference
 template<typename T>
-  using Remove_reference = typename std::remove_reference<T>::type;
+using Remove_reference = typename std::remove_reference<T>::type;
+
 
 // Add_lvalue_reference
 template<typename T>
-  using Add_lvalue_reference = typename std::add_lvalue_reference<T>::type;
+using Add_lvalue_reference = typename std::add_lvalue_reference<T>::type;
+
 
 // Add_rvalue_reference
 template<typename T>
-  using Add_rvalue_reference = typename std::add_rvalue_reference<T>::type;
+using Add_rvalue_reference = typename std::add_rvalue_reference<T>::type;
+
 
 // Make_signed
 template<typename T>
-  using Make_signed = typename std::make_signed<T>::type;
+using Make_signed = typename std::make_signed<T>::type;
+
 
 // Make_unsigned
 template<typename T>
-  using Make_unsigned = typename std::make_unsigned<T>::type;
+using Make_unsigned = typename std::make_unsigned<T>::type;
+
 
 // Remove_extent
 template<typename T>
-  using Remove_extent = typename std::remove_extent<T>::type;
+using Remove_extent = typename std::remove_extent<T>::type;
+
 
 // Remove_all_extents
 template<typename T>
-  using Remove_all_extents = typename std::remove_all_extents<T>::type;
+using Remove_all_extents = typename std::remove_all_extents<T>::type;
+
 
 // Remove_pointer
 template<typename T>
-  using Remove_pointer = typename std::remove_pointer<T>::type;
+using Remove_pointer = typename std::remove_pointer<T>::type;
+
 
 // Add_pointer
 template<typename T>
-  using Add_pointer = typename std::add_pointer<T>::type;
+using Add_pointer = typename std::add_pointer<T>::type;
+
 
 // ... More traits
 
+
 // Decay
 template<typename T>
-  using Decay = typename std::decay<T>::type;
+using Decay = typename std::decay<T>::type;
 
 
 // -------------------------------------------------------------------------- //
 //                            Relations on types
 
-namespace core
+
+namespace core_impl 
 {
-// Heavy lifting for determining convertibility when the
-// types are not void.
-template<typename T, typename U>
-concept bool is_convertible_no_void()
-{
-  return requires (T t) { {t} -> U; };
-}
 
-// Whenever we can't determine convertibility by constraints,
-// delegate the standard type trait. This should be rare.
-template<typename T, typename U>
-struct is_convertible : std::is_convertible<T, U> { };
-
-template<typename T, typename U>
-  requires is_convertible_no_void<T, U>()
-struct is_convertible<T, U> : std::true_type { };
-
-} // namespace core
-
-namespace core_impl {
-// Strip references and qualifiers from T.
-//
-// TODO: Are there any other types that we can't allow to decay?
+// Strip references and qualifiers from T. Decay is
+// almost the right transformation, but we want to
+// let arrays and functions transform into pointers.
 template<typename T>
-  struct strip_refquals : std::decay<T> { };
+struct strip_refs_and_quals : std::decay<T> { };
 
+
+// Preserve array of unknown bound type.
 template<typename T>
-  struct strip_refquals<T[]> { using type = T[]; };
+struct strip_refs_and_quals<T[]> { using type = T[]; };
 
+
+// Preserve array of known bound type.
 template<typename T, std::size_t N>
-  struct strip_refquals<T[N]> { using type = T[N]; };
+struct strip_refs_and_quals<T[N]> { using type = T[N]; };
 
+
+// Preserve function types.
 template<typename R, typename... Ts>
-  struct strip_refquals<R(Ts...)> { using type = R(Ts...); };
+struct strip_refs_and_quals<R(Ts...)> { using type = R(Ts...); };
+
 
 template<typename T>
-  using strip = typename strip_refquals<T>::type;
+using strip = typename strip_refs_and_quals<T>::type;
+
 } // namespace core_impl
 
-/// For any type T, returns a non-qualified, non-reference type U. This
-/// facility is primarily intended to remove qualifiers and references
-/// that appear in forwarded arguments.
+
+// For any type T, returns a non-qualified, non-reference 
+// type U. This facility is primarily intended to remove 
+// qualifiers and references that appear in forwarded arguments.
 template<typename T>
-  using Strip = core_impl::strip<T>;
+using Strip = core_impl::strip<T>;
+
 
 } // namespace origin
+
 
 #endif
