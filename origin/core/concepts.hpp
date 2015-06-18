@@ -163,10 +163,12 @@ Destructible()
 // Is true if and only if an object of type T can be constructed with
 // the types of arguments in Args.
 template<typename T, typename... Args>
-  concept bool 
-  Constructible() {
-    return Destructible<T>() && std::is_constructible<T, Args...>::value; 
-  }
+concept bool 
+Constructible() 
+{
+  return Destructible<T>() && std::is_constructible<T, Args...>::value; 
+}
+
 
 // Is true if and only if an object of T can be default constructed.
 //
@@ -174,61 +176,79 @@ template<typename T, typename... Args>
 // also be default initialized. Types modeling this concept must ensure
 // that any two default initialized objects must have the same value.
 template<typename T>
-  concept bool 
-  Default_constructible() { return Constructible<T>(); }
+concept bool 
+Default_constructible() 
+{ 
+  return Constructible<T>(); 
+}
 
 
 // Is true if and only if an object of type T can be move constructed.
 template<typename T>
-  concept bool 
-  Move_constructible() { return Constructible<T, T&&>(); }
+concept bool 
+Move_constructible() 
+{ 
+  return Constructible<T, T&&>(); 
+}
 
 
 // Is true if and only if an object of type T can be copy constructed.
 template<typename T>
-  concept bool 
-  Copy_constructible() {
-    return Move_constructible<T>() && Constructible<T, const T&>(); 
-  }
+concept bool 
+Copy_constructible() 
+{
+  return Move_constructible<T>() && Constructible<T, const T&>(); 
+}
+
 
 // Is true if and only if an argument of type T can be assigned a value
 // of type U.
 //
 // Note that T is typically expected to be an lvalue reference type.
 template<typename T, typename U>
-  concept bool 
-  Assignable() { return std::is_assignable<T, U>::value; }
+concept bool 
+Assignable() 
+{ 
+  return std::is_assignable<T, U>::value; 
+}
 
 
 // Is true if and only if an object of type T can be move assigned.
 template<typename T>
-  concept bool 
-  Move_assignable() { return Assignable<T&, T&&>(); }
+concept bool 
+Move_assignable() 
+{ 
+  return Assignable<T&, T&&>(); 
+}
 
 
 // Is true if and only if an object of type T can be copy assigned.
 template<typename T>
-  concept bool 
-  Copy_assignable() {
-    return Move_assignable<T>() && Assignable<T&, const T&>(); 
-  }
+concept bool 
+Copy_assignable() 
+{
+  return Move_assignable<T>() && Assignable<T&, const T&>(); 
+}
 
 
 // Is true if and only if T supports move semantics. The type T must
 // be move constructible and move assignable.
 template<typename T>
-  concept bool 
-  Movable() {
-    return Move_constructible<T>() && Move_assignable<T>();
-  }
+concept bool 
+Movable() 
+{
+  return Move_constructible<T>() && Move_assignable<T>();
+}
+
 
 // Is true if and only if T supports copy semantics. The type T must 
 // be copy constructible and copy assignable. 
 template<typename T>
-  concept bool 
-  Copyable() {
-    return Copy_constructible<T>() && Copy_assignable<T>();
-  }
+concept bool 
+Copyable() 
+{
+  return Copy_constructible<T>() && Copy_assignable<T>();
+}
 
 
 // A type is a semiregular type if it is default constructible and
@@ -239,28 +259,31 @@ template<typename T>
 // be default constructed and copied, but have no default definition
 // of equality.
 template<typename T>
-  concept bool 
-  Semiregular() {
-    return Default_constructible<T>() && Copyable<T>();
-  }
+concept bool 
+Semiregular() 
+{
+  return Default_constructible<T>() && Copyable<T>();
+}
 
 
 // A type `T` is regular when it is semiregular and equality comparable.
 // Regular types can be used like most scalar types, although they
 // are not guaranteed to be ordered (comparble with `<`).
 template<typename T>
-  concept bool 
-  Regular() {
-    return Semiregular<T>() && Equality_comparable<T>();
-  }
+concept bool 
+Regular() 
+{
+  return Semiregular<T>() && Equality_comparable<T>();
+}
 
 
 // A type is ordered if it is a regular type that is also totally ordered.
 template<typename T>
-  concept bool 
-  Ordered() {
-    return Regular<T>() && Totally_ordered<T>();
-  }
+concept bool 
+Ordered() 
+{
+  return Regular<T>() && Totally_ordered<T>();
+}
 
 
 // -------------------------------------------------------------------------- //
@@ -274,69 +297,81 @@ template<typename T>
 
 // Function
 template<typename F, typename... Args>
-  concept bool 
-  Function() {
-    return Copy_constructible<F>()
-       and requires (F f, Args... args) { f(args...); };
-  }
+concept bool 
+Function() 
+{
+  return Copy_constructible<F>()
+     and requires (F f, Args... args) { f(args...); };
+}
 
 // Predicate
 template<typename P, typename... Args>
-  concept bool 
-  Predicate() {
-    return requires (P pred, Args... args) { {pred(args...)} -> bool; };
-  }
+concept bool 
+Predicate() 
+{
+  return requires (P pred, Args... args) { {pred(args...)} -> bool; };
+}
+
 
 // Relation
 template<typename R, typename T>
-  concept bool 
-  Relation() {
-    return Predicate<R, T, T>();
-  }
+concept bool 
+Relation() 
+{
+  return Predicate<R, T, T>();
+}
+
 
 // Relation (cross-type)
 template<typename R, typename T, typename U>
-  concept bool 
-  Relation() {
-    return Relation<R, T>()
-        && Relation<R, U>()
-        && Common<T, U>()
-        && requires (R r, T t, U u) {
-             {r(t, u)} -> bool;
-             {r(u, t)} -> bool;
-           };
-  }
+concept bool 
+Relation() 
+{
+  return Relation<R, T>()
+      && Relation<R, U>()
+      && Common<T, U>()
+      && requires (R r, T t, U u) {
+           {r(t, u)} -> bool;
+           {r(u, t)} -> bool;
+         };
+}
+
 
 // Unary_operation
 template<typename F, typename T>
-  concept bool 
-  Unary_operation() {
-    return requires (F f, T a) {
-             {f(a)} -> T;
-           };
-  }
+concept bool 
+Unary_operation() 
+{
+  return requires (F f, T a) {
+           {f(a)} -> T;
+         };
+}
+
 
 // Binary_operation
 template<typename F, typename T>
-  concept bool 
-  Binary_operation() {
-    return requires (F f, T a, T b) {
-             {f(a, b)} -> T;
-           };
-  }
+concept bool 
+Binary_operation() 
+{
+  return requires (F f, T a, T b) {
+           {f(a, b)} -> T;
+         };
+}
+
 
 // Binary_operation (cross-type)
 template<typename F, typename T, typename U>
-  concept bool 
-  Binary_operation() {
-    return Binary_operation<F, T>()
-        && Binary_operation<F, U>()
-        && Common<T, U>()
-        && requires (F f, T t, U u) {
-             {f(t, u)} -> Common_type<T, U>;
-             {f(u, t)} -> Common_type<T, U>;
-           };
-  }
+concept bool 
+Binary_operation() 
+{
+  return Binary_operation<F, T>()
+      && Binary_operation<F, U>()
+      && Common<T, U>()
+      && requires (F f, T t, U u) {
+           {f(t, u)} -> Common_type<T, U>;
+           {f(u, t)} -> Common_type<T, U>;
+         };
+}
 
 
 // -------------------------------------------------------------------------- //
@@ -349,29 +384,34 @@ template<typename F, typename T, typename U>
 // A type is input streamable if it can be extracted from a formatted
 // input stream derived from std::istream.
 template<typename T>
-  concept bool
-  Input_streamable() {
-    return requires(std::istream& s, T x) {
-      s >> x;
-    };
-  }
+concept bool
+Input_streamable() 
+{
+  return requires(std::istream& s, T x) {
+    s >> x;
+  };
+}
+
 
 // A type is output streamable if it can be extracted from a formatted
 // output stream dervied from std::ostream.
 template<typename T>
-  concept bool
-  Output_streamable() {
-    return requires(std::ostream& s, T x) {
-      s << x;
-    };
-  }
+concept bool
+Output_streamable() 
+{
+  return requires(std::ostream& s, T x) {
+    s << x;
+  };
+}
+
 
 // A type is streamable if it is both input and output streamable.
 template<typename T>
-  concept bool
-  Streamable() {
-    return Input_streamable<T>() and Output_streamable<T>();
-  }
+concept bool
+Streamable() 
+{
+  return Input_streamable<T>() and Output_streamable<T>();
+}
 
 
 // Miscellaneous associated types
