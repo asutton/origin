@@ -4,12 +4,13 @@
 #ifndef ORIGIN_CORE_FUNCTION_HPP
 #define ORIGIN_CORE_FUNCTION_HPP
 
-#include <origin/concepts>
+#include <origin/generic.hpp>
 
 #include <functional>
 
 
-namespace origin {
+namespace origin 
+{
 
 // -------------------------------------------------------------------------- //
 // Function Objects                                               [fn.object] //

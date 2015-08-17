@@ -4,7 +4,8 @@
 add_subdirectory(core)
 add_subdirectory(memory)
 add_subdirectory(iterator)
-add_subdirectory(sequence)
-add_subdirectory(data)
+add_subdirectory(range)
 
-add_subdirectory(numeric)
+# add_subdirectory(sequence)
+# add_subdirectory(data)
+# add_subdirectory(numeric)

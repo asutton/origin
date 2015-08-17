@@ -4,7 +4,7 @@
 #ifndef ORIGIN_ITERATOR_CORE_HPP
 #define ORIGIN_ITERATOR_CORE_HPP
 
-#include <origin/concepts>
+#include <origin/generic.hpp>
 
 #include <iterator>
 

@@ -1,7 +1,7 @@
 // Copyright (c) 2009-2015 Andrew Sutton
 // All rights reserved
 
-#include <origin/concepts>
+#include <origin/generic.hpp>
 
 // True when Common_type<T, U> is the same as C.
 template<typename T, typename U, typename C>

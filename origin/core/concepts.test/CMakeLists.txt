@@ -1,11 +1,11 @@
 # Copyright (c) 2009-2015 Andrew Sutton
 # All rights reserved
 
-add_run_test(core_same        same.cpp)
-add_run_test(core_derived     derived.cpp)
-add_run_test(core_convertible convertible.cpp)
-add_run_test(core_common_type common_type.cpp)
-add_run_test(core_common      common.cpp)
+add_run_test(core_same                  same.cpp)
+add_run_test(core_derived               derived.cpp)
+add_run_test(core_convertible           convertible.cpp)
+add_run_test(core_common_type           common_type.cpp)
+add_run_test(core_common                common.cpp)
 
 add_run_test(core_void                  void.cpp)
 add_run_test(core_character             character.cpp)
@@ -31,11 +31,11 @@ add_run_test(core_semiregular           semiregular.cpp)
 add_run_test(core_regular               regular.cpp)
 add_run_test(core_ordered               ordered.cpp)
 
-add_run_test(core_function function.cpp)
-add_run_test(core_predicate predicate.cpp)
-add_run_test(core_relation relation.cpp)
-add_run_test(core_unary_operation unary_operation.cpp)
-add_run_test(core_binary_operation binary_operation.cpp)
+add_run_test(core_function              function.cpp)
+add_run_test(core_predicate             predicate.cpp)
+add_run_test(core_relation              relation.cpp)
+add_run_test(core_unary_operation       unary_operation.cpp)
+add_run_test(core_binary_operation      binary_operation.cpp)
 
-add_run_test(core_value_type value_type.cpp)
-add_run_test(core_difference_type difference_type.cpp)
+add_run_test(core_value_type            value_type.cpp)
+add_run_test(core_difference_type       difference_type.cpp)

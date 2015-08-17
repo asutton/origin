@@ -1,7 +1,7 @@
 // Copyright (c) 2009-2015 Andrew Sutton
 // All rights reserved
 
-#include <origin/concepts>
+#include <origin/generic.hpp>
 
 // True when Difference_type<T> is the same as U.
 template<typename T, typename U>
