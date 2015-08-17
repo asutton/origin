@@ -4,7 +4,7 @@
 #ifndef TEST_ITERATOR_HPP
 #define TEST_ITERATOR_HPP
 
-// A move-only type
+// A simple input iterator model.
 struct input_iter 
 {
   input_iter& operator++() { return *this; }

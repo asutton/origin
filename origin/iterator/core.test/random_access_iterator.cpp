@@ -1,11 +1,12 @@
 // Copyright (c) 2009-2015 Andrew Sutton
 // All rights reserved
 
-#include <origin/ranges>
+#include <origin/iterator.hpp>
 
 #include <forward_list>
 #include <list>
 #include <vector>
+
 
 using In = std::istream_iterator<int>;
 using Out = std::ostream_iterator<int>;
@@ -18,11 +19,11 @@ static_assert(origin::Random_access_iterator<Vec::const_iterator>(), "");
 static_assert(origin::Random_access_iterator<int*>(), "");
 static_assert(origin::Random_access_iterator<const int*>(), "");
 
-static_assert(not origin::Random_access_iterator<In>(), "");
-static_assert(not origin::Random_access_iterator<Out>(), "");
-static_assert(not origin::Random_access_iterator<Fwd::iterator>(), "");
-static_assert(not origin::Random_access_iterator<Fwd::const_iterator>(), "");
-static_assert(not origin::Random_access_iterator<List::iterator>(), "");
-static_assert(not origin::Random_access_iterator<List::const_iterator>(), "");
+static_assert(!origin::Random_access_iterator<In>(), "");
+static_assert(!origin::Random_access_iterator<Out>(), "");
+static_assert(!origin::Random_access_iterator<Fwd::iterator>(), "");
+static_assert(!origin::Random_access_iterator<Fwd::const_iterator>(), "");
+static_assert(!origin::Random_access_iterator<List::iterator>(), "");
+static_assert(!origin::Random_access_iterator<List::const_iterator>(), "");
 
 int main() { }
