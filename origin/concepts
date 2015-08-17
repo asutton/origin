@@ -1,0 +1,10 @@
+// Copyright (c) 2009-2015 Andrew Sutton
+// All rights reserved
+
+#ifndef ORIGIN_CONCEPTS
+#define ORIGIN_CONCEPTS
+
+#include <origin/core/concepts.hpp>
+
+#endif
+
