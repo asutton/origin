@@ -4,7 +4,11 @@
 #ifndef ORIGIN_CONCEPTS
 #define ORIGIN_CONCEPTS
 
+// Include core concepts.
 #include <origin/core/concepts.hpp>
+
+// Include support for debugging.
+#include <origin/core/type.hpp>
 
 #endif
 

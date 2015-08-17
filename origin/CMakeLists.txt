@@ -1,6 +1,5 @@
-# This file is distributed under the MIT License. See the accompanying file
-# LICENSE.txt or http://www.opensource.org/licenses/mit-license.php for terms
-# and conditions.
+# Copyright (c) 2009-2015 Andrew Sutton
+# All rights reserved
 
 add_subdirectory(core)
 add_subdirectory(memory)
