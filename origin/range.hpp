@@ -4,7 +4,11 @@
 #ifndef ORIGIN_RANGE_HPP
 #define ORIGIN_RANGE_HPP
 
+// Range concepts.
 #include <origin/range/core.hpp>
+
+// Basic range abstractions.
+#include <origin/range/range.hpp>
 
 #endif
 
