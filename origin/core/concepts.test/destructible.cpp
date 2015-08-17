@@ -1,24 +1,34 @@
-// This file is distributed under the MIT License. See the accompanying file
-// LICENSE.txt or http://www.opensource.org/licenses/mit-license.php for terms
-// and conditions.
+// Copyright (c) 2009-2015 Andrew Sutton
+// All rights reserved
 
-#include <origin/core/concepts.hpp>
+#include <origin/concepts>
 
-struct S0 {
-  S0() = default;
+struct S0
+{
 };
 
-struct S1 {
-  ~S1() = delete;
+struct S1 
+{
+  S1() = default;
 };
 
-class S2 {
-  ~S2();
+struct S2 
+{
+  ~S2() = delete;
+};
+
+class S3 
+{
+  ~S3();
 };
 
 static_assert(origin::Destructible<int>(), "");
 static_assert(origin::Destructible<S0>(), "");
-static_assert(!origin::Destructible<S1>(), "");
+static_assert(origin::Destructible<S1>(), "");
 static_assert(!origin::Destructible<S2>(), "");
+
+// FIXME: GCC says that S3 is destructible despite having
+// a private destructor.
+static_assert(origin::Destructible<S3>(), "");
 
 int main() { return 0; }

@@ -1,13 +1,12 @@
-// This file is distributed under the MIT License. See the accompanying file
-// LICENSE.txt or http://www.opensource.org/licenses/mit-license.php for terms
-// and conditions.
+// Copyright (c) 2009-2015 Andrew Sutton
+// All rights reserved
 
-
-#include <origin/core/concepts.hpp>
+#include <origin/concepts>
 
 // True when Common_type<T, U> is the same as C.
 template<typename T, typename U, typename C>
-constexpr bool Has_common_type() {
+constexpr bool Has_common_type() 
+{
   return origin::Same<origin::Common_type<T, U>, C>();
 }
 

@@ -1,11 +1,11 @@
-// This file is distributed under the MIT License. See the accompanying file
-// LICENSE.txt or http://www.opensource.org/licenses/mit-license.php for terms
-// and conditions.
+// Copyright (c) 2009-2015 Andrew Sutton
+// All rights reserved
 
 #ifndef ORIGIN_CORE_TRAITS_HPP
 #define ORIGIN_CORE_TRAITS_HPP
 
 #include <type_traits>
+
 
 namespace origin 
 {
@@ -74,8 +74,8 @@ template<typename T, typename U>
 concept bool 
 Convertible() 
 {
-  // return core::is_convertible<T, U>::value;
   return std::is_convertible<T, U>::value;
+  // return __is_convertible_to(T, U);
 }
 
 
@@ -124,7 +124,6 @@ Common()
 // These implementation helpers are defined as constexpr 
 // functions in order to act as compile-time firewalls
 // due to the extensive use of disjunction.
-
 
 
 namespace core
@@ -520,6 +519,7 @@ Member_pointer_type()
   return std::is_member_pointer<T>::value; 
 }
 
+
 // -------------------------------------------------------------------------- //
 // Type properties                                           [trait.property] //
 
@@ -723,6 +723,7 @@ template<typename T>
 using Decay = typename std::decay<T>::type;
 
 
+
 // -------------------------------------------------------------------------- //
 //                            Relations on types
 
@@ -755,12 +756,13 @@ struct strip_refs_and_quals<R(Ts...)> { using type = R(Ts...); };
 template<typename T>
 using strip = typename strip_refs_and_quals<T>::type;
 
+
 } // namespace core_impl
 
 
-// For any type T, returns a non-qualified, non-reference 
-// type U. This facility is primarily intended to remove 
-// qualifiers and references that appear in forwarded arguments.
+// For any type T, returns the non-reference, non-cv-qualified
+// type U. This facility is primarily intended to remove qualifiers 
+// and references that appear when deducing forwarded arguments.
 template<typename T>
 using Strip = core_impl::strip<T>;
 

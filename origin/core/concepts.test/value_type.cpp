@@ -1,7 +1,7 @@
-// This file is distributed under the MIT License. See the accompanying file
-// LICENSE.txt or http://www.opensource.org/licenses/mit-license.php for terms
-// and conditions.
+// Copyright (c) 2009-2015 Andrew Sutton
+// All rights reserved
 
+#include <origin/concepts>
 #include <origin/core/concepts.hpp>
 
 // True when Value_type<T> is the same as U.

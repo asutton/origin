@@ -1,6 +1,5 @@
-// This file is distributed under the MIT License. See the accompanying file
-// LICENSE.txt or http://www.opensource.org/licenses/mit-license.php for terms
-// and conditions.
+// Copyright (c) 2009-2015 Andrew Sutton
+// All rights reserved
 
 #ifndef ORIGIN_CORE_CONCEPTS_HPP
 #define ORIGIN_CORE_CONCEPTS_HPP
@@ -11,8 +10,51 @@
 #include <iosfwd>
 #include <utility>
 
+
 namespace origin 
 {
+
+
+// -------------------------------------------------------------------------- //
+// Boolean types
+
+// #if 0
+// A conditional type is one that can be explicitly
+// implicitly converted to bool. Conditional types can 
+// be used wherever a contextual conversion is needed.
+template<typename T>
+concept bool Conditional()
+{
+  return requires(T t)
+  {
+    (bool)t;        // Explicitly convertible
+    { t } -> bool;  // Implicitly convertible
+  };
+}
+
+
+// A boolean type is one that can participate in logical
+// expressions. The set of values of a boolean type is not
+// limited to `true` or `false`, but those values can
+// be observed by converting to bool in contexts where
+// it is required or allowed.
+//
+// This does not guarantee that `T` is equality comparable
+// or that `T` can be compared for equality with boolean
+// values.
+template<typename T>
+concept bool
+Boolean()
+{
+  return Conditional<T>() && requires(T a, T b)
+  {
+    { !a } -> Same<bool>
+    { a && b } -> Same<bool>;
+    { a || b} -> Same<bool>;
+  };
+}
+// #endif
+
 
 // -------------------------------------------------------------------------- //
 // Relational concepts                                        [concepts.comp] //
@@ -28,14 +70,15 @@ namespace origin
 // For all expressions `a` and `b` for which `a == b` 
 // returns true, we say that `a` and `b` are *equal*. 
 // 
-// The // expression `a != b` shall be true if and only 
+// The expression `a != b` shall be true if and only 
 // if `a` and `b` are not equal.
 template<typename T>
 concept bool 
 Equality_comparable() {
-  return requires (T a, T b) {
-    { a == b } -> bool;
-    { a != b } -> bool;
+  return requires (T a, T b) 
+  {
+    { a == b } -> Boolean;
+    { a != b } -> Boolean;
   };
 }
 
@@ -63,11 +106,12 @@ template<typename T>
 concept bool 
 Weakly_ordered()
 {
-  return requires (T a, T b) {
-    { a < b } -> bool;
-    { a > b } -> bool;
-    { a <= b } -> bool;
-    { a >= b } -> bool;
+  return requires (T a, T b) 
+  {
+    { a < b } -> Boolean;
+    { a > b } -> Boolean;
+    { a <= b } -> Boolean;
+    { a >= b } -> Boolean;
   };
 }
 
@@ -104,12 +148,13 @@ Equality_comparable()
   return Equality_comparable<T>() 
       && Equality_comparable<U>() 
       && Common<T, U>() 
-      && requires (T t, T u) {
+      && requires (T t, T u) 
+      {
            { t == u } -> bool;
            { u == t } -> bool;
            { t != u } -> bool;
            { u != t } -> bool;
-        };
+      };
 }
 
 
@@ -135,13 +180,13 @@ concept bool Weakly_ordered()
 
 // TODO: Document me.
 template<typename T, typename U>
-  concept bool Totally_ordered()
-  {
-    return Totally_ordered<T>() 
-        && Totally_ordered<U>()
-        && Equality_comparable<T, U>()
-        && Weakly_ordered<T, U>();
-  }
+concept bool Totally_ordered()
+{
+  return Totally_ordered<T>() 
+      && Totally_ordered<U>()
+      && Equality_comparable<T, U>()
+      && Weakly_ordered<T, U>();
+}
 
 
 // -------------------------------------------------------------------------- //
@@ -295,25 +340,33 @@ Ordered()
 // of arguments.
 
 
-// Function
+// A function is a mapping from a sequence of arguments to a
+// result. In this concept `F` is the type of the function,
+// and the template argument pack `...Args` contains the
+// types of arguments that `F` must accept.
 template<typename F, typename... Args>
 concept bool 
 Function() 
 {
   return Copy_constructible<F>()
-     and requires (F f, Args... args) { f(args...); };
+     && requires (F f, Args... args) { f(args...); };
 }
 
-// Predicate
+
+// A predicate is a function whose result is `true` or
+// `false`.
 template<typename P, typename... Args>
 concept bool 
 Predicate() 
 {
-  return requires (P pred, Args... args) { {pred(args...)} -> bool; };
+  return requires (P pred, Args... args) { 
+    { pred(args...) } -> bool; 
+  };
 }
 
 
-// Relation
+// A relation is a binary predicate whose arguments have the
+// same type.
 template<typename R, typename T>
 concept bool 
 Relation() 
@@ -322,7 +375,7 @@ Relation()
 }
 
 
-// Relation (cross-type)
+// TODO: Document me.
 template<typename R, typename T, typename U>
 concept bool 
 Relation() 
@@ -337,7 +390,8 @@ Relation()
 }
 
 
-// Unary_operation
+// A unary operation is a function that whose argument
+// type is the same as its return type.
 template<typename F, typename T>
 concept bool 
 Unary_operation() 
@@ -348,7 +402,8 @@ Unary_operation()
 }
 
 
-// Binary_operation
+// A binary operation is a function whose argument types
+// are the same as the return type.
 template<typename F, typename T>
 concept bool 
 Binary_operation() 
@@ -359,7 +414,7 @@ Binary_operation()
 }
 
 
-// Binary_operation (cross-type)
+// TODO: Document me.
 template<typename F, typename T, typename U>
 concept bool 
 Binary_operation() 
@@ -414,7 +469,7 @@ Streamable()
 }
 
 
-// Miscellaneous associated types
+// Common associated types
 
 namespace core_impl {
 

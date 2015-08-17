@@ -1,9 +1,7 @@
+// Copyright (c) 2009-2015 Andrew Sutton
+// All rights reserved
 
-// This file is distributed under the MIT License. See the accompanying file
-// LICENSE.txt or http://www.opensource.org/licenses/mit-license.php for terms
-// and conditions.
-
-#include <origin/core/concepts.hpp>
+#include <origin/concepts>
 
 using namespace origin;
 

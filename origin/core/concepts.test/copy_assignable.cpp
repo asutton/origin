@@ -1,30 +1,32 @@
-// This file is distributed under the MIT License. See the accompanying file
-// LICENSE.txt or http://www.opensource.org/licenses/mit-license.php for terms
-// and conditions.
+// Copyright (c) 2009-2015 Andrew Sutton
+// All rights reserved
 
-#include <origin/core/concepts.hpp>
+#include <origin/concepts>
 
-struct S0 {
-  S0(const S0&) = default;
+struct S0
+{
 };
 
-struct S1 {
-  S1(const S1&) = delete;
+struct S1
+{
+  S1& operator=(S1 const&) = default;
 };
 
-class S2 {
-  S2(const S2&);
+struct S2 
+{
+  S2& operator=(S2 const&) = delete;
 };
 
-struct S3 {
-  S3(S3&&) = delete;
-  S3(const S3&) = default;
+class S3
+{
+  S3& operator=(S3 const&) = delete;
 };
 
-static_assert(origin::Copy_constructible<int>(), "");
-static_assert(origin::Copy_constructible<S0>(), "");
-static_assert(not origin::Copy_constructible<S1>(), "");
-static_assert(not origin::Copy_constructible<S2>(), "");
-static_assert(not origin::Copy_constructible<S3>(), "");
+
+static_assert(origin::Copy_assignable<int>(), "");
+static_assert(origin::Copy_assignable<S0>(), "");
+static_assert(origin::Copy_assignable<S1>(), "");
+static_assert(!origin::Copy_assignable<S2>(), "");
+static_assert(!origin::Copy_assignable<S3>(), "");
 
 int main() { return 0; }
