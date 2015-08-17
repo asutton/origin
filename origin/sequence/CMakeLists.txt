@@ -1,13 +1,8 @@
-# Copyright (c) 2008-2014 Andrew Sutton
-#
-# This file is distributed under the MIT License. See the accompanying file
-# LICENSE.txt or http://www.opensource.org/licenses/mit-license.php for terms
-# and conditions.
+# Copyright (c) 2009-2015 Andrew Sutton
+# All rights reserved
 
-# FIXME: This is simply not a complete algorithm.
 add_library(origin-sequence
-  uninitialized.cpp
-)
+  uninitialized.cpp)
 
 add_subdirectory(concepts.test)
 add_subdirectory(range.test)

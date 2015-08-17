@@ -1,14 +1,11 @@
-// Copyright (c) 2008-2014 Andrew Sutton
-//
-// This file is distributed under the MIT License. See the accompanying file
-// LICENSE.txt or http://www.opensource.org/licenses/mit-license.php for terms
-// and conditions.
+// Copyright (c) 2009-2015 Andrew Sutton
+// All rights reserved
 
 #include <cassert>
 #include <list>
 #include <vector>
 
-#include <origin/sequence/range.hpp>
+#include <origin/ranges>
 
 template<typename R>
   void test(R&& range, std::size_t n) {

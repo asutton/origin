@@ -1,14 +1,11 @@
-// Copyright (c) 2008-2014 Andrew Sutton
-//
-// This file is distributed under the MIT License. See the accompanying file
-// LICENSE.txt or http://www.opensource.org/licenses/mit-license.php for terms
-// and conditions.
+// Copyright (c) 2009-2015 Andrew Sutton
+// All rights reserved
 
-#include <origin/sequence/concepts.hpp>
+#include <origin/ranges>
 
 #include "test_resource.hpp"
 
 static_assert(origin::Mutable<int*>(), "");
-static_assert(not origin::Mutable<res*>(), "");
+static_assert(! origin::Mutable<res*>(), "");
 
 int main() { }

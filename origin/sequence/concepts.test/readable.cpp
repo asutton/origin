@@ -1,10 +1,7 @@
-// Copyright (c) 2008-2014 Andrew Sutton
-//
-// This file is distributed under the MIT License. See the accompanying file
-// LICENSE.txt or http://www.opensource.org/licenses/mit-license.php for terms
-// and conditions.
+// Copyright (c) 2009-2015 Andrew Sutton
+// All rights reserved
 
-#include <origin/sequence/concepts.hpp>
+#include <origin/ranges>
 
 static_assert(origin::Readable<int*>(), "");
 static_assert(origin::Readable<const int*>(), "");
