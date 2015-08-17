@@ -1,15 +1,13 @@
-// This file is distributed under the MIT License. See the accompanying file
-// LICENSE.txt or http://www.opensource.org/licenses/mit-license.php for terms
-// and conditions.
+// Copyright (c) 2009-2015 Andrew Sutton
+// All rights reserved
 
 #ifndef ORIGIN_MEMORY_ALLOCATOR_HPP
 #define ORIGIN_MEMORY_ALLOCATOR_HPP
 
-#include <origin/core/concepts.hpp>
-
 #include <memory>
 
-namespace origin {
+namespace origin 
+{
 
 // ---------------------------------------------------------------------------//
 // Allocator 
@@ -21,7 +19,8 @@ namespace origin {
 //
 // TODO: Look at recent allocator specifications to determine what
 // sets of operations are actually being required.
-struct allocator {
+struct allocator 
+{
   virtual ~allocator();
   virtual void* allocate(int);
   virtual void deallocate(void*);
@@ -29,8 +28,11 @@ struct allocator {
 
 allocator& default_allocator();
 
+
 } // namespace
 
+
 #include <origin/memory/allocator.ipp>
+
 
 #endif

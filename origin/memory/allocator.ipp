@@ -1,19 +1,26 @@
-// This file is distributed under the MIT License. See the accompanying file
-// LICENSE.txt or http://www.opensource.org/licenses/mit-license.php for terms
-// and conditions.
+// Copyright (c) 2009-2015 Andrew Sutton
+// All rights reserved
 
-namespace origin {
-
-// ---------------------------------------------------------------------------//
-// Abstract allocator
+namespace origin 
+{
 
 inline
-allocator::~allocator() { }
+allocator::~allocator() 
+{ }
+
 
 inline void*
-allocator::allocate(int n) { return ::operator new(n); }
+allocator::allocate(int n) 
+{ 
+  return ::operator new(n); 
+}
+
 
 inline void
-allocator::deallocate(void* p) { ::operator delete(p); }
+allocator::deallocate(void* p) 
+{ 
+  ::operator delete(p); 
+}
+
 
 } // namespace
