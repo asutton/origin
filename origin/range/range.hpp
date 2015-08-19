@@ -10,6 +10,36 @@
 namespace origin 
 {
 
+
+// -------------------------------------------------------------------------- //
+// Begin and end                                                      [range.be]
+//
+// In many cases (i.e., constructors), we want to invoke begin and 
+// end so that ADL finds appropriate overloads. However, that cannot
+// be done within a member-initializer-list, unless the enclosing
+// namespace brings the names std::begin and std::end into scope.
+//
+// The std_begin and std_end functions can be used as a workaround.
+
+template<typename T>
+inline decltype(auto) 
+std_begin(T&& t)
+{
+  using std::begin;
+  return begin(std::forward<T>(t));
+}
+
+
+template<typename T>
+inline decltype(auto) 
+std_end(T&& t)
+{
+  using std::end;
+  return end(std::forward<T>(t));
+}
+
+
+
 // -------------------------------------------------------------------------- //
 // Range size
 //
