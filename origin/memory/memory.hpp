@@ -10,6 +10,7 @@
 namespace origin 
 {
 
+
 // Construct an object of type `T` at address `p` with the given
 // arguments. Note that this does not allocate the memory where the
 // object is constructed. 
