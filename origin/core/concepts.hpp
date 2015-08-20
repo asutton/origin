@@ -18,7 +18,6 @@ namespace origin
 // -------------------------------------------------------------------------- //
 // Boolean types
 
-// #if 0
 // A conditional type is one that can be explicitly
 // implicitly converted to bool. Conditional types can 
 // be used wherever a contextual conversion is needed.
@@ -28,7 +27,6 @@ concept bool Conditional()
   return requires(T t)
   {
     (bool)t;        // Explicitly convertible
-    { t } -> bool;  // Implicitly convertible
   };
 }
 
@@ -53,7 +51,6 @@ Boolean()
     { a || b} -> Same<bool>;
   };
 }
-// #endif
 
 
 // -------------------------------------------------------------------------- //
@@ -430,6 +427,44 @@ Binary_operation()
 
 
 // -------------------------------------------------------------------------- //
+// Fundamental abstractions                                    [concepts.fun] //
+
+// A number is an object used to count or measure. Examples
+// are the natural numbers, integers, real numbers, and complex
+// numbers. A number is an Ordered (and hence Regular) type
+// that supports addition, subtraction, multiplication, and
+// division.
+//
+// TODO: Define semantics.
+template<typename T>
+concept bool Number()
+{
+  return Ordered<T> 
+    && requires (T a, T b) {
+      { a + b } -> T;
+      { a - b } -> T;
+      { a * b } -> T;
+      { a / b } -> T;
+    } 
+    && requires (T& a, T b) {
+      { a += b } -> T&;
+      { a -= b } -> T&;
+      { a *= b } -> T&;
+      { a /= b } -> T&;
+    };
+}
+
+
+// A string is a sequence of characters.
+//
+// TODO: Define this.
+template<typename T>
+concept bool String()
+{
+  return true;
+}
+
+// -------------------------------------------------------------------------- //
 // Streaming concepts                                       [concepts.stream] //
 //
 // The I/O streaming concepts relate types the std::istream and
@@ -471,7 +506,8 @@ Streamable()
 
 // Common associated types
 
-namespace core_impl {
+namespace core_impl 
+{
 
 template<typename T>
   struct get_value_type;
