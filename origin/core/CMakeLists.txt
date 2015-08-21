@@ -5,6 +5,7 @@ add_library(origin-core
   traits.cpp
   concepts.cpp
   function.cpp
+  finally.cpp
   type.cpp)
 
 # FIXME: The tests in this library need to link against
