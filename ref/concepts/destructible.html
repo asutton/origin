@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+  
+  
+  <meta charset='utf-8'>
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="description" content="Origin : Experiments in C++ Library Design">
+  <link rel="stylesheet" type="text/css" media="screen" href="/origin/stylesheets/stylesheet.css">
+  <title>Origin</title>
+</head>
+<body>
+<!-- HEADER -->
+<div id="header_wrap" class="outer">
+    <header class="inner">
+      <a id="forkme_banner" href="https://github.com/asutton/origin">View on GitHub</a>
+
+      <h1 id="project_title">Origin</h1>
+      <h2 id="project_tagline">Experiments in C++ Library Design</h2>
+
+        <section id="downloads">
+          <a class="zip_download_link" href="https://github.com/asutton/origin/zipball/master">Download this project as a .zip file</a>
+          <a class="tar_download_link" href="https://github.com/asutton/origin/tarball/master">Download this project as a tar.gz file</a>
+        </section>
+    </header>
+</div>
+
+
+<!-- NAVBAR -->
+<div id="navbar">
+  <nav>
+    <ul>
+      <li><a href="/origin/index.html">Home</a></li>
+      <li><a href="/origin/start.html">Getting started</a></li>
+      <li><a href="/origin/ref/concepts.html">Concepts</a>
+        <ul>
+          <li><a href="/origin/ref/concepts/language.html">Types</a></li>
+          <li><a href="/origin/ref/concepts/value.html">Values</a></li>
+          <li><a href="/origin/ref/concepts/function.html">Functions</a></li>
+          <li><a href="/origin/ref/concepts/iterator.html">Iterators</a></li>
+          <li><a href="/origin/ref/concepts/range.html">Ranges</a></li>
+        </ul>
+      </li>
+      <li><a href="/origin/ref/library.html">Libraries</a></li>
+        <ul>
+          <li><a href="">Origin.Core</a></li>
+          <li><a href="">Origin.Iterator</a></li>
+          <li><a href="">Origin.Range</a></li>
+          <li><a href="">Origin.Algorithm</a></li>
+          <li><a href="">Origin.Data</a></li>
+          <li><a href="">Origin.Memory</a></li>
+        </ul>
+    </ul>
+  </nav>
+</div>
+
+<!-- MAIN CONTENT -->
+<div id="main_content_wrap" class="outer">
+  <section id="main_content" class="inner">
+<h1 id="destructible-types">Destructible types</h1>
+<h2 id="declaration">Declaration</h2>
+<p>In <code>&lt;origin/generic.hpp&gt;</code>.</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span>&lt;<span class="kw">typename</span> T&gt;
+concept <span class="dt">bool</span> Destructible() {
+  <span class="kw">return</span> requires (T t, T* p) {
+    { t.~T(); } <span class="kw">noexcept</span>;
+    { <span class="kw">delete</span> p; }
+    { <span class="kw">delete</span> [] p; }
+    { &amp;t } -&gt; Same&lt;T*&gt;;
+  };
+}</code></pre>
+<h2 id="documentation">Documentation</h2>
+<p>A <em>destructible type</em> is one whose objects can be destroyed, either when they go out of scope or are explicitly deallocated.</p>
+<p>This concept is required by every other <a href="value.html">value concept</a>. In order be consistent with builtin types, these types must not change the meaning of the address-of operator. The <code>delete</code> expressions are specifically required since they can be overloaded and made private or deleted. Such types are not generally usable as value types.</p>
+<p>Note that reference types satisfy this concept. When a reference goes out of scope, its object may not be destroyed, but it is no longer accessible.</p>
+<h2 id="semantics">Semantics</h2>
+<ul>
+<li><p>When an object is destroyed, either explicitly or implicitly, all of its resources are reclaimed. References have no resources so this is trivially satisfied for reference types.</p></li>
+<li><p>The expression <code>delete p</code> invokes <code>p-&gt;~T()</code>.</p></li>
+<li><p>The expression <code>delete [] p</code> invokes <code>p[i]-&gt;~T()</code> for each <code>p[i]</code> allocated by a corresponding call to <code>new T[n]</code> where <code>0 &lt;= i &lt;= n</code>.</p></li>
+<li><p>For all <code>t</code>, <code>&amp;t</code> is equal to <code>addressof(t)</code>.</p></li>
+</ul>
+<h2 id="example">Example</h2>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span>&lt;Destructible T&gt;
+<span class="dt">void</span> f(T x)
+{
+
+}</code></pre>
+  </section>
+</div>
+
+
+<!-- FOOTER  -->
+<div id="footer_wrap" class="outer">
+  <footer class="inner">
+    <p class="copyright">Origin maintained by <a href="https://github.com/asutton">asutton</a></p>
+    <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+  </footer>
+</div>
+</body>
+</html>

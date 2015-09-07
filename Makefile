@@ -6,6 +6,8 @@ tgt = index.html \
 		  ref/concepts/integral_type.html \
 		  ref/concepts/value.html \
 		  ref/concepts/regular.html \
+		  ref/concepts/destructible.html \
+		  ref/concepts/constructible.html \
 		  ref/concepts/semiregular.html \
 		  ref/concepts/function.html \
 

@@ -11,7 +11,7 @@ for a value type except that it cannot be copied.
 
 The value concepts are:
 
-- `Destructible`
+- [`Destructible`](destructible.html)
 - `Move_constructible`
 - `Copy_constructible`
 - `Movable`
@@ -21,3 +21,8 @@ The value concepts are:
 - [`Equality_comparable`](equality.html)
 - `Totally_ordered`
 - `Ordered`
+
+
+Note that the easiest way to define value types is to allow the compiler
+to generate as many special functions as possible. The semantics of those
+functions will (generally) satisfy the requirements of these concepts.
