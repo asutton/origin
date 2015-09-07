@@ -7,14 +7,35 @@
 #include <origin/core/concepts.hpp>
 
 
-#define finally(f) auto guard__ ## __COUNTER__ = make_finally(f);
+// The finally keyword allows the registration of a function
+// to be executed at the end of the enclosing scope. This
+// help simplify the definition of algorithms with multiple
+// exit paths that are nonetheless required to release resources 
+// prior to exit.
+//
+// Example:
+//
+//    void read(char const* path)
+//    {
+//      FILE* f = fopen(path, "rt");
+//      finally([&f] { if (f) fclose(f); });
+//      // do stuff.
+//    }
+//
+// Regardless of how `read` exists, the file pointer is closed
+// before returining.
+#define finally(f) \
+  auto guard__ ## __COUNTER__ = origin::make_finally(f)
+
 
 namespace origin
 {
 
-// The final act class invokes its function when it
-// destroyed. `F` must be a nullary function. The 
-// return value is discarded.
+// The final act class invokes its function when it destroyed. 
+// `F` must be a nullary function. The return value is discarded.
+//
+// This class is almost never used directly. Instead, use the
+// finally macro.
 template<Function F>
 struct final_act
 {

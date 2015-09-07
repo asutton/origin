@@ -4,10 +4,13 @@
 #ifndef ORIGIN_GENERIC_HPP
 #define ORIGIN_GENERIC_HPP
 
-// Include core concepts.
+// Core traits and concepts.
 #include <origin/core/concepts.hpp>
 
-// Include support for debugging.
+// Finally "keyword".
+#include <origin/core/finally.hpp>
+
+// Pretty printing types.
 #include <origin/core/type.hpp>
 
 #endif

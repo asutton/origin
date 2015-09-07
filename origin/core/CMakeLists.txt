@@ -13,4 +13,5 @@ add_library(origin-core
 
 add_subdirectory(concepts.test)
 add_subdirectory(function.test)
+add_subdirectory(finally.test)
 
