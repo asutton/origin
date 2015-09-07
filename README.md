@@ -12,35 +12,12 @@ Currently, this site serves two primary purposes: to document the
 evolution and usage of concepts, as documented in the ISO Concepts TS, 
 and to provide an basic set of facilities based on that language feature.
 
-
-Works is currently focused on the use of concepts to specify and 
+Work is currently focused on the use of concepts to specify and 
 implement a new version of the C++ Standard Library. Note that this 
 work is independent of the ISO Ranges TS (STLv2), although many ideas 
 overlap. Because the Origin Libraries are experimental, certain
 facilities may be quite different than those proposed for the C++
 standard (generally simpler).
 
-Getting Started
----------------
-
-The Origin Libraries have only one dependence: a compiler that implements
-the Concepts TS. Currenly, only one compiler does this: GCC. And it must
-be compiled from SVN.
-
-### Installing GCC
-
-### Installing Origin
-
-### Linking against Origin
-
-People
-------
-The following people have been active in the design and implementation
-of C++ concepts, their implementation in GCC, and the design and
-
-- Andrew Sutton
-- Gabriel Dos Reis
-- Bjarne Stroustrup
-- Braden Obrzut
-
-
+More information can be found on the GitHib pages site
+http://asutton.github.io/origin.
