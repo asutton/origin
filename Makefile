@@ -5,6 +5,8 @@ tgt = index.html \
 		  ref/concepts/language.html \
 		  ref/concepts/integral_type.html \
 		  ref/concepts/value.html \
+		  ref/concepts/regular.html \
+		  ref/concepts/semiregular.html \
 		  ref/concepts/function.html \
 
 PANDOC_INC = -H include/prelude.html -B include/header.html -A include/footer.html

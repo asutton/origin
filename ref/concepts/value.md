@@ -14,10 +14,10 @@ The value concepts are:
 - `Destructible`
 - `Move_constructible`
 - `Copy_constructible`
-- `Copyable`
 - `Movable`
-- `Semiregular`
-- `Regular`
-- `Equality_comparable`
+- `Copyable`
+- [`Semiregular`](semiregular.html)
+- [`Regular`](regular.html)
+- [`Equality_comparable`](equality.html)
 - `Totally_ordered`
 - `Ordered`

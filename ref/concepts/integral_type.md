@@ -7,7 +7,7 @@ In `<origin/generic.hpp>`.
 
 ``` {.cpp}
 template<typename T>
-concept bool Integral_type() ...
+concept bool Integral_type()
 ```
 
 ## Documentation

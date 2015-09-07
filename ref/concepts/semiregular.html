@@ -6,6 +6,25 @@
   <meta name="generator" content="pandoc" />
   <title></title>
   <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
   
   
   <meta charset='utf-8'>
@@ -64,22 +83,20 @@
 <!-- MAIN CONTENT -->
 <div id="main_content_wrap" class="outer">
   <section id="main_content" class="inner">
-<h1 id="value-concepts">Value concepts</h1>
-<p>The value concepts (elsewhere referred to as “object” or “foundational” concepts), describe requirements on type related to initialization, copying, moving, and value comparison. These concepts establish the semantic requirements of <em>value types</em>.</p>
-<p>A <em>move-only type</em> is a type that satisfies many of the requirements for a value type except that it cannot be copied.</p>
-<p>The value concepts are:</p>
-<ul>
-<li><code>Destructible</code></li>
-<li><code>Move_constructible</code></li>
-<li><code>Copy_constructible</code></li>
-<li><code>Movable</code></li>
-<li><code>Copyable</code></li>
-<li><a href="semiregular.html"><code>Semiregular</code></a></li>
-<li><a href="regular.html"><code>Regular</code></a></li>
-<li><a href="equality.html"><code>Equality_comparable</code></a></li>
-<li><code>Totally_ordered</code></li>
-<li><code>Ordered</code></li>
-</ul>
+<h1 id="semiregular-types">Semiregular types</h1>
+<h2 id="declaration">Declaration</h2>
+<p>In <code>&lt;origin/generic.hpp&gt;</code>.</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span>&lt;<span class="kw">typename</span> T&gt;
+concept <span class="dt">bool</span> Semiregular()</code></pre>
+<h2 id="documentation">Documentation</h2>
+<p>A <em>semiregular type</em> is one that can be used, to an extent, like an <code>int</code>. Semiregular types can be, moved, copied. They are not, however, required to <a href="default_constructible.html">default constructible</a> or <a href="equality.html">equality comparable</a>.</p>
+<p>Function objects, lambda closure types, plain C <code>struct</code> and <code>union</code> types (that don’t overload <code>==</code>) are examples of semiregular types.</p>
+<p>Note that a class containing reference member variables is not a semiregular type because it is not <a href="copyable.html">copyable</a>. A union of non-POD types may also not be semiregular if any of its required constructors are deleted.</p>
+<h2 id="example">Example</h2>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span>&lt;Semiregular T&gt;
+<span class="dt">void</span> f()
+{
+}</code></pre>
   </section>
 </div>
 
