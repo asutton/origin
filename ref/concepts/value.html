@@ -64,16 +64,21 @@
 <!-- MAIN CONTENT -->
 <div id="main_content_wrap" class="outer">
   <section id="main_content" class="inner">
-<p>The Origin Libraries are collection of libraries written using the latest features of the C++ Programming Language. They are designed to wrap the C++ Standard Library and provide replacements for older features and new experimental features. The goal of this work is to foster experimentation in library design and to served as a data point for the standardization efforts within C++.</p>
-<p>Currently, this site serves two primary purposes: to document the evolution and usage of concepts, as documented in the ISO Concepts TS, and to provide a basic set of facilities based on that language feature.</p>
-<p>Works is currently focused on the use of concepts to specify and implement a new version of the C++ Standard Library. Note that this work is independent of the ISO Ranges TS (STLv2), although many ideas overlap. Because the Origin Libraries are experimental, certain facilities may be quite different than those proposed for the C++ standard (generally simpler).</p>
-<h2 id="people">People</h2>
-<p>The following people have been active in the design and implementation of C++ concepts, their implementation in GCC, and the design and</p>
+<h1 id="value-concepts">Value concepts</h1>
+<p>The value concepts (elsewhere referred to as “object” or “foundational” concepts), describe requirements on type related to initialization, copying, moving, and value comparison. These concepts establish the semantic requirements of <em>value types</em>.</p>
+<p>A <em>move-only type</em> is a type that satisfies many of the requirements for a value type except that it cannot be copied.</p>
+<p>The value concepts are:</p>
 <ul>
-<li><a href="http://asutton.github.io/">Andrew Sutton</a></li>
-<li>Gabriel Dos Reis</li>
-<li><a href="http://www.stroustrup.com/">Bjarne Stroustrup</a></li>
-<li>Braden Obrzut</li>
+<li><code>Destructible</code></li>
+<li><code>Move_constructible</code></li>
+<li><code>Copy_constructible</code></li>
+<li><code>Copyable</code></li>
+<li><code>Movable</code></li>
+<li><code>Semiregular</code></li>
+<li><code>Regular</code></li>
+<li><code>Equality_comparable</code></li>
+<li><code>Totally_ordered</code></li>
+<li><code>Ordered</code></li>
 </ul>
   </section>
 </div>

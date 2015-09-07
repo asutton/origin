@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+  
+  
+  <meta charset='utf-8'>
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="description" content="Origin : Experiments in C++ Library Design">
+  
+  <link rel="stylesheet" type="text/css" media="screen" href="/stylesheets/stylesheet.css">
+  
+  <title>Origin</title>
+</head>
+<body>
+<!-- HEADER -->
+<div id="header_wrap" class="outer">
+    <header class="inner">
+      <a id="forkme_banner" href="https://github.com/asutton/origin">View on GitHub</a>
+
+      <h1 id="project_title">Origin</h1>
+      <h2 id="project_tagline">Experiments in C++ Library Design</h2>
+
+        <section id="downloads">
+          <a class="zip_download_link" href="https://github.com/asutton/origin/zipball/master">Download this project as a .zip file</a>
+          <a class="tar_download_link" href="https://github.com/asutton/origin/tarball/master">Download this project as a tar.gz file</a>
+        </section>
+    </header>
+</div>
+
+
+<!-- NAVBAR -->
+<div id="navbar">
+  <nav>
+    <ul>
+      <li><a href="/index.html">Home</a></li>
+      <li><a href="/start.html">Getting started</a></li>
+      <li><a href="/ref/concepts.html">Concepts</a>
+        <ul>
+          <li><a href="/ref/concepts/language.html">Types</a></li>
+          <li><a href="/ref/concepts/value.html">Values</a></li>
+          <li><a href="/ref/concepts/function.html">Functions</a></li>
+          <li><a href="/ref/concepts/iterator.html">Iterators</a></li>
+          <li><a href="/ref/concepts/range.html">Ranges</a></li>
+        </ul>
+      </li>
+      <li><a href="/ref/library.html">Libraries</a></li>
+        <ul>
+          <li><a href="">Origin.Core</a></li>
+          <li><a href="">Origin.Iterator</a></li>
+          <li><a href="">Origin.Range</a></li>
+          <li><a href="">Origin.Algorithm</a></li>
+          <li><a href="">Origin.Data</a></li>
+          <li><a href="">Origin.Memory</a></li>
+        </ul>
+    </ul>
+  </nav>
+</div>
+
+<!-- MAIN CONTENT -->
+<div id="main_content_wrap" class="outer">
+  <section id="main_content" class="inner">
+<h2 id="getting-started">Getting Started</h2>
+<p>In order to use Origin, you will need GCC 6.0. This is currently in <a href="https://gcc.gnu.org/develop.html">development</a> and may need to be built from source.</p>
+<h3 id="installing-gcc">Installing GCC</h3>
+<p>The complete instructions on how to install GCC from source can be found here: https://gcc.gnu.org/install/. You will be installing GCC from source. Note that there may be nightly releases that can be installed using your favorite package manager. Any build after August 2015 will suffice.</p>
+<p>I recommend downloading the GCC source <em>before</em> trying to install the numerous pre-requisites. Those can be installed using a script in the GCC source tree. After checking GCC out from SVN (or otherwise obtaining the source code), just run this:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash">    <span class="kw">cd</span> <span class="ot">$GCC_DIR</span>
+    <span class="kw">./contrib/download_prerequisites</span></code></pre>
+<p>It will download and install a number of prerequisites in the source directory to be compiled alongside GCC.</p>
+<p>When configuring the source code, I <em>strongly</em> recommend specifying an alternative installation directory so that the custom install does not conflict with a system install. For example, I use the flag <code>--prefix=$HOME/opt</code>.</p>
+<p>Building GCC can take a long time. To speed the process, you can use the <code>--disable-bootstrap</code> flag during configuration.</p>
+<h3 id="installing-origin">Installing Origin</h3>
+<p>There are, as of yet, no releases of Origin, so you must clone it from its GitHub <a href="https://github.com/asutton/origin">repository</a>. Note that Origin has only been tested on Linux and Mac OS X. It has not been ported to Windows.</p>
+<p>Origin is configured using <code>CMake</code>. It can be built and installed using the following commands:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">cd</span> <span class="ot">$ORIGIN_DIR</span>
+<span class="kw">mkdir</span> build
+<span class="kw">cd</span> build
+<span class="kw">cmake</span> ..
+<span class="kw">make</span></code></pre>
+<p>On Mac OS X, you may get a number of warnings about empty object files. While Origin is largely implemented in header files, every <code>.hpp</code> file has a corresponding <code>.cpp</code> file. These are often empty, and can result in warnings. They can be safely ignored.</p>
+<p>Installing is straightforward.</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">make</span> install</code></pre>
+<p>To specify a custom installation path you can run:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">cmake</span> -DCMAKE_INSTALL_PREFIX:PATH=<span class="ot">${ORIGIN_INSTALL_DIR}</span></code></pre>
+<p>where <code>${ORIGIN_INSTALL_DIR}</code> is installattion root path. Or you can use <code>ccmake</code> to modify the biuld.</p>
+<p>Header files will be installed in <code>${ORIGIN_INSTALL_DIR}/include</code>, and the library binaries in <code>${ORIGIN_INSTALL_DIR}/lib</code>.</p>
+<h3 id="using-origin">Using Origin</h3>
+<p>The obligatory “Hello, world” program for Origin is:</p>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// Definitins of common concepts</span>
+<span class="ot">#include &lt;origin/generic.hpp&gt;</span>
+
+<span class="co">// Declares cout</span>
+<span class="ot">#include &lt;iostream&gt;</span>
+
+<span class="kw">template</span>&lt;origin::Output_streamable T&gt;
+<span class="dt">void</span> f(T <span class="dt">const</span>&amp; t)
+{
+  std::cout &lt;&lt; t &lt;&lt; <span class="ch">&#39;\n&#39;</span>;
+}
+
+<span class="dt">int</span> main()
+{
+  f(<span class="st">&quot;Hello, world&quot;</span>);
+}</code></pre>
+<p>In order to compile a programming using the Origin libraries, you must ues the <code>-std=c++1z</code> command line option. This enables concepts within the compiler. If you installed Origin in a non-standard location, you will also need to add that information to the header and linker search paths.</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="ot">${GCC}</span> <span class="kw">-std</span>=c++1z -I <span class="dt">{ORIGIN_INSTALL_DIR}</span>/include -L <span class="dt">{ORIGIN_INSTALL_DIR}</span>/lib hello.cpp -lorigin</code></pre>
+<p>By default, Origin’s library are linked statically, so you should not need to update the dynamic linker’s search path.</p>
+  </section>
+</div>
+
+
+<!-- FOOTER  -->
+<div id="footer_wrap" class="outer">
+  <footer class="inner">
+    <p class="copyright">Origin maintained by <a href="https://github.com/asutton">asutton</a></p>
+    <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+  </footer>
+</div>
+</body>
+</html>

@@ -368,6 +368,11 @@ Full-Width Styles
   background: #212121;
 }
 
+#navbar {
+  margin: 10px 20px;
+  padding-top: 40px;
+  float:left;
+}
 
 
 /*******************************************************************************

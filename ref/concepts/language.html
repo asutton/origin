@@ -64,16 +64,19 @@
 <!-- MAIN CONTENT -->
 <div id="main_content_wrap" class="outer">
   <section id="main_content" class="inner">
-<p>The Origin Libraries are collection of libraries written using the latest features of the C++ Programming Language. They are designed to wrap the C++ Standard Library and provide replacements for older features and new experimental features. The goal of this work is to foster experimentation in library design and to served as a data point for the standardization efforts within C++.</p>
-<p>Currently, this site serves two primary purposes: to document the evolution and usage of concepts, as documented in the ISO Concepts TS, and to provide a basic set of facilities based on that language feature.</p>
-<p>Works is currently focused on the use of concepts to specify and implement a new version of the C++ Standard Library. Note that this work is independent of the ISO Ranges TS (STLv2), although many ideas overlap. Because the Origin Libraries are experimental, certain facilities may be quite different than those proposed for the C++ standard (generally simpler).</p>
-<h2 id="people">People</h2>
-<p>The following people have been active in the design and implementation of C++ concepts, their implementation in GCC, and the design and</p>
+<h1 id="language-concepts">Language concepts</h1>
+<p>The language concepts characterize types by their “shape” or by their categorization according to the C++ Standard. The “shape” of a type is based on its spelling. For example, a pointer type has the shape <code>T*</code>, where <code>T</code> is any other type. Similarly, an array of bound <code>N</code> has the shape <code>T[N]</code>.</p>
+<p>The C++ language and standard library also define categories based on semantic properties of types. For example, the <em>object types</em> are all those types that can hold a value in memory, which is everything except <code>void</code>, function types, and reference types. A <em>polymorphic type</em> is one that has at least one virtual function.</p>
+<p>The language concepts closely parallel type traits with similar names. We use the suffix <code>_type</code> to indicate that these are characterizations and not specifications of abstract interfaces. They are:</p>
 <ul>
-<li><a href="http://asutton.github.io/">Andrew Sutton</a></li>
-<li>Gabriel Dos Reis</li>
-<li><a href="http://www.stroustrup.com/">Bjarne Stroustrup</a></li>
-<li>Braden Obrzut</li>
+<li><a href="integral_type.html"><code>Integral_type</code></a></li>
+<li><code>Signed_type</code></li>
+<li><code>Unsigned_type</code></li>
+<li><code>Floating_point_type</code></li>
+<li><code>Pointer_type</code></li>
+<li><code>Lvalue_reference_type</code></li>
+<li><code>Rvalue_reference_type</code></li>
+<li><code>Array_type</code></li>
 </ul>
   </section>
 </div>
