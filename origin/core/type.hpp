@@ -11,22 +11,26 @@
 
 #include <origin/core/config.hpp>
 
-// TODO: Remove when libstdc++ on Cygwin defines numeric conversion functions.
-#if !ORIGIN_HAVE_STD_TO_STRING
-#include <stdarg.h>
-#include <stdio.h>
+// TODO: Remove when libstdc++ on Cygwin defines numeric 
+// conversion functions. We need to include C libray
+// headers because these functions don't exist in std.
+#if !defined(ORIGIN_HAVE_STD_TO_STRING)
+#  include <stdio.h>
 #endif
 
+#include <cstdarg>
 #include <string>
 #include <typeinfo>
 
-namespace origin {
+
+namespace origin 
+{
 
 std::string typestr(std::type_info const& info);
 
-
 // Helper types.
-namespace core {
+namespace core 
+{
 
 template<typename... Args>
 struct typestr_dispatch;
@@ -40,9 +44,12 @@ struct type_to_string;
 template<typename... Args>
 struct typelist_to_string;
 
-template <typename String, typename CharT = typename String::value_type>
-String to_xstring(int (*convf)(CharT*, std::size_t, const CharT*, va_list),
-  std::size_t n, const CharT* fmt, ...);
+//  The type of a printf-like function.
+template<typename C>
+using print_fn = int (*)(C*, std::size_t, const C*, va_list);
+
+template <typename S, typename C = typename S::value_type>
+S to_xstring(print_fn<C>, std::size_t, const C*, ...);
 
 std::string to_string(std::size_t value);
 
@@ -285,13 +292,16 @@ struct typelist_to_string<>
 };
 
 
+namespace
+{
+
 /**
  * Helper for the to_string/to_wstring functions.
  *
  * Shamelessly ripped from libstdc++'s ext/string_conversions.h header.
  *
- * @tparam String Type of the resulting string.
- * @tparam CharT  The resulting string's character type.
+ * @tparam S      Type of the resulting string.
+ * @tparam C      The resulting string's character type.
  * @param  convf  A pointer to the function to use for numeric conversion.
  * @param  n      The maximum number of characters to write to the
  *                resulting string.
@@ -302,21 +312,20 @@ struct typelist_to_string<>
  *                buffer of length @p n, format string @p fmt, and the
  *                variadic arguments following @p fmt.
  */
-template <typename String, typename CharT>
-String to_xstring(int (*convf)(CharT*, std::size_t, const CharT*, va_list),
-  std::size_t n, const CharT* fmt, ...)
+template <typename S, typename C>
+S 
+to_xstring(print_fn<C> convf, std::size_t n, C const* fmt, ...)
 {
-  CharT* s = static_cast<CharT*>(__builtin_alloca(sizeof(CharT) * n));
-
+  C* s = static_cast<C*>(__builtin_alloca(sizeof(C) * n));
   va_list args;
   va_start(args, fmt);
-
-  const int len = convf(s, n, fmt, args);
-
+  int const len = convf(s, n, fmt, args);
   va_end(args);
-
-  return String(s, s + len);
+  return S(s, s + len);
 }
+
+
+} // namespace
 
 
 /**
@@ -325,13 +334,13 @@ String to_xstring(int (*convf)(CharT*, std::size_t, const CharT*, va_list),
  * @return       A string holding the character representation of the
  *               value of @p value.
  */
-inline std::string to_string(std::size_t value)
+inline std::string 
+to_string(std::size_t value)
 {
-#if ORIGIN_HAVE_STD_TO_STRING
+#if defined(ORIGIN_HAVE_STD_TO_STRING)
   return std::to_string(value);
 #else
-  return to_xstring<std::string>(&vsnprintf, 4 * sizeof(std::size_t),
-    "%zu", value);
+  return to_xstring<std::string>(&vsnprintf, 4 * sizeof(std::size_t), "%zu", value);
 #endif
 }
 

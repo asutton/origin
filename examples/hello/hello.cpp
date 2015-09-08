@@ -5,6 +5,7 @@
 
 #include <iostream>
 
+
 template<origin::Output_streamable T>
 void f(T const& t)
 {

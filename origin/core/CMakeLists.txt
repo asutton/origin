@@ -22,9 +22,8 @@ add_library(origin-core
   function.cpp
   finally.cpp
   type.cpp)
-if(CXX_COMPILER_HAS_STDCXX1Z_FLAG)
-  target_compile_options(origin-core PUBLIC -std=c++1z)
-endif()
+
+target_compile_options(origin-core PUBLIC -std=c++1z)
 target_include_directories(origin-core
   PUBLIC "$<BUILD_INTERFACE:${Origin_SOURCE_DIR};${Origin_BINARY_DIR}>")
 add_dependencies(check origin-core)
