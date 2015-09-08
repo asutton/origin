@@ -16,7 +16,7 @@ check_cxx_symbol_exists("std::to_string(std::size_t)" "string"
 add_compiler_export_flags()
 
 # Add a library.
-add_library(origin-core
+add_library(origin-core STATIC
   traits.cpp
   concepts.cpp
   function.cpp

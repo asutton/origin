@@ -27,9 +27,7 @@ typestr(std::type_info const& info)
 }
 
 #else
-
 #  error No compiler support for rendering type names
-
 #endif
 
 } // namespace origin

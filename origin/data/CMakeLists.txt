@@ -14,10 +14,9 @@ include(GenerateExportHeader)
 add_compiler_export_flags()
 
 # Add the library.
-add_library(origin-data vector.cpp)
-if(CXX_COMPILER_HAS_STDCXX1Z_FLAG)
-  target_compile_options(origin-data PUBLIC -std=c++1z)
-endif()
+add_library(origin-data STATIC
+  vector.cpp)
+target_compile_options(origin-data PUBLIC -std=c++1z)
 target_include_directories(origin-data
   PUBLIC "$<BUILD_INTERFACE:${Origin_SOURCE_DIR};${Origin_BINARY_DIR}>")
 target_link_libraries(origin-data

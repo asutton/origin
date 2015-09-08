@@ -9,3 +9,13 @@ add_subdirectory(algorithm)
 add_subdirectory(data)
 
 # add_subdirectory(numeric)
+
+
+add_library(origin origin.cpp)
+target_link_libraries(origin PUBLIC
+  origin-core 
+  origin-memory
+  origin-iterator
+  origin-range
+  origin-algorithm
+  origin-data)

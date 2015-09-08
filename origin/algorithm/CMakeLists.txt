@@ -13,7 +13,7 @@ include(GenerateExportHeader)
 add_compiler_export_flags()
 
 # Add a library.
-add_library(origin-algorithm
+add_library(origin-algorithm STATIC
   concepts.cpp
   copy.cpp
   count.cpp
