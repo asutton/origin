@@ -1,0 +1,44 @@
+# CTest custom script for
+# Source directory: @CMAKE_CURRENT_SOURCE_DIR@
+# Build directory: @CMAKE_CURRENT_BINARY_DIR@
+
+# See http://www.cmake.org/Wiki/CMake/Testing_With_CTest and
+# http://www.kitware.com/blog/home/post/27 for more information regarding
+# this file.
+
+set(CTEST_CUSTOM_ERROR_MATCH
+  ${CTEST_CUSTOM_ERROR_MATCH}
+
+  # Include diagnostic messages of the form
+  # "<source file>:<line #>:<column #>: error: <message>" (GCC, Clang...)
+  "^.+:[0-9]+:[0-9]+: error: .+$"
+  )
+
+set(CTEST_CUSTOM_ERROR_EXCEPTION
+  ${CTEST_CUSTOM_ERROR_EXCEPTION}
+
+  # Exclude messages like
+  # "g++: error: CMakeFiles/<target>.dir/<source>.cpp.o: No such file or directory"
+  "^.*g\\+\\+.*: error: .+$"
+  )
+
+set(CTEST_CUSTOM_WARNING_MATCH
+  ${CTEST_CUSTOM_WARNING_MATCH}
+
+  # Include diagnostic messages of the form
+  # "<source file>:<line #>:<column #>: warning: <message>" (GCC, Clang...)
+  "^.+:[0-9]+:[0-9]+: warning: .+$"
+  )
+
+list(APPEND CTEST_EXTRA_COVERAGE_GLOB "*.cpp" "*.hpp" "*.ipp")
+list(REMOVE_DUPLICATES CTEST_EXTRA_COVERAGE_GLOB)
+
+set(CTEST_CUSTOM_COVERAGE_EXCLUDE
+  ${CTEST_CUSTOM_COVERAGE_EXCLUDE}
+
+  # Exclude try_compile sources from coverage results:
+  "/CMakeFiles/CMakeTmp/"
+
+  # Exclude tests:
+  "/.*\\.test/"
+  )

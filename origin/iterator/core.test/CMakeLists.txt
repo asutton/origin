@@ -1,6 +1,8 @@
 # Copyright (c) 2009-2015 Andrew Sutton
 # All rights reserved
 
+link_libraries(origin-iterator)
+
 # Read/write categories
 add_run_test(iter_readable                readable.cpp)
 add_run_test(iter_writable                writable.cpp)

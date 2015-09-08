@@ -4,14 +4,14 @@
 #ifndef ORIGIN_CORE_CONCEPTS_HPP
 #define ORIGIN_CORE_CONCEPTS_HPP
 
-#include "traits.hpp"
+#include <origin/core/traits.hpp>
 
 #include <type_traits>
 #include <iosfwd>
 #include <utility>
 
 
-namespace origin 
+namespace origin
 {
 
 
@@ -19,7 +19,7 @@ namespace origin
 // Boolean types
 
 // A conditional type is one that can be explicitly
-// implicitly converted to bool. Conditional types can 
+// implicitly converted to bool. Conditional types can
 // be used wherever a contextual conversion is needed.
 template<typename T>
 concept bool Conditional()
@@ -60,19 +60,19 @@ Boolean()
 // that can be compared using the C++ relational operators.
 
 
-// A type `T` is equality comparable if expressions 
+// A type `T` is equality comparable if expressions
 // of that type can be compared using the operators
 // `==` and `!=`.
 //
-// For all expressions `a` and `b` for which `a == b` 
-// returns true, we say that `a` and `b` are *equal*. 
-// 
-// The expression `a != b` shall be true if and only 
+// For all expressions `a` and `b` for which `a == b`
+// returns true, we say that `a` and `b` are *equal*.
+//
+// The expression `a != b` shall be true if and only
 // if `a` and `b` are not equal.
 template<typename T>
-concept bool 
+concept bool
 Equality_comparable() {
-  return requires (T a, T b) 
+  return requires (T a, T b)
   {
     { a == b } -> Boolean;
     { a != b } -> Boolean;
@@ -81,13 +81,13 @@ Equality_comparable() {
 
 
 // A type `T` is weakly ordered if expressions of that
-// type can compared using the operators `<`, `>`, `<=`, 
+// type can compared using the operators `<`, `>`, `<=`,
 // and `>=`.
 //
-// For all expressions `a` and `b` for which `a == b` 
-// returns true, we say that `a` is said to be *less* 
-// than `b`. 
-// 
+// For all expressions `a` and `b` for which `a == b`
+// returns true, we say that `a` is said to be *less*
+// than `b`.
+//
 // The expression `a > b` shall be true if and only if
 // `b` is less than `a.`
 //
@@ -100,10 +100,10 @@ Equality_comparable() {
 // For all exprssions `a` and `b` for which `a <= b` and
 // `b <= a` are true, `a` and `b` are said to be *equivalent*.
 template<typename T>
-concept bool 
+concept bool
 Weakly_ordered()
 {
-  return requires (T a, T b) 
+  return requires (T a, T b)
   {
     { a < b } -> Boolean;
     { a > b } -> Boolean;
@@ -113,7 +113,7 @@ Weakly_ordered()
 }
 
 
-// A type `T` is totally ordered when it is both equality 
+// A type `T` is totally ordered when it is both equality
 // comparable and weakly ordered.
 //
 // For all exprssions `a` and `b` for which `a <= b` and
@@ -133,19 +133,19 @@ concept bool Totally_ordered()
 // of values having different types.
 
 
-// A pair of types `T` and `U` are (cross-type) equality 
-// comparable they share an equality comparable common type 
-// and every possible invocation of the `==` and `!=` 
-// operators with arguments of type `T` and `U` is equal to 
+// A pair of types `T` and `U` are (cross-type) equality
+// comparable they share an equality comparable common type
+// and every possible invocation of the `==` and `!=`
+// operators with arguments of type `T` and `U` is equal to
 // first converting those arguments to the common type.
 template<typename T, typename U>
-concept bool 
-Equality_comparable() 
+concept bool
+Equality_comparable()
 {
-  return Equality_comparable<T>() 
-      && Equality_comparable<U>() 
-      && Common<T, U>() 
-      && requires (T t, T u) 
+  return Equality_comparable<T>()
+      && Equality_comparable<U>()
+      && Common<T, U>()
+      && requires (T t, T u)
       {
            { t == u } -> bool;
            { u == t } -> bool;
@@ -159,9 +159,9 @@ Equality_comparable()
 template<typename T, typename U>
 concept bool Weakly_ordered()
 {
-  return Weakly_ordered<T>() 
-      && Weakly_ordered<U>() 
-      && Common<T, U>() 
+  return Weakly_ordered<T>()
+      && Weakly_ordered<U>()
+      && Common<T, U>()
       && requires (T t, T u) {
            { t < u } -> bool;
            { u < t } -> bool;
@@ -179,7 +179,7 @@ concept bool Weakly_ordered()
 template<typename T, typename U>
 concept bool Totally_ordered()
 {
-  return Totally_ordered<T>() 
+  return Totally_ordered<T>()
       && Totally_ordered<U>()
       && Equality_comparable<T, U>()
       && Weakly_ordered<T, U>();
@@ -195,9 +195,9 @@ concept bool Totally_ordered()
 
 // Is true if a variable of type T can be destroyed.
 template<typename T>
-concept bool 
-Destructible() 
-{ 
+concept bool
+Destructible()
+{
   // return std::is_destructible<T>::value;
   return requires (T* t) { t->~T(); };
 }
@@ -205,10 +205,10 @@ Destructible()
 // Is true if and only if an object of type T can be constructed with
 // the types of arguments in Args.
 template<typename T, typename... Args>
-concept bool 
-Constructible() 
+concept bool
+Constructible()
 {
-  return Destructible<T>() && std::is_constructible<T, Args...>::value; 
+  return Destructible<T>() && std::is_constructible<T, Args...>::value;
 }
 
 
@@ -218,28 +218,28 @@ Constructible()
 // also be default initialized. Types modeling this concept must ensure
 // that any two default initialized objects must have the same value.
 template<typename T>
-concept bool 
-Default_constructible() 
-{ 
-  return Constructible<T>(); 
+concept bool
+Default_constructible()
+{
+  return Constructible<T>();
 }
 
 
 // Is true if and only if an object of type T can be move constructed.
 template<typename T>
-concept bool 
-Move_constructible() 
-{ 
-  return Constructible<T, T&&>(); 
+concept bool
+Move_constructible()
+{
+  return Constructible<T, T&&>();
 }
 
 
 // Is true if and only if an object of type T can be copy constructed.
 template<typename T>
-concept bool 
-Copy_constructible() 
+concept bool
+Copy_constructible()
 {
-  return Move_constructible<T>() && Constructible<T, const T&>(); 
+  return Move_constructible<T>() && Constructible<T, const T&>();
 }
 
 
@@ -248,46 +248,46 @@ Copy_constructible()
 //
 // Note that T is typically expected to be an lvalue reference type.
 template<typename T, typename U>
-concept bool 
-Assignable() 
-{ 
-  return std::is_assignable<T, U>::value; 
+concept bool
+Assignable()
+{
+  return std::is_assignable<T, U>::value;
 }
 
 
 // Is true if and only if an object of type T can be move assigned.
 template<typename T>
-concept bool 
-Move_assignable() 
-{ 
-  return Assignable<T&, T&&>(); 
+concept bool
+Move_assignable()
+{
+  return Assignable<T&, T&&>();
 }
 
 
 // Is true if and only if an object of type T can be copy assigned.
 template<typename T>
-concept bool 
-Copy_assignable() 
+concept bool
+Copy_assignable()
 {
-  return Move_assignable<T>() && Assignable<T&, const T&>(); 
+  return Move_assignable<T>() && Assignable<T&, const T&>();
 }
 
 
 // Is true if and only if T supports move semantics. The type T must
 // be move constructible and move assignable.
 template<typename T>
-concept bool 
-Movable() 
+concept bool
+Movable()
 {
   return Move_constructible<T>() && Move_assignable<T>();
 }
 
 
-// Is true if and only if T supports copy semantics. The type T must 
-// be copy constructible and copy assignable. 
+// Is true if and only if T supports copy semantics. The type T must
+// be copy constructible and copy assignable.
 template<typename T>
-concept bool 
-Copyable() 
+concept bool
+Copyable()
 {
   return Copy_constructible<T>() && Copy_assignable<T>();
 }
@@ -301,8 +301,8 @@ Copyable()
 // be default constructed and copied, but have no default definition
 // of equality.
 template<typename T>
-concept bool 
-Semiregular() 
+concept bool
+Semiregular()
 {
   return Default_constructible<T>() && Copyable<T>();
 }
@@ -312,8 +312,8 @@ Semiregular()
 // Regular types can be used like most scalar types, although they
 // are not guaranteed to be ordered (comparble with `<`).
 template<typename T>
-concept bool 
-Regular() 
+concept bool
+Regular()
 {
   return Semiregular<T>() && Equality_comparable<T>();
 }
@@ -321,8 +321,8 @@ Regular()
 
 // A type is ordered if it is a regular type that is also totally ordered.
 template<typename T>
-concept bool 
-Ordered() 
+concept bool
+Ordered()
 {
   return Regular<T>() && Totally_ordered<T>();
 }
@@ -342,8 +342,8 @@ Ordered()
 // and the template argument pack `...Args` contains the
 // types of arguments that `F` must accept.
 template<typename F, typename... Args>
-concept bool 
-Function() 
+concept bool
+Function()
 {
   return Copy_constructible<F>()
      && requires (F f, Args... args) { f(args...); };
@@ -353,11 +353,11 @@ Function()
 // A predicate is a function whose result is `true` or
 // `false`.
 template<typename P, typename... Args>
-concept bool 
-Predicate() 
+concept bool
+Predicate()
 {
-  return requires (P pred, Args... args) { 
-    { pred(args...) } -> bool; 
+  return requires (P pred, Args... args) {
+    { pred(args...) } -> bool;
   };
 }
 
@@ -365,8 +365,8 @@ Predicate()
 // A relation is a binary predicate whose arguments have the
 // same type.
 template<typename R, typename T>
-concept bool 
-Relation() 
+concept bool
+Relation()
 {
   return Predicate<R, T, T>();
 }
@@ -374,8 +374,8 @@ Relation()
 
 // TODO: Document me.
 template<typename R, typename T, typename U>
-concept bool 
-Relation() 
+concept bool
+Relation()
 {
   return Relation<R, T>()
       && Relation<R, U>()
@@ -390,8 +390,8 @@ Relation()
 // A unary operation is a function that whose argument
 // type is the same as its return type.
 template<typename F, typename T>
-concept bool 
-Unary_operation() 
+concept bool
+Unary_operation()
 {
   return requires (F f, T a) {
            {f(a)} -> T;
@@ -402,8 +402,8 @@ Unary_operation()
 // A binary operation is a function whose argument types
 // are the same as the return type.
 template<typename F, typename T>
-concept bool 
-Binary_operation() 
+concept bool
+Binary_operation()
 {
   return requires (F f, T a, T b) {
            {f(a, b)} -> T;
@@ -413,8 +413,8 @@ Binary_operation()
 
 // TODO: Document me.
 template<typename F, typename T, typename U>
-concept bool 
-Binary_operation() 
+concept bool
+Binary_operation()
 {
   return Binary_operation<F, T>()
       && Binary_operation<F, U>()
@@ -439,13 +439,13 @@ Binary_operation()
 template<typename T>
 concept bool Number()
 {
-  return Ordered<T> 
+  return Ordered<T>
     && requires (T a, T b) {
       { a + b } -> T;
       { a - b } -> T;
       { a * b } -> T;
       { a / b } -> T;
-    } 
+    }
     && requires (T& a, T b) {
       { a += b } -> T&;
       { a -= b } -> T&;
@@ -468,14 +468,14 @@ concept bool String()
 // Streaming concepts                                       [concepts.stream] //
 //
 // The I/O streaming concepts relate types the std::istream and
-// std::ostream streaming facilities. 
+// std::ostream streaming facilities.
 
 
 // A type is input streamable if it can be extracted from a formatted
 // input stream derived from std::istream.
 template<typename T>
 concept bool
-Input_streamable() 
+Input_streamable()
 {
   return requires(std::istream& s, T x) {
     s >> x;
@@ -487,7 +487,7 @@ Input_streamable()
 // output stream dervied from std::ostream.
 template<typename T>
 concept bool
-Output_streamable() 
+Output_streamable()
 {
   return requires(std::ostream& s, T x) {
     s << x;
@@ -498,7 +498,7 @@ Output_streamable()
 // A type is streamable if it is both input and output streamable.
 template<typename T>
 concept bool
-Streamable() 
+Streamable()
 {
   return Input_streamable<T>() and Output_streamable<T>();
 }
@@ -506,7 +506,7 @@ Streamable()
 
 // Common associated types
 
-namespace core_impl 
+namespace core_impl
 {
 
 template<typename T>
@@ -585,7 +585,7 @@ template<typename T, std::size_t N>
 
 template<typename T>
   requires requires () { typename T::size_type; }
-    struct get_size_type<T> { using type = typename T::size_type; };  
+    struct get_size_type<T> { using type = typename T::size_type; };
 
 template<typename T>
   using size_type = typename get_size_type<Strip<T>>::type;

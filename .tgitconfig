@@ -1,0 +1,4 @@
+[bugtraq]
+	url = https://github.com/asutton/origin/issues/%BUGID%
+	warnifnoissue = false
+	logregex = "#\\d+|GH-\\d+|asutton(/origin)?#\\d+\n\\d+"

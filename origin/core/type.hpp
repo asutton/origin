@@ -9,9 +9,16 @@
 // `typestr` that returns a human readable representation
 // of a type.
 
+#include <origin/core/config.hpp>
+
+// TODO: Remove when libstdc++ on Cygwin defines numeric conversion functions.
+#if !ORIGIN_HAVE_STD_TO_STRING
+#include <stdarg.h>
+#include <stdio.h>
+#endif
+
 #include <string>
 #include <typeinfo>
-
 
 namespace origin {
 
@@ -21,17 +28,23 @@ std::string typestr(std::type_info const& info);
 // Helper types.
 namespace core {
 
-template<typename... Args> 
+template<typename... Args>
 struct typestr_dispatch;
 
-template<typename T> 
+template<typename T>
 struct type_to_string;
 
 template<typename T>
 struct type_to_string;
 
-template<typename... Args> 
+template<typename... Args>
 struct typelist_to_string;
+
+template <typename String, typename CharT = typename String::value_type>
+String to_xstring(int (*convf)(CharT*, std::size_t, const CharT*, va_list),
+  std::size_t n, const CharT* fmt, ...);
+
+std::string to_string(std::size_t value);
 
 } // namespace core
 
@@ -47,7 +60,7 @@ struct typelist_to_string;
 //    typestr(args...);
 //
 // The first returns a string containing the names of the explicitly specified
-// type arguments. 
+// type arguments.
 //
 // The second returns the types of the given arguments. Note that the string
 // returned from second overload will reflect the type deduction rules for
@@ -57,8 +70,8 @@ struct typelist_to_string;
 // When multiple arguments are given, the resulting string is written in
 // initializer list format: `{T1, T2, ...}`.
 template<typename... Args>
-inline std::string 
-typestr() 
+inline std::string
+typestr()
 {
   return core::typestr_dispatch<Args...>{}();
 }
@@ -67,8 +80,8 @@ typestr()
 // Returns the string representation of the types in
 // `args...`.
 template<typename... Args>
-inline std::string 
-typestr(Args&&...) 
+inline std::string
+typestr(Args&&...)
 {
   return typestr<Args...>();
 }
@@ -77,42 +90,42 @@ typestr(Args&&...)
 namespace core
 {
 // The typestr dispatcher is used to format type sequences. If multiple types
-// are given, the dispatcher will generate the string "{T1, T2, ...}". If a 
+// are given, the dispatcher will generate the string "{T1, T2, ...}". If a
 // single type is given, the result is just the name of the type.
 template<typename... Args>
-struct typestr_dispatch 
+struct typestr_dispatch
 {
   std::string operator()() const { return typelist_to_string<Args...>{}(); }
 };
- 
+
 
 // Specialization matching a single type.
 template<typename T>
-struct typestr_dispatch<T> 
+struct typestr_dispatch<T>
 {
-  std::string operator()() const 
-  { 
-    return type_to_string<T>{}(); 
+  std::string operator()() const
+  {
+    return type_to_string<T>{}();
   }
 };
 
-  
+
 // Return the string represntation of the main type T.
 template<typename T>
-struct type_to_string 
+struct type_to_string
 {
-  std::string operator()() const 
-  { 
-    return typestr(typeid(T)); 
+  std::string operator()() const
+  {
+    return typestr(typeid(T));
   }
 };
 
-  
+
 // Return the string representation of the const type T.
 template<typename T>
-struct type_to_string<const T> 
+struct type_to_string<const T>
 {
-  std::string operator()() const 
+  std::string operator()() const
   {
     return typestr<T>() + " const";
   }
@@ -121,9 +134,9 @@ struct type_to_string<const T>
 
 // Return the string representation of the volatile type T.
 template<typename T>
-struct type_to_string<volatile T> 
+struct type_to_string<volatile T>
 {
-  std::string operator()() const 
+  std::string operator()() const
   {
     return typestr<T>() + " volatile";
   }
@@ -132,9 +145,9 @@ struct type_to_string<volatile T>
 
 // Return the string representation of the cv-qualified type T.
 template<typename T>
-struct type_to_string<const volatile T> 
+struct type_to_string<const volatile T>
 {
-  std::string operator()() const 
+  std::string operator()() const
   {
     return typestr<T>() + " const volatile";
   }
@@ -143,9 +156,9 @@ struct type_to_string<const volatile T>
 
 // Return the string representation of pointer types.
 template<typename T>
-struct type_to_string<T*> 
+struct type_to_string<T*>
 {
-  std::string operator()() const 
+  std::string operator()() const
   {
     return typestr<T>() + "*";
   }
@@ -154,9 +167,9 @@ struct type_to_string<T*>
 
 // Return the string represntation for lvalue-reference types.
 template<typename T>
-struct type_to_string<T&> 
+struct type_to_string<T&>
 {
-  std::string operator()() const 
+  std::string operator()() const
   {
     return typestr<T>() + "&";
   }
@@ -165,9 +178,9 @@ struct type_to_string<T&>
 
 // Return the string represntation for rvalue-referece types.
 template<typename T>
-struct type_to_string<T&&> 
+struct type_to_string<T&&>
 {
-  std::string operator()() const 
+  std::string operator()() const
   {
     return typestr<T>() + "&&";
   }
@@ -176,8 +189,8 @@ struct type_to_string<T&&>
 
 // Return the string representation of function paramter lists.
 template<typename... Args>
-inline std::string 
-function_args_to_string() 
+inline std::string
+function_args_to_string()
 {
   return '(' + typelist_to_string<Args...>{}() + ')';
 }
@@ -185,9 +198,9 @@ function_args_to_string()
 
 // Return the string representation of a function type.
 template<typename R, typename... Args>
-struct type_to_string<R(Args...)> 
+struct type_to_string<R(Args...)>
 {
-  std::string operator()() const 
+  std::string operator()() const
   {
     return typestr<R>() + function_args_to_string<Args...>();
   }
@@ -196,9 +209,9 @@ struct type_to_string<R(Args...)>
 
 // Return the string representation of a function pointer type.
 template<typename R, typename... Args>
-struct type_to_string<R(*)(Args...)> 
+struct type_to_string<R(*)(Args...)>
 {
-  std::string operator()() const 
+  std::string operator()() const
   {
     return typestr<R>() + "(*)" + function_args_to_string<Args...>();
   }
@@ -207,9 +220,9 @@ struct type_to_string<R(*)(Args...)>
 
 // Return the string representation of an array of unknown bounds type.
 template<typename T>
-struct type_to_string<T[]> 
+struct type_to_string<T[]>
 {
-  std::string operator()() const 
+  std::string operator()() const
   {
     return typestr<T>() + "[]";
   }
@@ -218,32 +231,32 @@ struct type_to_string<T[]>
 
 // Return the string representation of an array of known bounds type.
 template<typename T, std::size_t N>
-struct type_to_string<T[N]> 
+struct type_to_string<T[N]>
 {
-  std::string operator()() const 
+  std::string operator()() const
   {
-    return typestr<T>() + '[' + std::to_string(N) + ']';
+    return typestr<T>() + '[' + to_string(N) + ']';
   }
 };
 
 
-// Return the string representation of an reference to array of known 
+// Return the string representation of an reference to array of known
 // bounds type.
 template<typename T, std::size_t N>
-struct type_to_string<T(&)[N]> 
+struct type_to_string<T(&)[N]>
 {
-  std::string operator()() const 
+  std::string operator()() const
   {
-    return typestr<T>() + "(&)" + '[' + std::to_string(N) + ']';
+    return typestr<T>() + "(&)" + '[' + to_string(N) + ']';
   }
 };
 
 
 // Return the string representation of a list of types.
 template<typename T, typename... Args>
-struct typelist_to_string<T, Args...> 
+struct typelist_to_string<T, Args...>
 {
-  std::string operator()() const 
+  std::string operator()() const
   {
     return typestr<T>() + ", " + typelist_to_string<Args...>{}();
   }
@@ -252,24 +265,75 @@ struct typelist_to_string<T, Args...>
 
 // Return the string representation of a list of types (single type).
 template<typename T>
-struct typelist_to_string<T> 
+struct typelist_to_string<T>
 {
-  std::string operator()() const 
-  { 
-    return typestr<T>(); 
+  std::string operator()() const
+  {
+    return typestr<T>();
   }
 };
 
 
 // Return the string representation of a list of types (empty list).
 template<>
-struct typelist_to_string<> 
+struct typelist_to_string<>
 {
-    std::string operator()() const 
-    { 
-      return std::string{}; 
+    std::string operator()() const
+    {
+      return std::string{};
     }
 };
+
+
+/**
+ * Helper for the to_string/to_wstring functions.
+ *
+ * Shamelessly ripped from libstdc++'s ext/string_conversions.h header.
+ *
+ * @tparam String Type of the resulting string.
+ * @tparam CharT  The resulting string's character type.
+ * @param  convf  A pointer to the function to use for numeric conversion.
+ * @param  n      The maximum number of characters to write to the
+ *                resulting string.
+ * @param  fmt    A format string specifying how the values in the
+ *                variable argument list are to be interpreted.
+ * @param  ...    Additional variadic arguments to be passed to @p convf.
+ * @return        A string created by invoking @p convf with a character
+ *                buffer of length @p n, format string @p fmt, and the
+ *                variadic arguments following @p fmt.
+ */
+template <typename String, typename CharT>
+String to_xstring(int (*convf)(CharT*, std::size_t, const CharT*, va_list),
+  std::size_t n, const CharT* fmt, ...)
+{
+  CharT* s = static_cast<CharT*>(__builtin_alloca(sizeof(CharT) * n));
+
+  va_list args;
+  va_start(args, fmt);
+
+  const int len = convf(s, n, fmt, args);
+
+  va_end(args);
+
+  return String(s, s + len);
+}
+
+
+/**
+ * Converts a numeric value to std::string.
+ * @param  value A numeric value to convert.
+ * @return       A string holding the character representation of the
+ *               value of @p value.
+ */
+inline std::string to_string(std::size_t value)
+{
+#if ORIGIN_HAVE_STD_TO_STRING
+  return std::to_string(value);
+#else
+  return to_xstring<std::string>(&vsnprintf, 4 * sizeof(std::size_t),
+    "%zu", value);
+#endif
+}
 
 
 } // namespace core

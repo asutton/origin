@@ -1,0 +1,67 @@
+/**
+ * @file    origin/data/config.hpp
+ * The configuration header for the Origin.Data library.
+ *
+ * @date    9/7/2015
+ */
+
+/* config.hpp. Generated from config.hpp.in by cmake. */
+
+#ifndef ORIGIN_DATA_CONFIG_HPP
+#define ORIGIN_DATA_CONFIG_HPP
+
+/* Name of package. */
+#define ORIGIN_PACKAGE "@PACKAGE_NAME@"
+
+/* Define to the full name of this package. */
+#define ORIGIN_PACKAGE_NAME "@PACKAGE_NAME@"
+
+/* Define to the one symbol short name of this package. */
+#define ORIGIN_PACKAGE_TARNAME "@PACKAGE_TARNAME@"
+
+/* Define to the version of this package. */
+#define ORIGIN_PACKAGE_VERSION "@PACKAGE_VERSION@"
+
+/* Define to the full name and version of this package. */
+#define ORIGIN_PACKAGE_STRING "@PACKAGE_STRING@"
+
+/* Define to the address where bug reports for this package should be sent. */
+#define ORIGIN_PACKAGE_BUGREPORT "@PACKAGE_BUGREPORT@"
+
+/* Define to the home page for this package. */
+#define ORIGIN_PACKAGE_URL "@PACKAGE_URL@"
+
+/* The version number of the Origin libraries. */
+#define ORIGIN_VERSION "@Origin_VERSION@"
+
+/* The major version of the Origin libraries. */
+#define ORIGIN_VERSION_MAJOR @Origin_VERSION_MAJOR@
+
+/* The minor version of the Origin libraries. */
+#define ORIGIN_VERSION_MINOR @Origin_VERSION_MINOR@
+
+/* The patch version of the Origin libraries. */
+#define ORIGIN_VERSION_PATCH @Origin_VERSION_PATCH@
+
+/* The tweak version of the Origin libraries. */
+#define ORIGIN_VERSION_TWEAK @Origin_VERSION_TWEAK@
+
+/* Define to 1 to enable the short/small string optimization. */
+#cmakedefine01 ORIGIN_DATA_SSO
+
+/* Define to 1 if you have the iconv() function and it works. */
+#cmakedefine ORIGIN_HAVE_ICONV
+
+/* Define as const if the declaration of iconv() needs const. */
+#define ORIGIN_ICONV_CONST @ORIGIN_ICONV_CONST@
+
+/* The size of 'wchar_t', as computed by sizeof. */
+@SIZEOF_WCHAR_T_CODE@
+
+/* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
+   significant byte first (like Motorola and SPARC, unlike Intel). */
+#cmakedefine01 WORDS_BIGENDIAN
+
+#include <origin/data/export.hpp>
+
+#endif // ORIGIN_DATA_CONFIG_HPP

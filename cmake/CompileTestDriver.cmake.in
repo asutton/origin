@@ -1,0 +1,149 @@
+# Compilation test driver script for
+# Project: @PROJECT_NAME@
+# Source directory: @PROJECT_SOURCE_DIR@
+# Build directory: @PROJECT_BINARY_DIR@
+
+# Usage: ${CMAKE_COMMAND} -P ${CMAKE_SCRIPT_MODE_FILE} <config> <target>...
+
+set(CMAKE_MODULE_PATH "@Origin_SOURCE_DIR@/cmake")
+
+include(OriginUtilities)
+
+# Initialize variables used in this script.
+get_filename_component(CMAKE_FILES_DIRECTORY_NAME ${CMAKE_FILES_DIRECTORY} NAME)
+
+if("@CMAKE_GENERATOR@" MATCHES "Make")
+  # Use -k instead of -i for Makefile generators.
+  set(NATIVE_TOOL_OPTIONS -k)
+endif()
+
+if(DEFINED NATIVE_TOOL_OPTIONS)
+  set(CMAKE_BUILD_ADD_NATIVE_TOOL_OPTIONS -- ${NATIVE_TOOL_OPTIONS})
+endif()
+
+# In the top-level build directory, read CTestCustom.cmake if it exists;
+# otherwise, read CTestCustom.ctest.
+include("@CMAKE_BINARY_DIR@/CTestCustom.cmake"
+  RESULT_VARIABLE CTEST_CUSTOM_FILE
+  OPTIONAL)
+if(NOT CTEST_CUSTOM_FILE)
+  include("@CMAKE_BINARY_DIR@/CTestCustom.ctest"
+    RESULT_VARIABLE CTEST_CUSTOM_FILE
+    OPTIONAL)
+  # If CTestCustom.ctest file exists, recursively scan subdirectories for
+  # additional CTestCustom.ctest files and read those, too.
+  if(CTEST_CUSTOM_FILE)
+    file(GLOB_RECURSE CTEST_CUSTOM_FILES
+      "@CMAKE_BINARY_DIR@/*/CTestCustom.ctest")
+    foreach(file ${CTEST_CUSTOM_FILES})
+      include("${file}")
+    endforeach()
+  endif()
+endif()
+
+foreach(var ERROR_MATCH ERROR_EXCEPTION WARNING_MATCH WARNING_EXCEPTION)
+  foreach(regex ${CTEST_CUSTOM_${var}})
+    list(APPEND COMPILE_${var} "(${regex})")
+  endforeach()
+  string_join(COMPILE_${var} "|" ${COMPILE_${var}})
+endforeach()
+
+# Parse command-line arguments.
+set(i 0)
+while(i LESS CMAKE_ARGC)
+  if(CMAKE_ARGV${i} STREQUAL "-P")
+    math(EXPR i "${i} + 2")
+    break()
+  endif()
+  math(EXPR i "${i} + 1")
+endwhile()
+if(NOT i LESS CMAKE_ARGC)
+  message(FATAL_ERROR "A build configuration must be specified.")
+endif()
+set(CONFIGURATION_TYPE "${CMAKE_ARGV${i}}")
+if(NOT CONFIGURATION_TYPE STREQUAL "")
+  set(CMAKE_BUILD_ADD_CONFIGURATION --config "${CONFIGURATION_TYPE}")
+endif()
+math(EXPR i "${i} + 1")
+while(i LESS CMAKE_ARGC)
+  list(APPEND TARGETS "${CMAKE_ARGV${i}}")
+  math(EXPR i "${i} + 1")
+endwhile()
+
+file(STRINGS "@CMAKE_BINARY_DIR@${CMAKE_FILES_DIRECTORY}/TargetDirectories.txt"
+  TARGET_DIRECTORIES)
+
+# Process targets.
+foreach(target ${TARGETS})
+  # Find the clean script for the target.
+  foreach(target_directory ${TARGET_DIRECTORIES})
+    string(REGEX MATCH
+      "^@CMAKE_BINARY_DIR@(/.*)?${CMAKE_FILES_DIRECTORY}/${target}\\.dir$"
+      TARGET_DIR "${target_directory}")
+    if(TARGET_DIR)
+      break()
+    endif()
+  endforeach()
+
+  if(NOT TARGET_DIR)
+    message(WARNING "Invalid target '${target}' (ignored).")
+  else()
+    string(REGEX REPLACE "${CMAKE_FILES_DIRECTORY}/${target}\\.dir$" ""
+      TARGET_BINARY_DIR "${TARGET_DIR}")
+
+    # Clean the target.
+    message(STATUS "Cleaning target '${target}'")
+    execute_process(COMMAND ${CMAKE_COMMAND} -P
+        "${CMAKE_FILES_DIRECTORY_NAME}/${target}.dir/cmake_clean.cmake"
+      WORKING_DIRECTORY "${TARGET_BINARY_DIR}"
+      OUTPUT_QUIET ERROR_QUIET)
+    message(STATUS "Cleaning target '${target}' - done")
+
+    # Build the target.
+    message(STATUS "Compiling target '${target}'")
+    execute_process(COMMAND ${CMAKE_COMMAND}
+        --build "@PROJECT_BINARY_DIR@" ${CMAKE_BUILD_ADD_CONFIGURATION}
+        --target "${target}" --use-stderr
+        ${CMAKE_BUILD_ADD_NATIVE_TOOL_OPTIONS}
+      RESULT_VARIABLE COMPILE_RESULT
+      ERROR_VARIABLE COMPILE_ERROR_CONTENTS
+      OUTPUT_QUIET
+      ERROR_STRIP_TRAILING_WHITESPACE)
+    string(REGEX MATCHALL "[^\r\n]*(\r|\n|\r\n)" COMPILE_ERROR_LINES
+      "${COMPILE_ERROR_CONTENTS}")
+    string(REGEX REPLACE "\r|\n|\r\n" "" COMPILE_ERROR_LINES
+      "${COMPILE_ERROR_LINES}")
+    foreach(compile_error_line ${COMPILE_ERROR_LINES})
+      foreach(var ERROR WARNING)
+        if(compile_error_line MATCHES "${COMPILE_${var}_MATCH}")
+          if(NOT DEFINED COMPILE_${var}_EXCEPTION
+             OR (DEFINED COMPILE_${var}_EXCEPTION
+                 AND NOT compile_error_line MATCHES "${COMPILE_${var}_EXCEPTION}"))
+            list(APPEND COMPILE_${var}S "${compile_error_line}")
+          endif()
+        endif()
+      endforeach()
+    endforeach()
+    list(LENGTH COMPILE_ERRORS COMPILE_ERROR_COUNT)
+    list(LENGTH COMPILE_WARNINGS COMPILE_WARNING_COUNT)
+    if(NOT COMPILE_ERROR_COUNT EQUAL 1)
+      set(COMPILE_ERROR_ADD_S s)
+    endif()
+    if(NOT COMPILE_WARNING_COUNT EQUAL 1)
+      set(COMPILE_WARNING_ADD_S s)
+    endif()
+    if(COMPILE_ERROR_CONTENTS)
+      message("${COMPILE_ERROR_CONTENTS}")
+    endif()
+    message(STATUS "Compiling target '${target}' - exited with status ${COMPILE_RESULT} (${COMPILE_ERROR_COUNT} error${COMPILE_ERROR_ADD_S}, ${COMPILE_WARNING_COUNT} warning${COMPILE_WARNING_ADD_S})")
+
+    if(NOT COMPILE_RESULT EQUAL 0)
+      list(APPEND FAILED_TARGETS "${target}")
+    endif()
+  endif()
+endforeach()
+
+if(NOT "${FAILED_TARGETS}" STREQUAL "")
+  string_join(FAILED_TARGETS_LIST "\n\t" ${FAILED_TARGETS})
+  message(FATAL_ERROR "The following target(s) failed to compile:\n\t${FAILED_TARGETS_LIST}")
+endif()

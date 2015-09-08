@@ -1,6 +1,8 @@
 # Copyright (c) 2009-2015 Andrew Sutton
 # All rights reserved
 
+link_libraries(origin-algorithm)
+
 add_run_test(range_algo_for_each for_each.cpp)
 
 add_run_test(range_algo_all_of all_of.cpp)

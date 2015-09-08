@@ -1,6 +1,8 @@
 # Copyright (c) 2009-2015 Andrew Sutton
 # All rights reserved
 
+link_libraries(origin-range)
+
 add_run_test(range_iterator_type iterator_type.cpp)
 add_run_test(range_sentinel_type sentinel_type.cpp)
 

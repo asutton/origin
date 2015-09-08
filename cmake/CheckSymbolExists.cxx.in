@@ -1,0 +1,9 @@
+@INCLUDES@
+
+int main() {
+#ifndef @SYMBOL_NAME@
+  @ARG_DECLARATIONS@
+  (void)@SYMBOL_USE@;
+#endif
+  return 0;
+}
