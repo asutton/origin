@@ -81,28 +81,38 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <!-- MAIN CONTENT -->
 <div id="main_content_wrap" class="outer">
   <section id="main_content" class="inner">
-<h1 id="destructible-types">Destructible types</h1>
+<h1 id="equality-comparison">Equality comparison</h1>
 <h2 id="synopsis">Synopsis</h2>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;origin/generic.hpp&gt;</span>
 
 <span class="kw">template</span>&lt;<span class="kw">typename</span> T&gt;
-concept <span class="dt">bool</span> Destructible() {
-  <span class="kw">return</span> requires (T t) {
-    { t.~T(); } <span class="kw">noexcept</span>;
+concept <span class="dt">bool</span> Equality_comparable() {
+  <span class="kw">return</span> requires (T a, T b) {
+    { a == b } -&gt; Optional;
+    { a != b } -&gt; Optional;
   };
 }</code></pre>
 <h2 id="documentation">Documentation</h2>
-<p>A <em>destructible type</em> is one whose objects can be destroyed, either when they go out of scope or are explicitly deallocated.</p>
+<p>An <em>equality comparable</em> type can be used with <code>==</code> to determine when its objects are equal (have the same value), and can be used with <code>!=</code> to determine when its objects differ.</p>
 <h2 id="semantics">Semantics</h2>
-<p>When an object is destroyed, either explicitly or implicitly, it releases all owned resources acquired during initialization. A destructible type may allocate or receive shared resources. These are not required to be released upon destruction. For example, a reference-counted string implementation is not required to release its allocated object if the reference count is non-zero.</p>
+<ul>
+<li><p><code>==</code> shall be an equivalence relation (reflexive, symmetric, and transitive).</p></li>
+<li><p>If <code>a == b</code> is <code>true</code>, <code>a</code> is equal to <code>b</code>. In other words, when <code>a == b</code> is true, <code>a</code> and <code>b</code> can be substituted in equality preserving expressions.</p></li>
+<li><p>The expression <code>a != b</code> is equal to <code>!(a == b)</code>.</p></li>
+</ul>
 <h2 id="example">Example</h2>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span>&lt;Destructible T&gt;
-<span class="dt">void</span> f()
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// Assume that g is a regular function.</span>
+<span class="kw">template</span>&lt;<span class="kw">typename</span> T&gt;
+<span class="dt">int</span> g(T);
+
+<span class="kw">template</span>&lt;Equality_comparable T&gt;
+<span class="dt">void</span> f(T a, T b)
 {
-  T x;
-  T* p = <span class="kw">new</span> T;
-  <span class="kw">delete</span> p;     <span class="co">// *p is destroyed here</span>
-}               <span class="co">// x is destroyed here</span></code></pre>
+  <span class="kw">if</span> (a == b) {
+    <span class="co">// Because a and b are equal, we can use </span>
+    <span class="co">// g(a) or g(b) and get the same results.</span>
+  }
+}</code></pre>
   </section>
 </div>
 

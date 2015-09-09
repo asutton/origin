@@ -79,6 +79,20 @@
 <li><code>Ordered</code></li>
 </ul>
 <p>Note that the easiest way to define value types is to allow the compiler to generate as many special functions as possible. The semantics of those functions will (generally) satisfy the requirements of these concepts.</p>
+<h2 id="general-requirements">General requirements</h2>
+<p>The concepts defined in this section do not include syntactic requirements for <code>new</code>, <code>delete</code>, and operator <code>&amp;</code>. For any type <code>T</code> satisfying any of these concepts, a pointer <code>p</code> whose type is <code>T*</code>, and an object <code>x</code> of type <code>T</code>, the following are required:</p>
+<ul>
+<li><p><code>new T &lt;initializer&gt;</code> allocates an object of type <code>T</code> and initializes it with the arguments specified by the initializer.</p></li>
+<li><p><code>delete p</code> destroys the object pointed to be <code>p</code>, causing all of its resources to be released.</p></li>
+<li><p><code>&amp;x</code> returns the same value as <code>std::addressof(x)</code>.</p></li>
+</ul>
+<p>Types may overload these operators, but they must behave in the conventional way.</p>
+<h2 id="equality">Equality</h2>
+<p>Given two objects <code>a</code> and <code>b</code>, we say that “<code>a</code> is equal to <code>b</code>” to mean that they have the same value. This does not mean that the objects have the same state or pattern of bits in their representation. The notion of “value” transcends its representation.</p>
+<p>The “equal to” equivalence relation is defined by the set of operations supported by types. For example, creating a <a href="copyable.html">copy</a> of an object causes the new object to be equal to the original. When two objects compare <a href="equality.html">equal</a> using <code>==</code>, then those objects are in the “equal to” relation.</p>
+<p>An expression is <em>equality preserving</em> if and only if equal operands would yield equal results. For example, given objects <code>x</code> and <code>y</code> of type <code>int</code>, if <code>x</code> is equal to <code>y</code> then <code>x + x</code> is equal to <code>y + y</code>. This expression is equality preserving. In other words, equal values can be <em>substituted</em> in equality preserving expressions.</p>
+<p>In these concepts, all required expressions are required to be equality preserving unless otherwise noted.</p>
+<p>If <code>a</code> and <code>b</code> are equal but have different types, lexical substitution of one for the other may result in ill-formed programs. This can be caused by a failure to provide the necessary overloads for all cases where equal objects of different type can be used interchangeably.</p>
   </section>
 </div>
 

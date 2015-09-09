@@ -82,23 +82,29 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <div id="main_content_wrap" class="outer">
   <section id="main_content" class="inner">
 <h1 id="constructible-concept">Constructible concept</h1>
-<h2 id="declaration">Declaration</h2>
-<p>In <code>&lt;origin/generic.hpp&gt;</code>.</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span>&lt;<span class="kw">typename</span> T, <span class="kw">typename</span>... Args&gt;
+<h2 id="synopsis">Synopsis</h2>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;origin/generic.hpp&gt;</span>
+
+<span class="kw">template</span>&lt;<span class="kw">typename</span> T, <span class="kw">typename</span>... Args&gt;
 concept <span class="dt">bool</span> Destructible() {
   <span class="kw">return</span> requires (Args&amp;&amp;... args) {
     T(std::forward&lt;Args&gt;(args)...);
-    <span class="kw">new</span> T(std::forward&lt;Args&gt;(args)...);
   };
 }</code></pre>
 <h2 id="documentation">Documentation</h2>
-<p>The constructible concept defines the set of types that can be constructed over a sequence of arguments.</p>
+<p>The constructible concept is a purely syntactic construct. It requires that an object or reference of type <code>T</code> can be initialized over a sequence of arguments.</p>
+<h2 id="semantics">Semantics</h2>
+<p>This concept has no semantic requirements.</p>
 <h2 id="example">Example</h2>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span>&lt;Destructible T&gt;
-<span class="dt">void</span> f(T x)
+<pre class="sourceCode cpp"><code class="sourceCode cpp">
+<span class="kw">template</span>&lt;Destructible T&gt;
+<span class="kw">class</span> vector
 {
-
-}</code></pre>
+  <span class="kw">template</span>&lt;<span class="kw">typename</span>... Args&gt;
+    requires Constructible&lt;T, Args...&gt;()
+  iterator emplace(Args&amp;&amp;...);
+};</code></pre>
+<p>The <code>emplace()</code> function is valid only for types that can be constructed over that sequence of arguments.</p>
   </section>
 </div>
 
