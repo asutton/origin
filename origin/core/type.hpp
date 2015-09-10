@@ -11,7 +11,7 @@
 
 #include <origin/core/config.hpp>
 
-// TODO: Remove when libstdc++ on Cygwin defines numeric 
+// TODO: Remove when libstdc++ on Cygwin defines numeric
 // conversion functions. We need to include C libray
 // headers because these functions don't exist in std.
 #if !defined(ORIGIN_HAVE_STD_TO_STRING)
@@ -23,13 +23,13 @@
 #include <typeinfo>
 
 
-namespace origin 
+namespace origin
 {
 
 std::string typestr(std::type_info const& info);
 
 // Helper types.
-namespace core 
+namespace core
 {
 
 template<typename... Args>
@@ -51,7 +51,7 @@ using print_fn = int (*)(C*, std::size_t, const C*, va_list);
 template <typename S, typename C = typename S::value_type>
 S to_xstring(print_fn<C>, std::size_t, const C*, ...);
 
-std::string to_string(std::size_t value);
+std::string to_string(std::size_t);
 
 } // namespace core
 
@@ -292,9 +292,6 @@ struct typelist_to_string<>
 };
 
 
-namespace
-{
-
 /**
  * Helper for the to_string/to_wstring functions.
  *
@@ -313,7 +310,7 @@ namespace
  *                variadic arguments following @p fmt.
  */
 template <typename S, typename C>
-S 
+S
 to_xstring(print_fn<C> convf, std::size_t n, C const* fmt, ...)
 {
   C* s = static_cast<C*>(__builtin_alloca(sizeof(C) * n));
@@ -325,16 +322,13 @@ to_xstring(print_fn<C> convf, std::size_t n, C const* fmt, ...)
 }
 
 
-} // namespace
-
-
 /**
  * Converts a numeric value to std::string.
  * @param  value A numeric value to convert.
  * @return       A string holding the character representation of the
  *               value of @p value.
  */
-inline std::string 
+inline std::string
 to_string(std::size_t value)
 {
 #if defined(ORIGIN_HAVE_STD_TO_STRING)
