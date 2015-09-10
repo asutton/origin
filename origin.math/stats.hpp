@@ -58,7 +58,7 @@ template<typename I, typename T = Value_type<I>>
   inline T
   quadratic_mean(I first, I last) {
     int n = distance(first, last);
-    
+
     // TODO: See notes in generalized_mean_non_inf about the inner
     // computation of the mean.
     T sum = 0;
@@ -84,7 +84,7 @@ template<typename I, typename T = Value_type<I>>
   inline T
   cubic_mean(I first, I last) {
     int n = distance(first, last);
-    
+
     // TODO: See notes in generalized_mean_non_inf about the inner
     // computation of the mean.
     T sum = 0;
@@ -92,7 +92,7 @@ template<typename I, typename T = Value_type<I>>
       sum += first * first * first;
       ++first;
     }
-    T mean = sum / n;  
+    T mean = sum / n;
 
     return std::pow(mean, 1.0 / 3.0); // FIXME: Use std::cbrt.
   }
@@ -152,7 +152,7 @@ template<typename I, typename T, typename S = Value_type<I>>
       return quadratic_mean(first, last);
     if (p == 3)
       return cubic_mean(first, last);
-    
+
     // Either handle the infinity case or compute the generalized
     // value.
     if (is_infinity(p))
@@ -170,7 +170,7 @@ template<typename I, typename T, typename S = Value_type<I>>
 
 // A helper function for median. Note that n == distance(first, last).
 template<typename I, typename T = Value_type<I>>
-  inline T 
+  inline T
   median_even(I first, I last, int n) {
     std::advance(first, n / 2);
     T a = *first;
@@ -181,7 +181,7 @@ template<typename I, typename T = Value_type<I>>
 
 // A helper function for median. Note that n == distance(first, last).
 template<typename I, typename T = Value_type<I>>
-  inline T 
+  inline T
   median_odd(I first, I last, int n) {
     std::advance(first, n / 2);
     return *first;
@@ -193,7 +193,7 @@ template<typename I, typename T = Value_type<I>>
 //
 // FIXME: Check corner cases for one- and two-element sequences.
 template<typename I, typename T = Value_type<I>>
-  inline T 
+  inline T
   median(I first, I last) {
     assert(first != last);
     assert(std::is_sorted(first, last));
@@ -204,10 +204,10 @@ template<typename I, typename T = Value_type<I>>
       return median_odd(first, last, n);
   }
 
-// A helper function for median_unsorted. Note that 
+// A helper function for median_unsorted. Note that
 // n == distance(first, last).
 template<typename I, typename T = Value_type<I>>
-  inline T 
+  inline T
   median_unsorted_even(I first, I last, int n) {
     I mid = std::next(first, (n + 1) / 2);
     I iter = std::nth_element(first, mid, last);
@@ -217,10 +217,10 @@ template<typename I, typename T = Value_type<I>>
     return (a + b) / 2;
   }
 
-// A helper function for median_unsorted. Note that 
+// A helper function for median_unsorted. Note that
 // n == distance(first, last).
 template<typename I, typename T = Value_type<I>>
-  inline T 
+  inline T
   median_unsorted_odd(I first, I last, int n) {
     I mid = std::next(first, n / 2);
     I iter = std::nth_element(first, mid, last);
@@ -233,7 +233,7 @@ template<typename I, typename T = Value_type<I>>
 //
 // FIXME: Check corner cases for one- and two-element sequences.
 template<typename I, typename T = Value_type<I>>
-  inline T 
+  inline T
   median_unsorted(I first, I last) {
     assert(first != last);
     int n = distance(first, last);
@@ -264,7 +264,7 @@ template<typename I, typename O, typename T = Value_type<I>>
   }
 
 // Create a histogram of equivalence classes in the sorted
-// range [first, last). Note that I is a vector iterator whose 
+// range [first, last). Note that I is a vector iterator whose
 // value type is a pair of int * T.
 template<typename I, typename O, typename T = Value_type<I>>
   void
@@ -297,7 +297,7 @@ template<typename I, typename T = Value_type<I>>
     std::vector<Count> v(n);
     build_histogram(first, last, v.begin());
 
-    // Sort the accumulation by their counts and find the 
+    // Sort the accumulation by their counts and find the
     // position of the first of the greatest counts.
     std::sort(v.begin(), v.end(), [](Count const& a, Count const& b) {
       return a.first < b.first;
@@ -308,7 +308,7 @@ template<typename I, typename T = Value_type<I>>
     // is an amodal distribution.
     if (bound == v.end())
       return std::vector<T>{};
-    
+
     // Otherwise, copy out the elements with the greatest counts.
     std::vector<T> result(std::distance(bound, v.end()));
     auto iter = result.begin();
@@ -319,7 +319,6 @@ template<typename I, typename T = Value_type<I>>
     }
     return result;
   }
-
 
 } // namespace origin
 

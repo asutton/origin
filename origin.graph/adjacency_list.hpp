@@ -15,11 +15,11 @@
 
 #include <origin/core/concepts.hpp>
 
-#include <origin/graph/handle.hpp>
-#include <origin/graph/graph.hpp>
-#include <origin/graph/io.hpp>
+#include <origin.graph/handle.hpp>
+#include <origin.graph/graph.hpp>
+#include <origin.graph/io.hpp>
 
-#include <origin/graph/adjacency_list.impl/pool.hpp>
+#include <origin.graph/adjacency_list.impl/pool.hpp>
 
 namespace origin
 {
@@ -110,7 +110,7 @@ namespace origin
     //
     // An edge is a triple describing the source vertex, the target vertex and
     // user data. The edge representation is the same for both directed and
-    // undirected adjacency lists. 
+    // undirected adjacency lists.
     //
     // In an undirected adjacency list, the source and target vertices refer to
     // the vertices in the order they were specified on addition. There is no
@@ -147,7 +147,7 @@ namespace origin
 
     // An (incident) edge list is a vector of indexes.
     using edge_list = std::vector<edge_handle>;
-  
+
     // An alias for the edge pool.
     template<typename E>
       using edge_pool = pool<edge<E>>;
@@ -188,7 +188,7 @@ namespace origin
 
     // ---------------------------------------------------------------------- //
     //                        Vertex Representation
-    
+
     // A vertex in adjacency list is implemented as a pair of edge lisst. An
     // edge list is simply a vector of indexes that refer to edges in a
     // separate edge container.
@@ -200,20 +200,20 @@ namespace origin
         using value_type = V;
         using iterator = typename edge_list::iterator;
         using const_iterator = typename edge_list::const_iterator;
-    
+
         vertex()
           : data()
         { }
 
         template<typename... Args>
-          vertex(Args&&... args) 
+          vertex(Args&&... args)
             : data(edge_list{}, edge_list{}, std::forward<Args>(args)...)
           { }
 
         // Returns the out ege list
         edge_list&       out()       { return std::get<0>(data); }
         const edge_list& out() const { return std::get<0>(data); }
-        
+
         // Returns the in edge list
         edge_list&       in()       { return std::get<1>(data); }
         const edge_list& in() const { return std::get<1>(data); }
@@ -235,7 +235,7 @@ namespace origin
 
         // In edges
         std::size_t in_degree() const { return in().size(); }
-        
+
         void insert_in(edge_handle e) { insert_edge(in(), e); }
         void erase_in(edge_handle e)  { erase_edge(in(), e); }
 
@@ -590,7 +590,7 @@ namespace origin
           remove_edge(*i);
       }
 
-  // Remove all edges connecting u to v. 
+  // Remove all edges connecting u to v.
   template<typename V, typename E>
     inline void
     directed_adjacency_list<V, E>::remove_edges(vertex u, vertex v)
@@ -621,14 +621,14 @@ namespace origin
       unlink_multi_edge(vn.in(), un.out(), P(*this, u));
     }
 
-  // Remove all edges from seq1 that are connected to seq2. 
+  // Remove all edges from seq1 that are connected to seq2.
   template<typename V, typename E>
     template<typename S1, typename S2, typename P>
       inline void
       directed_adjacency_list<V, E>::unlink_multi_edge(S1& seq1, S2& seq2, P pred)
       {
         // Partition the 1st sequence by the given predicate into "save" and
-        // "erase" components. 
+        // "erase" components.
         //
         // NOTE: We may want this to be a stable partition... not sure. It
         // seems like the saved edges are not reordered by the partitioning.
@@ -653,12 +653,12 @@ namespace origin
     directed_adjacency_list<V, E>::remove_edges(vertex v)
     {
       vertex_node& vn = node(v);
-      
+
       // Clear the out edges
       for (auto e : vn.out())
         unlink_target(e);
       vn.out().clear();
-      
+
       // Clear the in edges
       for(auto e : vn.in())
         unlink_source(e);
@@ -751,7 +751,7 @@ namespace origin
 
     // ---------------------------------------------------------------------- //
     //                        Vertex Representation
-    
+
     // A vertex in an undirected adjacency list is simply a list of incident
     // edges. No distinction is made between in or out edges.
     template<typename V>
@@ -760,20 +760,20 @@ namespace origin
         using value_type = V;
         using iterator = typename edge_list::iterator;
         using const_iterator = typename edge_list::const_iterator;
-    
+
         vertex()
           : data()
         { }
 
         template<typename... Args>
-          vertex(Args&&... args) 
+          vertex(Args&&... args)
             : data(edge_list{}, std::forward<Args>(args)...)
           { }
 
         // Returns the out ege list
         edge_list&       edges()       { return std::get<0>(data); }
         const edge_list& edges() const { return std::get<0>(data); }
-        
+
         // Returns the user-supplied data object.
         V&       value()       { return std::get<1>(data); }
         const V& value() const { return std::get<1>(data); }
@@ -860,7 +860,7 @@ namespace origin
       std::size_t degree(vertex v) const { return node(v).degree(); }
 
       // Edge observers
-      
+
       // Returns the first and second endpoints of the edge, e. If e was added
       // using g.add_edge(u, v), u is the source and v is the target. There
       // is no special meaning attributed to the order.
@@ -1079,7 +1079,7 @@ namespace origin
       vertex u = source(e);
       vertex v = target(e);
       if (u == v)
-        unlink_loop(u, e);    
+        unlink_loop(u, e);
       else
         unlink_edge(u, v, e);
     }
@@ -1152,7 +1152,7 @@ namespace origin
     undirected_adjacency_list<V, E>::unlink_first_loop(vertex v)
     {
       using P = has_endpoint<this_type>;
-      vertex_node& n = node(v); 
+      vertex_node& n = node(v);
       auto i = find_if(n.edges(), P(*this, v));
       if (i != n.end())
         erase_loop(n.edges(), i);
@@ -1166,13 +1166,13 @@ namespace origin
       using P = has_endpoints<this_type>;
       vertex_node& un = node(u);
       vertex_node& vn = node(v);
-      
+
       // Find the first edge with u and v as endpoints. If we didn't find
       // it, just return.
       auto i = find_if(un.edges(), P(*this, u, v));
       if (i == un.end())
         return;
-      
+
       // Find the corresponding edge in v's list. Note that *i must exist
       // in the incidence list of vn, otherwise, the graph is ill-formed.
       auto j = find(vn.begin(), vn.end(), *i);
@@ -1180,14 +1180,14 @@ namespace origin
       erase_edge(un.edges(), i, vn.edges(), j);
     }
 
-  // Remove all edges connecting u to v. 
+  // Remove all edges connecting u to v.
   template<typename V, typename E>
     inline void
     undirected_adjacency_list<V, E>::remove_edges(vertex u, vertex v)
     {
       if (u == v)
         unlink_multi_loop(u);
-      else 
+      else
         unlink_multi_edge(u, v);
     }
 
@@ -1226,7 +1226,7 @@ namespace origin
     undirected_adjacency_list<V, E>::remove_edges(vertex v)
     {
       vertex_node& vn = node(v);
-      
+
       // Clear the incident edges by removing each edge from the incidence
       // list of its corresponding endpoint. Handle loops differenty.
       //

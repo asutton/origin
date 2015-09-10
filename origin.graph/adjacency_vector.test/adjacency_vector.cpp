@@ -8,7 +8,7 @@
 #include <cassert>
 #include <iostream>
 
-#include <origin/graph/adjacency_vector.hpp>
+#include <origin.graph/adjacency_vector.hpp>
 
 #include "../graph.test/testing.hpp"
 

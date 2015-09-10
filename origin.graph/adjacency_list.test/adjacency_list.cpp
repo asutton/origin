@@ -5,8 +5,7 @@
 // LICENSE.txt or http://www.opensource.org/licenses/mit-license.php for terms
 // and conditions.
 
-
-#include <origin/graph/adjacency_list.hpp>
+#include <origin.graph/adjacency_list.hpp>
 
 #include "../graph.test/testing.hpp"
 
@@ -26,13 +25,13 @@ struct X
 
 bool X::trace = false;
 
-void 
+void
 trace_insert()
 {
   using G = directed_adjacency_list<X>;
   G g;
   X x;
-  
+
   // Each insertion should require exactly one initialization of X.
   X::trace = true;
   g.add_vertex();
@@ -40,8 +39,6 @@ trace_insert()
   g.add_vertex(x);
   X::trace = false;
 }
-
-
 
 int main()
 {
@@ -61,7 +58,7 @@ int main()
   check_remove_multi_edge<G>();
   check_remove_vertex_edges<G>();
   check_remove_all_edges<G>();
-  
+
   using D = directed_adjacency_list<char, int>;
   check_default_init<D>();
   check_add_vertices<D>();

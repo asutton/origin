@@ -12,8 +12,8 @@
 #include <iostream>
 #include <vector>
 
-#include <origin/graph/graph.hpp>
-#include <origin/graph/io.hpp>
+#include <origin.graph/graph.hpp>
+#include <origin.graph/io.hpp>
 
 namespace testing
 {
@@ -154,7 +154,7 @@ namespace testing
       G g = build_reflexive_clique<G>(3);
       assert(g.size() == 6);
       // cout << io::edge_list(g) << '\n';
-      
+
       g.remove_edge(0); // Remove (0, 0)
       assert(g.size() == 5);
       assert(has_degrees(g, 0, {2, 0, 2})); // a--b, a--c | empty

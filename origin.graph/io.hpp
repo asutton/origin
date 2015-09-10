@@ -10,7 +10,7 @@
 
 #include <iosfwd>
 
-#include <origin/graph/graph.hpp>
+#include <origin.graph/graph.hpp>
 
 namespace origin
 {

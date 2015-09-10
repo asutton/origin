@@ -22,11 +22,11 @@
 #include <origin/sequence/algorithm.hpp>
 #include <origin/sequence/range.hpp>
 
-#include <origin/graph/handle.hpp>
-#include <origin/graph/graph.hpp>
-#include <origin/graph/io.hpp>
+#include <origin.graph/handle.hpp>
+#include <origin.graph/graph.hpp>
+#include <origin.graph/io.hpp>
 
-#include <origin/graph/adjacency_list.impl/pool.hpp>
+#include <origin.graph/adjacency_list.impl/pool.hpp>
 
 namespace origin
 {
@@ -95,7 +95,7 @@ namespace origin
     //
     // An edge is a triple describing the source vertex, the target vertex and
     // user data. The edge representation is the same for both directed and
-    // undirected adjacency lists. 
+    // undirected adjacency lists.
     //
     // In an undirected adjacency list, the source and target vertices refer to
     // the vertices in the order they were specified on addition. There is no
@@ -132,7 +132,7 @@ namespace origin
 
     // An (incident) edge list is a vector of indexes.
     using edge_list = std::vector<edge_handle>;
-  
+
     // An alias for the edge pool.
     template<typename E>
       using edge_set = std::vector<edge<E>>;
@@ -175,7 +175,7 @@ namespace origin
 
     // ---------------------------------------------------------------------- //
     //                        Vertex Representation
-    
+
     // A vertex in adjacency list is implemented as a pair of edge lisst. An
     // edge list is simply a vector of indexes that refer to edges in a
     // separate edge container.
@@ -187,20 +187,20 @@ namespace origin
         using value_type = V;
         using iterator = typename edge_list::iterator;
         using const_iterator = typename edge_list::const_iterator;
-    
+
         vertex()
           : data()
         { }
 
         template<typename... Args>
-          vertex(Args&&... args) 
+          vertex(Args&&... args)
             : data(edge_list{}, edge_list{}, std::forward<Args>(args)...)
           { }
 
         // Returns the out ege list
         edge_list&       out()       { return std::get<0>(data); }
         const edge_list& out() const { return std::get<0>(data); }
-        
+
         // Returns the in edge list
         edge_list&       in()       { return std::get<1>(data); }
         const edge_list& in() const { return std::get<1>(data); }
@@ -223,7 +223,7 @@ namespace origin
 
         // In edges
         std::size_t in_degree() const { return in().size(); }
-        
+
         iterator begin_in() { return in().begin(); }
         iterator end_in()   { return in().end(); }
         const_iterator begin_in() const { return in().begin(); }
@@ -522,7 +522,7 @@ namespace origin
 
     // ---------------------------------------------------------------------- //
     //                        Vertex Representation
-    
+
     // A vertex in an undirected adjacency list is simply a list of incident
     // edges. No distinction is made between in or out edges.
     template<typename V>
@@ -531,20 +531,20 @@ namespace origin
         using value_type = V;
         using iterator = typename edge_list::iterator;
         using const_iterator = typename edge_list::const_iterator;
-    
+
         vertex()
           : data()
         { }
 
         template<typename... Args>
-          vertex(Args&&... args) 
+          vertex(Args&&... args)
             : data(edge_list{}, std::forward<Args>(args)...)
           { }
 
         // Returns the out ege list
         edge_list&       edges()       { return std::get<0>(data); }
         const edge_list& edges() const { return std::get<0>(data); }
-        
+
         // Returns the user-supplied data object.
         V&       value()       { return std::get<1>(data); }
         const V& value() const { return std::get<1>(data); }
@@ -621,7 +621,7 @@ namespace origin
       std::size_t degree(vertex v) const { return node(v).degree(); }
 
       // Edge observers
-      
+
       // Returns the first and second endpoints of the edge, e. If e was added
       // using g.add_edge(u, v), u is the source and v is the target. There
       // is no special meaning attributed to the order.
@@ -673,7 +673,7 @@ namespace origin
         edge find_endpoints(const S& seq, P pred) const;
 
       void link_edge(vertex u, vertex v, edge e);
-    
+
     private:
       vertex_set verts_;
       edge_set   edges_;

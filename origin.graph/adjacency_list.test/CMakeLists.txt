@@ -4,5 +4,6 @@
 # LICENSE.txt or http://www.opensource.org/licenses/mit-license.php for terms
 # and conditions.
 
-add_subdirectory(handle.test)
-add_subdirectory(adjacency_list.test)
+link_libraries(origin-graph)
+
+add_run_test(graph_adjlist_pool pool.cpp)

@@ -4,21 +4,45 @@
 # LICENSE.txt or http://www.opensource.org/licenses/mit-license.php for terms
 # and conditions.
 
-cmake_minimum_required(VERSION 2.8)
+include(GenerateExportHeader)
 
-set(CMAKE_CXX_FLAGS -std=c++1y)
+# Set variables.
 
-enable_testing()
+# Add options.
 
-macro(add_run_test target file)
-  add_executable(${target} ${file})
-  add_test(test_${target} ${target})
-endmacro()
+# Run platform checks.
 
-# Keep the base Origin headers in the include path.
-include_directories(..)
+# Set compiler and linker flags.
+add_compiler_export_flags()
 
-# Always have this top-level directory in the include path.
-include_directories(.)
+# Add a library.
+add_library(origin-graph STATIC
+  adjacency_list.cpp
+  adjacency_vector.cpp)
 
-add_subdirectory(origin/graph)
+target_compile_options(origin-graph PUBLIC -std=c++1z)
+target_include_directories(origin-graph
+  PUBLIC "$<BUILD_INTERFACE:${Origin_SOURCE_DIR};${Origin_BINARY_DIR}>")
+target_link_libraries(origin-graph PUBLIC origin-core origin-range)
+
+add_dependencies(check origin-graph)
+
+# Generate the configuration header.
+configure_file(config.hpp.in config.hpp)
+
+# Generate the export header.
+generate_export_header(origin-graph EXPORT_FILE_NAME export.hpp)
+
+# Add subdirectories.
+add_subdirectory(handle.test)
+add_subdirectory(adjacency_list.test)
+
+# Add install targets.
+# install(
+#   TARGETS origin-graph
+#   EXPORT OriginTargets
+#   RUNTIME DESTINATION "${INSTALL_BIN_DIR}"
+#   LIBRARY DESTINATION "${INSTALL_LIB_DIR}"
+#   ARCHIVE DESTINATION "${INSTALL_LIB_DIR}"
+#   INCLUDES DESTINATION "${INSTALL_INCLUDE_DIR}"
+# )

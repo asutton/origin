@@ -105,7 +105,7 @@ export(EXPORT OriginTargets)
 # Add install targets.
 install(
   DIRECTORY "${PROJECT_SOURCE_DIR}/origin" "${PROJECT_BINARY_DIR}/origin"
-  DESTINATION include
+  DESTINATION "${INSTALL_INCLUDE_DIR}"
   FILES_MATCHING
   PATTERN "*.hpp"
   PATTERN "*.ipp"

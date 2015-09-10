@@ -8,7 +8,7 @@
 #ifndef GRAPH_HPP
 #define GRAPH_HPP
 
-#include <origin/graph/concepts.hpp>
+#include <origin.graph/concepts.hpp>
 
 namespace origin
 {
@@ -141,8 +141,8 @@ namespace origin
   template<typename G>
     struct has_endpoint
     {
-      has_endpoint(const G& g, Vertex<G> v) 
-        : g(g), v(v)  
+      has_endpoint(const G& g, Vertex<G> v)
+        : g(g), v(v)
       { }
 
       inline bool
@@ -150,13 +150,13 @@ namespace origin
       {
         return source(g, e) == v || target(g, e) == v;
       }
-      
+
       const G& g;
       Vertex<G> v;
     };
 
   // Returns true if an edge has endpoints equal to u and v (in that order).
-  // If G is undirected, then 
+  // If G is undirected, then
   template<typename G>
     struct has_endpoints
     {
@@ -180,7 +180,7 @@ namespace origin
     struct is_looped
     {
       is_looped(const G& g, Vertex<G> v)
-        : g(g), v(v) 
+        : g(g), v(v)
       { }
 
       inline bool
@@ -194,6 +194,5 @@ namespace origin
     };
 
 } // namespace origin
-
 
 #endif
