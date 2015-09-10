@@ -1,3 +1,5 @@
+// Copyright (c) 2009-2015 Andrew Sutton
+// All rights reserved
 
 #ifndef ORIGIN_NUMERIC_HPP
 #define ORIGIN_NUMERIC_HPP
@@ -19,12 +21,12 @@ namespace origin {
 // -------------------------------------------------------------------------- //
 // Numbers                                                              [num] //
 //
-// A number is a mathematical object that represents some quantity. 
+// A number is a mathematical object that represents some quantity.
 
 
-// The Number concept defines the abstract notion of a number. 
+// The Number concept defines the abstract notion of a number.
 //
-// FIXME: This does not allow 
+// FIXME: This does not allow
 template<typename T>
   concept bool Number() { return std::is_arithmetic<T>::value; }
 
@@ -32,4 +34,3 @@ template<typename T>
 } // namespace origin
 
 #endif
-

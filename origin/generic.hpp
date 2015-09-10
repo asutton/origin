@@ -14,4 +14,3 @@
 #include <origin/core/type.hpp>
 
 #endif
-

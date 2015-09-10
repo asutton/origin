@@ -7,4 +7,3 @@
 #include <origin/core/function.hpp>
 
 #endif
-

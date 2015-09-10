@@ -1,6 +1,5 @@
-# This file is distributed under the MIT License. See the accompanying file
-# LICENSE.txt or http://www.opensource.org/licenses/mit-license.php for terms
-# and conditions.
+# Copyright (c) 2009-2015 Andrew Sutton
+# All rights reserved
 
 include(GenerateExportHeader)
 
@@ -14,13 +13,15 @@ include(GenerateExportHeader)
 add_compiler_export_flags()
 
 # Add a library.
-add_library(origin-numeric numeric.cpp algebra.cpp)
-if(CXX_COMPILER_HAS_STDCXX1Z_FLAG)
-  target_compile_options(origin-numeric PUBLIC -std=c++1z)
-endif()
+add_library(origin-numeric STATIC
+  numeric.cpp
+  algebra.cpp)
+
+target_compile_options(origin-numeric PUBLIC -std=c++1z)
 target_include_directories(origin-numeric
   PUBLIC "$<BUILD_INTERFACE:${Origin_SOURCE_DIR};${Origin_BINARY_DIR}>")
 target_link_libraries(origin-numeric PUBLIC origin-core)
+
 add_dependencies(check origin-numeric)
 
 # Generate the configuration header.

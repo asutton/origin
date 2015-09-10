@@ -19,24 +19,24 @@ struct get_iterator_category;
 
 
 template<typename T>
-struct get_iterator_category<T*> 
-{ 
-  using type = std::random_access_iterator_tag; 
+struct get_iterator_category<T*>
+{
+  using type = std::random_access_iterator_tag;
 };
 
 
 template<typename T>
   requires requires () { typename T::iterator_category; }
-struct get_iterator_category<T> 
-{ 
-  using type = typename T::iterator_category; 
+struct get_iterator_category<T>
+{
+  using type = typename T::iterator_category;
 };
 
 
 } // namespace iter_impl
 
 
-// The Iterator_category alias yields the category of a type 
+// The Iterator_category alias yields the category of a type
 // satisfying the Iterator concept.
 template<typename I>
 using Iterator_category = typename iter_impl::get_iterator_category<I>::type;
@@ -57,7 +57,7 @@ concept bool Readable()
 // A type I is Writable if and only if the a value of type T can be
 // assigned through the unary * operator.
 template<typename I, typename T>
-concept bool Writable() 
+concept bool Writable()
 {
   return requires (I i, T x) { *i = std::forward<T>(x); };
 }
@@ -66,7 +66,7 @@ concept bool Writable()
 // A type I is Permutable if and only if its associated value can be
 // replaced by moving.
 template<typename I>
-concept bool Permutable() 
+concept bool Permutable()
 {
   return Readable<I>() && Writable<I, Value_type<I>&&>();
 }
@@ -75,7 +75,7 @@ concept bool Permutable()
 // A type I is mutable if and only if its associated value can be
 // replaced by moving.
 template<typename I>
-concept bool Mutable() 
+concept bool Mutable()
 {
   return Permutable<I>() && Writable<I, const Value_type<I>&>();
 }
@@ -83,7 +83,7 @@ concept bool Mutable()
 
 // Advanceable
 template<typename I>
-concept bool Advanceable() 
+concept bool Advanceable()
 {
   return requires (I i) { { ++i } -> I&; };
 }
@@ -91,9 +91,9 @@ concept bool Advanceable()
 
 // Incrementable
 template<typename I>
-concept bool Incrementable() 
+concept bool Incrementable()
 {
-  return requires (I i) 
+  return requires (I i)
   {
     typename Difference_type<I>;
     {++i} -> I&;
@@ -104,9 +104,9 @@ concept bool Incrementable()
 
 // Iterator
 template<typename I>
-concept bool Iterator() 
+concept bool Iterator()
 {
-  return Equality_comparable<I>() && requires(I i) 
+  return Equality_comparable<I>() && requires(I i)
   {
      {++i} -> I&;
      {*i};
@@ -116,23 +116,23 @@ concept bool Iterator()
 
 // Input iterator
 template<typename I>
-concept bool Input_iterator() 
-{ 
-  return Readable<I>() && Advanceable<I>(); 
+concept bool Input_iterator()
+{
+  return Readable<I>() && Advanceable<I>();
 }
 
 
 // Output iterator
 template<typename I, typename T>
-concept bool Output_iterator() 
-{ 
-  return Writable<I, T>() && Advanceable<I>(); 
+concept bool Output_iterator()
+{
+  return Writable<I, T>() && Advanceable<I>();
 }
 
 
 // Forward iterator
 template<typename I>
-concept bool Forward_iterator() 
+concept bool Forward_iterator()
 {
   return Readable<I>() && Incrementable<I>()
       && Derived<Iterator_category<I>, std::forward_iterator_tag>();
@@ -141,7 +141,7 @@ concept bool Forward_iterator()
 
 // Bidirectional iterator
 template<typename I>
-concept bool Bidirectional_iterator() 
+concept bool Bidirectional_iterator()
 {
   return Forward_iterator<I>() && requires (I i)
   {
@@ -155,7 +155,7 @@ concept bool Bidirectional_iterator()
 template<typename I>
 concept bool Random_access_iterator() {
   return Bidirectional_iterator<I>()
-      && requires (I i, I j, Difference_type<I> n) 
+      && requires (I i, I j, Difference_type<I> n)
   {
     {i += n} -> I&;
     {i + n} -> I;

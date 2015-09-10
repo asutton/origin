@@ -2,7 +2,7 @@
  * @file    origin/algorithm/config.hpp
  * The configuration header for the Origin.Algorithm library.
  *
- * @date    9/7/2015
+ * @date    9/10/2015
  */
 
 /* config.hpp. Generated from config.hpp.in by cmake. */
@@ -11,40 +11,40 @@
 #define ORIGIN_ALGORITHM_CONFIG_HPP
 
 /* Name of package. */
-#define ORIGIN_PACKAGE "@PACKAGE_NAME@"
+#define ORIGIN_PACKAGE "@ORIGIN_PACKAGE_NAME@"
 
 /* Define to the full name of this package. */
-#define ORIGIN_PACKAGE_NAME "@PACKAGE_NAME@"
+#define ORIGIN_PACKAGE_NAME "@ORIGIN_PACKAGE_NAME@"
 
 /* Define to the one symbol short name of this package. */
-#define ORIGIN_PACKAGE_TARNAME "@PACKAGE_TARNAME@"
+#define ORIGIN_PACKAGE_TARNAME "@ORIGIN_PACKAGE_TARNAME@"
 
 /* Define to the version of this package. */
-#define ORIGIN_PACKAGE_VERSION "@PACKAGE_VERSION@"
+#define ORIGIN_PACKAGE_VERSION "@ORIGIN_PACKAGE_VERSION@"
 
 /* Define to the full name and version of this package. */
-#define ORIGIN_PACKAGE_STRING "@PACKAGE_STRING@"
+#define ORIGIN_PACKAGE_STRING "@ORIGIN_PACKAGE_STRING@"
 
 /* Define to the address where bug reports for this package should be sent. */
-#define ORIGIN_PACKAGE_BUGREPORT "@PACKAGE_BUGREPORT@"
+#define ORIGIN_PACKAGE_BUGREPORT "@ORIGIN_PACKAGE_BUGREPORT@"
 
 /* Define to the home page for this package. */
-#define ORIGIN_PACKAGE_URL "@PACKAGE_URL@"
+#define ORIGIN_PACKAGE_URL "@ORIGIN_PACKAGE_URL@"
 
 /* The version number of the Origin libraries. */
-#define ORIGIN_VERSION "@Origin_VERSION@"
+#define ORIGIN_VERSION "@ORIGIN_VERSION@"
 
 /* The major version of the Origin libraries. */
-#define ORIGIN_VERSION_MAJOR @Origin_VERSION_MAJOR@
+#define ORIGIN_VERSION_MAJOR @ORIGIN_VERSION_MAJOR@
 
 /* The minor version of the Origin libraries. */
-#define ORIGIN_VERSION_MINOR @Origin_VERSION_MINOR@
+#define ORIGIN_VERSION_MINOR @ORIGIN_VERSION_MINOR@
 
 /* The patch version of the Origin libraries. */
-#define ORIGIN_VERSION_PATCH @Origin_VERSION_PATCH@
+#define ORIGIN_VERSION_PATCH @ORIGIN_VERSION_PATCH@
 
 /* The tweak version of the Origin libraries. */
-#define ORIGIN_VERSION_TWEAK @Origin_VERSION_TWEAK@
+#define ORIGIN_VERSION_TWEAK @ORIGIN_VERSION_TWEAK@
 
 #include <origin/algorithm/export.hpp>
 

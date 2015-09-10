@@ -16,11 +16,11 @@ namespace origin
 // Return the string represntation of a type info object.
 #if defined(__GNUC__)
 
-std::string 
+std::string
 typestr(std::type_info const& info)
 {
   std::size_t n = 0;
-  char* buf = abi::__cxa_demangle(info.name(), nullptr, &n, 0); 
+  char* buf = abi::__cxa_demangle(info.name(), nullptr, &n, 0);
   std::string result(buf, n);
   std::free(buf);
   return result;

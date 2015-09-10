@@ -11,7 +11,7 @@
 #include <vector>
 
 
-namespace origin 
+namespace origin
 {
 
 // The vector class template defines a resizeable, dynamically
@@ -131,7 +131,7 @@ public:
   // Iteators
   iterator       begin();
   const_iterator begin() const;
-  
+
   iterator       end();
   const_iterator end() const;
 
@@ -308,7 +308,7 @@ vector<T, A>::collapse() requires Move_constructible<T>()
 // Data access
 
 template<Destructible T, Allocator A>
-inline T& 
+inline T&
 vector<T, A>::operator[](int n)
 {
   return base_type::operator[](n);
@@ -316,7 +316,7 @@ vector<T, A>::operator[](int n)
 
 
 template<Destructible T, Allocator A>
-inline T const& 
+inline T const&
 vector<T, A>::operator[](int n) const
 {
   return base_type::operator[](n);
@@ -324,7 +324,7 @@ vector<T, A>::operator[](int n) const
 
 
 template<Destructible T, Allocator A>
-inline T& 
+inline T&
 vector<T, A>::front()
 {
   return base_type::front();
@@ -332,7 +332,7 @@ vector<T, A>::front()
 
 
 template<Destructible T, Allocator A>
-inline T const& 
+inline T const&
 vector<T, A>::front() const
 {
   return base_type::front();
@@ -340,7 +340,7 @@ vector<T, A>::front() const
 
 
 template<Destructible T, Allocator A>
-inline T& 
+inline T&
 vector<T, A>::back()
 {
   return base_type::back();
@@ -348,21 +348,21 @@ vector<T, A>::back()
 
 
 template<Destructible T, Allocator A>
-inline T const& 
+inline T const&
 vector<T, A>::back() const
 {
   return base_type::back();
 }
 
 template<Destructible T, Allocator A>
-inline T* 
+inline T*
 vector<T, A>::data()
 {
   return base_type::data();
 }
 
 template<Destructible T, Allocator A>
-inline T const* 
+inline T const*
 vector<T, A>::data() const
 {
   return base_type::data();
@@ -461,7 +461,7 @@ vector<T, A>::clear()
 // Push/pop
 
 template<Destructible T, Allocator A>
-inline void 
+inline void
 vector<T, A>::push_back(T&& t) requires Move_constructible<T>()
 {
   base_type::push_back(std::move(t));
@@ -469,7 +469,7 @@ vector<T, A>::push_back(T&& t) requires Move_constructible<T>()
 
 
 template<Destructible T, Allocator A>
-inline void 
+inline void
 vector<T, A>::push_back(T const& t) requires Copy_constructible<T>()
 {
   base_type::push_back(t);
@@ -479,7 +479,7 @@ vector<T, A>::push_back(T const& t) requires Copy_constructible<T>()
 template<Destructible T, Allocator A>
 template<typename... Args>
   requires Constructible<T, Args...>()
-inline void 
+inline void
 vector<T, A>::emplace_back(Args&&... args)
 {
   base_type::emplace_back(std::forward<Args>(args)...);
@@ -487,7 +487,7 @@ vector<T, A>::emplace_back(Args&&... args)
 
 
 template<Destructible T, Allocator A>
-inline void 
+inline void
 vector<T, A>::pop_back()
 {
   base_type::pop_back();

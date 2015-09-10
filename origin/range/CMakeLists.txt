@@ -14,12 +14,14 @@ add_compiler_export_flags()
 
 # Add a library.
 add_library(origin-range STATIC
-  core.cpp 
+  core.cpp
   range.cpp)
+
 target_compile_options(origin-range PUBLIC -std=c++1z)
 target_include_directories(origin-range
   PUBLIC "$<BUILD_INTERFACE:${Origin_SOURCE_DIR};${Origin_BINARY_DIR}>")
 target_link_libraries(origin-range PUBLIC origin-iterator)
+
 add_dependencies(check origin-range)
 
 # Generate the configuration header.

@@ -1,3 +1,5 @@
+// Copyright (c) 2009-2015 Andrew Sutton
+// All rights reserved
 
 #ifndef ORIGIN_NUMERIC_ALGEBRA_HPP
 #define ORIGIN_NUMERIC_ALGEBRA_HPP
@@ -18,7 +20,7 @@ template<typename T, typename Op>
 // The left fold operation.
 template<Input_iterator I, typename Op>
   requires Monoid<Value_type<I>, Op>()
-    Value_type<I> 
+    Value_type<I>
     foldl(I first, I last, Op op, const Value_type<I>& e) {
       Value_type<I> x = e;
       while (first != last) {
@@ -32,7 +34,7 @@ template<Input_iterator I, typename Op>
 // The right fold operation.
 template<Bidirectional_iterator I, typename Op>
   requires Monoid<Value_type<I>, Op>()
-    Value_type<I> 
+    Value_type<I>
     foldr(I first, I last, Op op) {
       using R = std::reverse_iterator<I>;
       return foldl(R{last}, R{first}, op);
@@ -72,18 +74,18 @@ template<Input_iterator I, typename Op>
 // Monoid constructors                                          [monoid.ctor] //
 //
 // The following functions are used to construct instances of
-// monoids for different types. 
+// monoids for different types.
 //
 // Each of the following constructs a monoid for its corresponding
 // operations.
-// 
+//
 //
 //    Sum<T>()        addition
 //    Product<T>()    multiplication
 //    All<T>()        intersection
 //    Any<T>()        union
 //
-// Note that 
+// Note that
 //
 // Each constructor above also accepts the identity element, when
 // there is no direct association of the identity with the
@@ -103,7 +105,7 @@ template<Input_iterator I, typename Op>
 namespace monoid_impl {
 
 template<Integral_type T>
-  struct all_any_traits { 
+  struct all_any_traits {
     using all_op = std::bit_and<T>;
     using any_op = std::bit_or<T>;
     static constexpr T all_id = -1;
@@ -135,14 +137,14 @@ template<typename T>
 // -------------------------------------------------------------------------- //
 // Sum                                                          [monoid.sum] //
 //
-// The Sum constructor defines a monoid (T, +) where T is an 
+// The Sum constructor defines a monoid (T, +) where T is an
 // arithmetic type.
 
 template<Arithmetic_type T, typename Op = std::plus<T>>
   inline monoid<T, Op>
   Sum() { return monoid<T, Op>{T{0}, Op{}}; }
 
-template<typename T, typename Op = std::plus<T>> 
+template<typename T, typename Op = std::plus<T>>
   requires Monoid<T, Op>()
     inline monoid<T, Op>
     Sum(T const& e) { return monoid<T, Op>{e, Op{}}; }
@@ -167,9 +169,9 @@ template<typename T, typename Op = std::multiplies<T>>
 // The All constructor defines the algebraic structure (T, op) where
 // op is defined as follows:
 //
-//  - if T has type bool, op is the logical and operator and the 
+//  - if T has type bool, op is the logical and operator and the
 //   identity element is true;
-// - otherwise, if T is some other integral type, it is the bitwise 
+// - otherwise, if T is some other integral type, it is the bitwise
 //    and operator and the identity element is -1.
 //
 // In general, the semantics of the operator in this monoid can be
@@ -180,12 +182,12 @@ template<typename T, typename Op = std::multiplies<T>>
 // TODO: Can we extend this for set-like data structures?
 
 template<Integral_type T = bool, typename Op = monoid_impl::all_op<T>>
-  inline monoid<T, Op> 
+  inline monoid<T, Op>
   All() { return monoid<bool, Op>{monoid_impl::all_id<T>(), Op{}}; }
 
 template<typename T, typename Op>
   requires Monoid<T, Op>()
-    inline monoid<T, Op> 
+    inline monoid<T, Op>
     All(T const& e) { return monoid<bool, Op>{e, Op{}}; }
 
 
@@ -195,21 +197,21 @@ template<typename T, typename Op>
 // The Any constructor defines the algebraic structure (T, op) where
 // op is defined as follows:
 //
-//  - if T has type bool, op is the logical or operator and the 
+//  - if T has type bool, op is the logical or operator and the
 //   identity element is false;
-// - otherwise, if T is some other integral type, it is the bitwise 
+// - otherwise, if T is some other integral type, it is the bitwise
 //    or operator and the identity element is 0.
 //
 // In general, the semantics of the operator in this monoid can be
 // thought of as computing the union of sets.
 
 template<Integral_type T = bool, typename Op = monoid_impl::any_op<T>>
-  inline monoid<T, Op> 
+  inline monoid<T, Op>
   Any() { return monoid<bool, Op>{monoid_impl::any_id<T>(), Op{}}; }
 
 template<typename T, typename Op>
   requires Monoid<T, Op>()
-    inline monoid<T, Op> 
+    inline monoid<T, Op>
     Any(T const& e) { return monoid<bool, Op>{e, Op{}}; }
 
 

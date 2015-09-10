@@ -20,4 +20,3 @@
 #include <origin/algorithm/uninitialized.hpp>
 
 #endif
-

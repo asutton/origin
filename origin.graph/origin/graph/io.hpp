@@ -39,7 +39,7 @@ namespace origin
 
     // Returns a vertex list.
     template<typename G>
-      inline vertex_list_printer<G> 
+      inline vertex_list_printer<G>
       vertex_list(const G& g) { return vertex_list_printer<G>(g); }
 
 
@@ -53,7 +53,7 @@ namespace origin
 
     // Return an edge list printer.
     template<typename G>
-      inline edge_list_printer<G> 
+      inline edge_list_printer<G>
       edge_list(const G& g) { return edge_list_printer<G>(g); }
 
 

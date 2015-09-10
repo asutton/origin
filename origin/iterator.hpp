@@ -7,4 +7,3 @@
 #include <origin/iterator/core.hpp>
 
 #endif
-

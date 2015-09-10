@@ -1,3 +1,5 @@
+// Copyright (c) 2009-2015 Andrew Sutton
+// All rights reserved
 
 #include <origin/numeric/algebra.hpp>
 
@@ -6,8 +8,7 @@
 
 using namespace origin;
 
-int 
-main() {
+int main() {
   int a[] {1, 2, 3};
   assert(foldl(a, a + 3, std::plus<int>{}, 0) == 6);
   assert(foldl(a, a + 3, Sum<int>()) == 6);

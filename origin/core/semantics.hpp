@@ -10,7 +10,6 @@
 // to false.
 #define expects(e) assert(e)
 
-
 // Terminates the program if the postcondition `e` evalautes
 // to false.
 #define ensures(e) assert(e)

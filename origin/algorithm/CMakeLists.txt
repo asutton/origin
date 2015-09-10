@@ -22,13 +22,13 @@ add_library(origin-algorithm STATIC
   foreach.cpp
   quantifier.cpp
   uninitialized.cpp)
-if(CXX_COMPILER_HAS_STDCXX1Z_FLAG)
-  target_compile_options(origin-algorithm PUBLIC -std=c++1z)
-endif()
+
+target_compile_options(origin-algorithm PUBLIC -std=c++1z)
 target_include_directories(origin-algorithm
   PUBLIC "$<BUILD_INTERFACE:${Origin_SOURCE_DIR};${Origin_BINARY_DIR}>")
 target_link_libraries(origin-algorithm
   PUBLIC origin-core origin-iterator origin-memory origin-range)
+
 add_dependencies(check origin-algorithm)
 
 # Generate the configuration header.

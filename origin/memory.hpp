@@ -11,4 +11,3 @@
 #include <origin/memory/memory.hpp>
 
 #endif
-
