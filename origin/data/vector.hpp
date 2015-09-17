@@ -542,7 +542,7 @@ vector<T, A>::cend() const -> const_iterator
 }
 
 
-} // namespace origins
+} // namespace origin
 
 
 #endif
