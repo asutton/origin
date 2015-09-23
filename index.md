@@ -19,8 +19,7 @@ standard (generally simpler).
 ## People
 
 The following people have been active in the design and implementation
-of C++ concepts, their implementation in GCC, and the design and
-\[please resolve rest of sentence here.\]
+of C++ concepts, their implementation in GCC, and the Origin Libraries.
 
 - [Andrew Sutton](http://asutton.github.io/)
 - Gabriel Dos Reis
