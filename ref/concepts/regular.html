@@ -83,11 +83,11 @@ code > span.er { color: #ff0000; font-weight: bold; }
   <section id="main_content" class="inner">
 <h1 id="regular-types">Regular types</h1>
 <h2 id="declaration">Declaration</h2>
-<p>In <code>&lt;origin/generic.hpp&gt;</code>.</p>
+<p>The <code>Regular</code> concept is declared in <code>&lt;origin/generic.hpp&gt;</code>.</p>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span>&lt;<span class="kw">typename</span> T&gt;
 concept <span class="dt">bool</span> Regular()</code></pre>
 <h2 id="documentation">Documentation</h2>
-<p>A <em>regular type</em> is one that can be used, to an extent, like an <code>int</code>. Regular types can be default constructed, moved, copied, and compared for equality. They are not however, required to be <a href="ordered.html">ordered</a>.</p>
+<p>A <em>regular type</em> is one that can be used, to an extent, like an <code>int</code>. Regular types can be default constructed, moved, copied, and compared for equality. They are not, however, required to be <a href="ordered.html">ordered</a>.</p>
 <p>The <code>Regular</code> concept does not define any new syntactic or semantic requirements.</p>
 <h2 id="example">Example</h2>
 <pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">template</span>&lt;Regular T&gt;

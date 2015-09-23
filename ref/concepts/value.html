@@ -83,7 +83,7 @@
 <p>The concepts defined in this section do not include syntactic requirements for <code>new</code>, <code>delete</code>, and operator <code>&amp;</code>. For any type <code>T</code> satisfying any of these concepts, a pointer <code>p</code> whose type is <code>T*</code>, and an object <code>x</code> of type <code>T</code>, the following are required:</p>
 <ul>
 <li><p><code>new T &lt;initializer&gt;</code> allocates an object of type <code>T</code> and initializes it with the arguments specified by the initializer.</p></li>
-<li><p><code>delete p</code> destroys the object pointed to be <code>p</code>, causing all of its resources to be released.</p></li>
+<li><p><code>delete p</code> destroys the object pointed to by <code>p</code>, causing all of its resources to be released.</p></li>
 <li><p><code>&amp;x</code> returns the same value as <code>std::addressof(x)</code>.</p></li>
 </ul>
 <p>Types may overload these operators, but they must behave in the conventional way.</p>

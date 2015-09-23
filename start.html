@@ -84,16 +84,16 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <h2 id="getting-started">Getting Started</h2>
 <p>In order to use Origin, you will need GCC 6.0. This is currently in <a href="https://gcc.gnu.org/develop.html">development</a> and may need to be built from source.</p>
 <h3 id="installing-gcc">Installing GCC</h3>
-<p>The complete instructions on how to install GCC from source can be found here: https://gcc.gnu.org/install/. You will be installing GCC from source. Note that there may be nightly releases that can be installed using your favorite package manager. Any build after August 2015 will suffice.</p>
-<p>I recommend downloading the GCC source <em>before</em> trying to install the numerous pre-requisites. Those can be installed using a script in the GCC source tree. After checking GCC out from SVN (or otherwise obtaining the source code), just run this:</p>
-<pre class="sourceCode bash"><code class="sourceCode bash">    <span class="kw">cd</span> <span class="ot">$GCC_DIR</span>
-    <span class="kw">./contrib/download_prerequisites</span></code></pre>
+<p>You will be installing GCC from source (see the <a href="https://gcc.gnu.org/install">complete instructions</a> for more details). Note that there may be nightly releases that can be installed using your favorite package manager. Any build after August 2015 will suffice.</p>
+<p>I recommend downloading the GCC source <em>before</em> trying to install the numerous prerequisites. Those can be installed using a script in the GCC source tree. After checking GCC out from SVN (or otherwise obtaining the source code), just run this:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">cd</span> <span class="ot">$GCC_DIR</span>
+<span class="kw">./contrib/download_prerequisites</span></code></pre>
 <p>It will download and install a number of prerequisites in the source directory to be compiled alongside GCC.</p>
 <p>When configuring the source code, I <em>strongly</em> recommend specifying an alternative installation directory so that the custom install does not conflict with a system install. For example, I use the flag <code>--prefix=$HOME/opt</code>.</p>
 <p>Building GCC can take a long time. To speed the process, you can use the <code>--disable-bootstrap</code> flag during configuration.</p>
 <h3 id="installing-origin">Installing Origin</h3>
-<p>There are, as of yet, no releases of Origin, so you must clone it from its GitHub <a href="https://github.com/asutton/origin">repository</a>. Note that Origin has only been tested on Linux and Mac OS X. It has not been ported to Windows.</p>
-<p>Origin is configured using <code>CMake</code>. It can be built and installed using the following commands:</p>
+<p>There are, as of yet, no releases of Origin, so you must clone it from its <a href="https://github.com/asutton/origin">GitHub repository</a>. Note that Origin has only been tested on Linux and Mac OS X. It has not been ported to Windows.</p>
+<p>Origin is configured using <a href="http://www.cmake.org">CMake</a>. It can be built and installed using the following commands:</p>
 <pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">cd</span> <span class="ot">$ORIGIN_DIR</span>
 <span class="kw">mkdir</span> build
 <span class="kw">cd</span> build
@@ -102,13 +102,13 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <p>On Mac OS X, you may get a number of warnings about empty object files. While Origin is largely implemented in header files, every <code>.hpp</code> file has a corresponding <code>.cpp</code> file. These are often empty, and can result in warnings. They can be safely ignored.</p>
 <p>Installing is straightforward.</p>
 <pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">make</span> install</code></pre>
-<p>To specify a custom installation path you can run:</p>
+<p>To specify a custom installation path, you can run:</p>
 <pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">cmake</span> -DCMAKE_INSTALL_PREFIX:PATH=<span class="ot">${ORIGIN_INSTALL_DIR}</span></code></pre>
-<p>where <code>${ORIGIN_INSTALL_DIR}</code> is installattion root path. Or you can use <code>ccmake</code> to modify the biuld.</p>
+<p>where <code>${ORIGIN_INSTALL_DIR}</code> is the installation root path. Or you can use <code>ccmake</code> to modify the build.</p>
 <p>Header files will be installed in <code>${ORIGIN_INSTALL_DIR}/include</code>, and the library binaries in <code>${ORIGIN_INSTALL_DIR}/lib</code>.</p>
 <h3 id="using-origin">Using Origin</h3>
 <p>The obligatory “Hello, world” program for Origin is:</p>
-<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// Definitins of common concepts</span>
+<pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// Definitions of common concepts</span>
 <span class="ot">#include &lt;origin/generic.hpp&gt;</span>
 
 <span class="co">// Declares cout</span>
@@ -124,9 +124,9 @@ code > span.er { color: #ff0000; font-weight: bold; }
 {
   f(<span class="st">&quot;Hello, world&quot;</span>);
 }</code></pre>
-<p>In order to compile a programming using the Origin libraries, you must ues the <code>-std=c++1z</code> command line option. This enables concepts within the compiler. If you installed Origin in a non-standard location, you will also need to add that information to the header and linker search paths.</p>
+<p>In order to compile a program using the Origin libraries, you must use the <code>-std=c++1z</code> command-line option. This enables concepts within the compiler. If you installed Origin in a non-standard location, you will also need to add that information to the header and linker search paths.</p>
 <pre class="sourceCode bash"><code class="sourceCode bash"><span class="ot">${GCC}</span> <span class="kw">-std</span>=c++1z -I <span class="dt">{ORIGIN_INSTALL_DIR}</span>/include -L <span class="dt">{ORIGIN_INSTALL_DIR}</span>/lib hello.cpp -lorigin</code></pre>
-<p>By default, Origin’s library are linked statically, so you should not need to update the dynamic linker’s search path.</p>
+<p>By default, Origin’s libraries are linked statically, so you should not need to update the dynamic linker’s search path.</p>
   </section>
 </div>
 
