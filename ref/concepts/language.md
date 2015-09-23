@@ -2,7 +2,7 @@
 # Language concepts
 
 The language concepts characterize types by their "shape" or by their
-categorization according to the C++ Standard. The "shape" of a type
+categorization according to the C++ standard. The "shape" of a type
 is based on its spelling. For example, a pointer type has the
 shape `T*`, where `T` is any other type. Similarly, an array of bound
 `N` has the shape `T[N]`. 
@@ -25,4 +25,3 @@ and not specifications of abstract interfaces. They are:
 - `Lvalue_reference_type`
 - `Rvalue_reference_type`
 - `Array_type`
-

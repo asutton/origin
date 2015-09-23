@@ -22,11 +22,9 @@ The value concepts are:
 - `Totally_ordered`
 - `Ordered`
 
-
 Note that the easiest way to define value types is to allow the compiler
 to generate as many special functions as possible. The semantics of those
 functions will (generally) satisfy the requirements of these concepts.
-
 
 ## General requirements
 
@@ -38,14 +36,13 @@ type `T`, the following are required:
 - `new T <initializer>` allocates an object of type `T` and initializes
   it with the arguments specified by the initializer.
 
-- `delete p` destroys the object pointed to be `p`, causing all of its
+- `delete p` destroys the object pointed to by `p`, causing all of its
   resources to be released.
 
 - `&x` returns the same value as `std::addressof(x)`.
 
 Types may overload these operators, but they must behave in the conventional
 way.
-
 
 ## Equality
 
@@ -73,5 +70,3 @@ If `a` and `b` are equal but have different types, lexical substitution
 of one for the other may result in ill-formed programs. This can be caused 
 by a failure to provide the necessary overloads for all cases where equal 
 objects of different type can be used interchangeably.
-
-

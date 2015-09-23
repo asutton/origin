@@ -3,7 +3,6 @@
 
 ## Synopsis
 
-
 ``` {.cpp}
 #include <origin/generic.hpp>
 
@@ -15,21 +14,17 @@ concept bool Destructible() {
 }
 ```
 
-
 ## Documentation
 
 The constructible concept is a purely syntactic construct. It requires
 that an object or reference of type `T` can be initialized over a sequence
 of arguments.
 
-
 ## Semantics
 
 This concept has no semantic requirements.
 
-
 ## Example
-
 
 ``` {.cpp}
 

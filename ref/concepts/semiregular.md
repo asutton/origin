@@ -3,7 +3,7 @@
 
 ## Declaration
 
-In `<origin/generic.hpp>`.
+The `Semiregular` concept is declared in `<origin/generic.hpp>`.
 
 ``` {.cpp}
 template<typename T>
@@ -25,9 +25,7 @@ type because it is not [copyable](copyable.html). A union of non-POD types
 may also not be semiregular if any of its required constructors are
 deleted.
 
-
 ## Example
-
 
 ``` {.cpp}
 template<Semiregular T>
@@ -35,4 +33,3 @@ void f()
 {
 }
 ```
-

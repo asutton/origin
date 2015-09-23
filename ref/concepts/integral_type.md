@@ -3,7 +3,7 @@
 
 ## Declaration
 
-In `<origin/generic.hpp>`.
+The `Integral_type` concept is declared in `<origin/generic.hpp>`.
 
 ``` {.cpp}
 template<typename T>
@@ -18,9 +18,7 @@ any implementation-defined extended integer types, all signed and
 unsigned variants of these types, and all `const` or `volatile` qualified
 variants of these types.
 
-
 ## Example
-
 
 ``` {.cpp}
 template<typename T>
@@ -38,8 +36,7 @@ int f(T x)
 int main()
 {
   int x = 0;
-  assert( f(x) == 1 );
-  assert( f(&x) == 0 ); // A pointer is not an integral type
+  assert(f(x) == 1);
+  assert(f(&x) == 0); // A pointer is not an integral type.
 }
 ```
-

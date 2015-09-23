@@ -3,7 +3,6 @@
 
 ## Synopsis
 
-
 ``` {.cpp}
 #include <origin/generic.hpp>
 
@@ -18,8 +17,7 @@ concept bool Destructible() {
 ## Documentation
 
 A *destructible type* is one whose objects can be destroyed, either
-when they go out of scope or are explicitly deallocated. 
-
+when they go out of scope or are explicitly deallocated.
 
 ## Semantics
 
@@ -30,9 +28,7 @@ are not required to be released upon destruction. For example, a
 reference-counted string implementation is not required to release its 
 allocated object if the reference count is non-zero.
 
-
 ## Example
-
 
 ``` {.cpp}
 template<Destructible T>

@@ -3,7 +3,6 @@
 
 ## Synopsis
 
-
 ``` {.cpp}
 #include <origin/generic.hpp>
 
@@ -14,15 +13,13 @@ concept bool Equality_comparable() {
     { a != b } -> Optional;
   };
 }
-
 ```
 
 ## Documentation
 
 An *equality comparable* type can be used with `==` to determine when
-its objects are equal (have the same value), and can be used with 
+its objects are equal (i.e., have the same value), and can be used with 
 `!=` to determine when its objects differ. 
-
 
 ## Semantics
 
@@ -33,9 +30,7 @@ its objects are equal (have the same value), and can be used with
 
 - The expression `a != b` is equal to `!(a == b)`.
 
-
 ## Example
-
 
 ``` {.cpp}
 // Assume that g is a regular function.
