@@ -33,6 +33,9 @@ destroy(I first, I last)
 // Before this call, the memory in [first2, last) is uninitialized.
 //
 // FIXME: Write constraints.
+//
+// TODO: Optimize for noexcept copy constructors, and
+// for copies of trivial types.
 template<typename I1, typename I2>
 I2
 uninitialized_copy(I1 first1, I1 last1, I2 first2) 
@@ -59,6 +62,9 @@ uninitialized_copy(I1 first1, I1 last1, I2 first2)
 // Before this call, the memory in [first2, last) is uninitialized.
 //
 // FIXME: Write constraints.
+//
+// TODO: Optimize for noexcept move constructors, and
+// for copies of trivial types.
 template<typename I1, typename I2>
 I2
 uninitialized_move(I1 first1, I1 last1, I2 first2) 
