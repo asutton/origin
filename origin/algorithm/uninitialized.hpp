@@ -42,12 +42,13 @@ uninitialized_copy(I1 first1, I1 last1, I2 first2)
     try {
       construct(&*iter, *first1);
     } catch (...) {
-      destroy(first1, iter);
+      destroy(first2, iter);
       throw;
     }
     ++first1;
     ++iter;
   }
+  return iter;
 }
 
 
@@ -67,12 +68,13 @@ uninitialized_move(I1 first1, I1 last1, I2 first2)
     try {
       construct(&*iter, std::move(*first1));
     } catch (...) {
-      destroy(first1, iter);
+      destroy(first2, iter);
       throw;
     }
     ++first1;
     ++iter;
   }
+  return iter;
 }
 
 
