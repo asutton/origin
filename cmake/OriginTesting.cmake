@@ -28,7 +28,7 @@
 #    generate_compile_test_driver(CompileTestDriver.cmake)
 #    add_executable(myexe myexe.cpp)
 #    add_test(NAME mytest
-#             COMMAND ${CMAKE_COMMAND} -P ${COMPILE_TEST_DRIVER} "$<CONFIG>" myexe)
+#             COMMAND ${CMAKE_COMMAND} -P ${COMPILE_TEST_DRIVER} $<CONFIG> myexe)
 #
 # This generates a file named ``CompileTestDriver.cmake`` in
 # ``${PROJECT_BINARY_DIR}``, then adds to the project an executable target
@@ -190,7 +190,7 @@ macro(ADD_COMPILE_TEST)
   # Add test that invokes the compilation test driver script.
   add_test(NAME ${_ADD_COMPILE_TEST_NAME}
     COMMAND ${CMAKE_COMMAND} -P ${COMPILE_TEST_DRIVER}
-      "$<CONFIG>" ${_ADD_COMPILE_TEST_TARGET_EXECUTABLE}
+      $<CONFIG> ${_ADD_COMPILE_TEST_TARGET_EXECUTABLE}
     ${_ADD_COMPILE_TEST_ADD_CONFIGURATIONS}
     ${_ADD_COMPILE_TEST_ADD_WORKING_DIRECTORY})
   set_tests_properties(${_ADD_COMPILE_TEST_NAME} PROPERTIES
@@ -256,7 +256,7 @@ macro(ADD_RUN_TEST)
   # Add test that invokes the compilation test driver script.
   add_test(NAME ${_ADD_COMPILE_TEST_NAME}
     COMMAND ${CMAKE_COMMAND} -P ${COMPILE_TEST_DRIVER}
-      "$<CONFIG>" ${_ADD_RUN_TEST_TARGET_EXECUTABLE}
+      $<CONFIG> ${_ADD_RUN_TEST_TARGET_EXECUTABLE}
     ${_ADD_RUN_TEST_ADD_CONFIGURATIONS}
     ${_ADD_RUN_TEST_ADD_WORKING_DIRECTORY})
   set_tests_properties(${_ADD_COMPILE_TEST_NAME} PROPERTIES

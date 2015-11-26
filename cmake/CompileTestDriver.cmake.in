@@ -36,7 +36,7 @@ if(NOT CTEST_CUSTOM_FILE)
     file(GLOB_RECURSE CTEST_CUSTOM_FILES
       "@CMAKE_BINARY_DIR@/*/CTestCustom.ctest")
     foreach(file ${CTEST_CUSTOM_FILES})
-      include("${file}")
+      include(${file})
     endforeach()
   endif()
 endif()
@@ -60,13 +60,13 @@ endwhile()
 if(NOT i LESS CMAKE_ARGC)
   message(FATAL_ERROR "A build configuration must be specified.")
 endif()
-set(CONFIGURATION_TYPE "${CMAKE_ARGV${i}}")
+set(CONFIGURATION_TYPE ${CMAKE_ARGV${i}})
 if(NOT CONFIGURATION_TYPE STREQUAL "")
-  set(CMAKE_BUILD_ADD_CONFIGURATION --config "${CONFIGURATION_TYPE}")
+  set(CMAKE_BUILD_ADD_CONFIGURATION --config ${CONFIGURATION_TYPE})
 endif()
 math(EXPR i "${i} + 1")
 while(i LESS CMAKE_ARGC)
-  list(APPEND TARGETS "${CMAKE_ARGV${i}}")
+  list(APPEND TARGETS ${CMAKE_ARGV${i}})
   math(EXPR i "${i} + 1")
 endwhile()
 
@@ -79,7 +79,7 @@ foreach(target ${TARGETS})
   foreach(target_directory ${TARGET_DIRECTORIES})
     string(REGEX MATCH
       "^@CMAKE_BINARY_DIR@(/.*)?${CMAKE_FILES_DIRECTORY}/${target}\\.dir$"
-      TARGET_DIR "${target_directory}")
+      TARGET_DIR ${target_directory})
     if(TARGET_DIR)
       break()
     endif()
@@ -89,13 +89,13 @@ foreach(target ${TARGETS})
     message(WARNING "Invalid target '${target}' (ignored).")
   else()
     string(REGEX REPLACE "${CMAKE_FILES_DIRECTORY}/${target}\\.dir$" ""
-      TARGET_BINARY_DIR "${TARGET_DIR}")
+      TARGET_BINARY_DIR ${TARGET_DIR})
 
     # Clean the target.
     message(STATUS "Cleaning target '${target}'")
     execute_process(COMMAND ${CMAKE_COMMAND} -P
-        "${CMAKE_FILES_DIRECTORY_NAME}/${target}.dir/cmake_clean.cmake"
-      WORKING_DIRECTORY "${TARGET_BINARY_DIR}"
+        ${CMAKE_FILES_DIRECTORY_NAME}/${target}.dir/cmake_clean.cmake
+      WORKING_DIRECTORY ${TARGET_BINARY_DIR}
       OUTPUT_QUIET ERROR_QUIET)
     message(STATUS "Cleaning target '${target}' - done")
 
@@ -103,7 +103,7 @@ foreach(target ${TARGETS})
     message(STATUS "Compiling target '${target}'")
     execute_process(COMMAND ${CMAKE_COMMAND}
         --build "@PROJECT_BINARY_DIR@" ${CMAKE_BUILD_ADD_CONFIGURATION}
-        --target "${target}" --use-stderr
+        --target ${target} --use-stderr
         ${CMAKE_BUILD_ADD_NATIVE_TOOL_OPTIONS}
       RESULT_VARIABLE COMPILE_RESULT
       ERROR_VARIABLE COMPILE_ERROR_CONTENTS
@@ -119,7 +119,7 @@ foreach(target ${TARGETS})
           if(NOT DEFINED COMPILE_${var}_EXCEPTION
              OR (DEFINED COMPILE_${var}_EXCEPTION
                  AND NOT compile_error_line MATCHES "${COMPILE_${var}_EXCEPTION}"))
-            list(APPEND COMPILE_${var}S "${compile_error_line}")
+            list(APPEND COMPILE_${var}S ${compile_error_line})
           endif()
         endif()
       endforeach()
@@ -133,12 +133,12 @@ foreach(target ${TARGETS})
       set(COMPILE_WARNING_ADD_S s)
     endif()
     if(COMPILE_ERROR_CONTENTS)
-      message("${COMPILE_ERROR_CONTENTS}")
+      message(${COMPILE_ERROR_CONTENTS})
     endif()
     message(STATUS "Compiling target '${target}' - exited with status ${COMPILE_RESULT} (${COMPILE_ERROR_COUNT} error${COMPILE_ERROR_ADD_S}, ${COMPILE_WARNING_COUNT} warning${COMPILE_WARNING_ADD_S})")
 
     if(NOT COMPILE_RESULT EQUAL 0)
-      list(APPEND FAILED_TARGETS "${target}")
+      list(APPEND FAILED_TARGETS ${target})
     endif()
   endif()
 endforeach()

@@ -4,7 +4,7 @@
 cmake_minimum_required(VERSION 3.0)
 
 # Set CMake module path.
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 include(CheckCXXCompilerFlag)
 include(CheckCXXConcepts)
@@ -17,9 +17,9 @@ include(OriginUtilities)
 project(Origin VERSION 0.1 LANGUAGES CXX)
 
 # Set variables.
-set(ORIGIN_PACKAGE_NAME "${PROJECT_NAME}")
-set(ORIGIN_PACKAGE_TARNAME "${ORIGIN_PACKAGE_NAME}")
-set(ORIGIN_PACKAGE_VERSION "${PROJECT_VERSION}")
+set(ORIGIN_PACKAGE_NAME ${PROJECT_NAME})
+set(ORIGIN_PACKAGE_TARNAME ${ORIGIN_PACKAGE_NAME})
+set(ORIGIN_PACKAGE_VERSION ${PROJECT_VERSION})
 set(ORIGIN_PACKAGE_STRING "${ORIGIN_PACKAGE_NAME} ${ORIGIN_PACKAGE_VERSION}")
 set(ORIGIN_PACKAGE_BUGREPORT "https://github.com/asutton/origin/issues")
 set(ORIGIN_PACKAGE_URL "https://github.com/asutton/origin")
@@ -29,19 +29,19 @@ set(ORIGIN_VERSION_MINOR ${PROJECT_VERSION_MINOR})
 set(ORIGIN_VERSION_PATCH ${PROJECT_VERSION_PATCH})
 set(ORIGIN_VERSION_TWEAK ${PROJECT_VERSION_TWEAK})
 
-set(INSTALL_BIN_DIR "${CMAKE_INSTALL_BINDIR}")
-set(INSTALL_LIB_DIR "${CMAKE_INSTALL_LIBDIR}")
-set(INSTALL_INCLUDE_DIR "${CMAKE_INSTALL_INCLUDEDIR}")
-set(INSTALL_DATA_DIR "${CMAKE_INSTALL_DATADIR}")
+set(INSTALL_BIN_DIR ${CMAKE_INSTALL_BINDIR})
+set(INSTALL_LIB_DIR ${CMAKE_INSTALL_LIBDIR})
+set(INSTALL_INCLUDE_DIR ${CMAKE_INSTALL_INCLUDEDIR})
+set(INSTALL_DATA_DIR ${CMAKE_INSTALL_DATADIR})
 
 # Add .ipp and .IPP to list of ignored file extensions for C++.
 list(APPEND CMAKE_CXX_IGNORE_EXTENSIONS "ipp" "IPP")
 list(REMOVE_DUPLICATES CMAKE_CXX_IGNORE_EXTENSIONS)
 
 # Set output location of built targets.
-# set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
-# set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
-# set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
+# set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
+# set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
+# set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
 
 # Add options.
 option(BUILD_SHARED_LIBS "Build shared libraries." ON)
@@ -76,20 +76,20 @@ configure_file(CTestCustom.cmake.in CTestCustom.cmake @ONLY)
 if(NOT TARGET check)
   add_custom_target(
     check
-    COMMAND ${CMAKE_COMMAND} --build "${CMAKE_BINARY_DIR}" --target test
+    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target test
   )
 endif()
 
 # Add 'uninstall' target.
 if(NOT TARGET uninstall)
   configure_file(
-    "${PROJECT_SOURCE_DIR}/cmake_uninstall.cmake.in"
-    "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake"
+    ${PROJECT_SOURCE_DIR}/cmake_uninstall.cmake.in
+    ${CMAKE_BINARY_DIR}/cmake_uninstall.cmake
     @ONLY
   )
   add_custom_target(
     uninstall
-    COMMAND ${CMAKE_COMMAND} -P "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake"
+    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/cmake_uninstall.cmake
   )
 endif()
 
@@ -104,8 +104,8 @@ export(EXPORT OriginTargets)
 
 # Add install targets.
 install(
-  DIRECTORY "${PROJECT_SOURCE_DIR}/origin" "${PROJECT_BINARY_DIR}/origin"
-  DESTINATION "${INSTALL_INCLUDE_DIR}"
+  DIRECTORY ${PROJECT_SOURCE_DIR}/origin ${PROJECT_BINARY_DIR}/origin
+  DESTINATION ${INSTALL_INCLUDE_DIR}
   FILES_MATCHING
   PATTERN "*.hpp"
   PATTERN "*.ipp"
