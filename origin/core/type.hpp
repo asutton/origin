@@ -14,7 +14,7 @@
 // TODO: Remove when libstdc++ on Cygwin defines numeric
 // conversion functions. We need to include C libray
 // headers because these functions don't exist in std.
-#if !defined(ORIGIN_HAVE_STD_TO_STRING)
+#if !ORIGIN_HAVE_STD_TO_STRING
 #  include <stdio.h>
 #endif
 

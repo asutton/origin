@@ -2,7 +2,8 @@
  * @file    origin/core/config.hpp
  * The configuration header for the Origin.Core library.
  *
- * @date    9/10/2015
+ * @date    2015
+ * @version @ORIGIN_VERSION@
  */
 
 /* config.hpp. Generated from config.hpp.in by cmake. */
@@ -47,7 +48,7 @@
 #define ORIGIN_VERSION_TWEAK @ORIGIN_VERSION_TWEAK@
 
 /* Define to 1 if you have the std::to_string() function. */
-#cmakedefine ORIGIN_HAVE_STD_TO_STRING
+#cmakedefine ORIGIN_HAVE_STD_TO_STRING 1
 
 #include <origin/core/export.hpp>
 

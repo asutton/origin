@@ -6,7 +6,7 @@ include(GenerateExportHeader)
 # Set variables.
 
 # Add options.
-# option(ORIGIN_DATA_SSO "Enable the short/small string optimization." ON)
+# option(ORIGIN_USE_SSO "Enable the short/small string optimization." ON)
 
 # Run platform checks.
 

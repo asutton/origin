@@ -2,7 +2,8 @@
  * @file    origin.math/config.hpp
  * The configuration header for the Origin.Math library.
  *
- * @date    9/10/2015
+ * @date    2015
+ * @version @ORIGIN_VERSION@
  */
 
 /* config.hpp. Generated from config.hpp.in by cmake. */

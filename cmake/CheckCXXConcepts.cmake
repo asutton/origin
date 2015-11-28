@@ -26,6 +26,10 @@
 # ``CMAKE_REQUIRED_QUIET``
 #   Execute quietly without messages.
 #
+# .. note::
+#    As of 2015, the only known compiler that supports this language feature
+#    is `GCC 6.0 <https://gcc.gnu.org>`_.
+#
 # Requires CMake 2.8 or later.
 
 include(CheckCXXSourceCompiles)
