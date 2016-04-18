@@ -61,17 +61,17 @@ template<typename T>
 struct equal_to_value
 {
   equal_to_value(T const& t)
-    : t(t)
+    : t_(t)
   { }
 
   template<typename U>
     requires Equality_comparable<T, U>()
   bool operator()(U const& u) const
   {
-    return t == u;
+    return t_ == u;
   }
 
-  T t; 
+  T t_;
 };
 
 
@@ -117,17 +117,17 @@ template<typename T>
 struct less_than_value
 {
   less_than_value(T const& t)
-    : t(t)
+    : t_(t)
   { }
 
   template<typename U>
     requires Equality_comparable<T, U>()
   bool operator()(U const& u) const
   {
-    return t == u;
+    return t_ == u;
   }
 
-  T t; 
+  T t_;
 };
 
 
