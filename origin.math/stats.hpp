@@ -5,6 +5,7 @@
 #define ORIGIN_MATH_STATS_HPP
 
 #include <origin.math/numeric.hpp>
+#include <vector>
 
 // The stats module provides a suite of algorithms for computing
 // statistical measures of sequences of data points. Each element
