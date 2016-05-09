@@ -34,6 +34,56 @@ template<typename I, typename T = Value_type<I>>
     return sum(first, last) / distance(first, last);
   }
 
+  template<
+            typename It, typename Out,
+            typename T = typename std::iterator_traits<It>::value_type
+          >
+  // requires(ForwardIterator(It))
+  // required(OutputIterator(Out))
+  // <T, +> is a group
+  // r -= a && r += a <=> r = r - a && r = r + a
+  // -= implies + inverse element
+  Out moving_sums(It f, It m, It l, Out out, T acum) {
+    auto it = f;
+    while(it != m) {
+      acum += *it;
+      it++;
+    }
+
+    *out = acum;
+    out++;
+    while (it != l) {
+      acum -= *f;
+      acum += *it;
+      *out = acum;
+
+      out++;
+      it++;
+      f++;
+    }
+    return out;
+  }
+
+  template<
+            typename It,
+            typename T = typename std::iterator_traits<It>::value_type
+          >
+  // requires(ForwardIterator(It)
+  // required(OutputIterator(Out)
+  // <T, +> is a group
+  inline
+  std::vector<T> moving_means(It f, It m, It l) {
+    auto window_length = std::distance(f, m);
+    auto length = std::distance(f, l);
+    std::vector<T> result(length - window_length + 1);
+    moving_sums(f, m, l, std::begin(result), T(0));
+    for (auto &x : result) {
+      x /= window_length;
+    }
+    return result;
+  }
+
+
 template<typename I, typename T = Value_type<I>>
   inline T
   geometric_mean(I first, I last) {
