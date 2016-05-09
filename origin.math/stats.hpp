@@ -38,8 +38,8 @@ template<typename I, typename T = Value_type<I>>
             typename It, typename Out,
             typename T = typename std::iterator_traits<It>::value_type
           >
-  // requires(ForwardIterator(It)
-  // required(OutputIterator(Out)
+  // requires(ForwardIterator(It))
+  // required(OutputIterator(Out))
   // <T, +> is a group
   // r -= a && r += a <=> r = r - a && r = r + a
   // -= implies + inverse element
