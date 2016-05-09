@@ -78,7 +78,7 @@ template<typename I, typename T = Value_type<I>>
     std::vector<T> result(length - window_length + 1);
     moving_sums(f, m, l, std::begin(result), T(0));
     for (auto &x : result) {
-      x /= n;
+      x /= window_length;
     }
     return result;
   }
