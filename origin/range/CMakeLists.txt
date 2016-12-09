@@ -17,7 +17,7 @@ add_library(origin-range STATIC
   core.cpp
   range.cpp)
 
-target_compile_options(origin-range PUBLIC -std=c++1z)
+target_compile_options(origin-range PUBLIC -std=c++1z -fconcepts)
 target_include_directories(origin-range
   PUBLIC "$<BUILD_INTERFACE:${Origin_SOURCE_DIR};${Origin_BINARY_DIR}>")
 target_link_libraries(origin-range PUBLIC origin-iterator)

@@ -16,7 +16,7 @@ add_compiler_export_flags()
 add_library(origin-iterator STATIC
   core.cpp)
 
-target_compile_options(origin-iterator PUBLIC -std=c++1z)
+target_compile_options(origin-iterator PUBLIC -std=c++1z -fconcepts)
 target_include_directories(origin-iterator
   PUBLIC "$<BUILD_INTERFACE:${Origin_SOURCE_DIR};${Origin_BINARY_DIR}>")
 target_link_libraries(origin-iterator PUBLIC origin-core)

@@ -17,7 +17,7 @@ add_library(origin-math STATIC
   numeric.cpp
   stats.cpp)
 
-target_compile_options(origin-math PUBLIC -std=c++1z)
+target_compile_options(origin-math PUBLIC -std=c++1z -fconcepts)
 target_include_directories(origin-math
   PUBLIC "$<BUILD_INTERFACE:${Origin_SOURCE_DIR};${Origin_BINARY_DIR}>")
 

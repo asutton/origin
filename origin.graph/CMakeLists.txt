@@ -17,7 +17,7 @@ add_library(origin-graph STATIC
   adjacency_list.cpp
   adjacency_vector.cpp)
 
-target_compile_options(origin-graph PUBLIC -std=c++1z)
+target_compile_options(origin-graph PUBLIC -std=c++1z -fconcepts)
 target_include_directories(origin-graph
   PUBLIC "$<BUILD_INTERFACE:${Origin_SOURCE_DIR};${Origin_BINARY_DIR}>")
 target_link_libraries(origin-graph PUBLIC origin-core origin-range)
