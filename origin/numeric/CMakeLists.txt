@@ -17,7 +17,7 @@ add_library(origin-numeric STATIC
   numeric.cpp
   algebra.cpp)
 
-target_compile_options(origin-numeric PUBLIC -std=c++1z)
+target_compile_options(origin-numeric PUBLIC -std=c++1z -fconcepts)
 target_include_directories(origin-numeric
   PUBLIC "$<BUILD_INTERFACE:${Origin_SOURCE_DIR};${Origin_BINARY_DIR}>")
 target_link_libraries(origin-numeric PUBLIC origin-core)

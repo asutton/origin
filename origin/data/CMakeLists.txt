@@ -17,7 +17,7 @@ add_compiler_export_flags()
 add_library(origin-data STATIC
   vector.cpp)
 
-target_compile_options(origin-data PUBLIC -std=c++1z)
+target_compile_options(origin-data PUBLIC -std=c++1z -fconcepts)
 target_include_directories(origin-data
   PUBLIC "$<BUILD_INTERFACE:${Origin_SOURCE_DIR};${Origin_BINARY_DIR}>")
 target_link_libraries(origin-data

@@ -23,7 +23,7 @@ add_library(origin-core STATIC
   finally.cpp
   type.cpp)
 
-target_compile_options(origin-core PUBLIC -std=c++1z)
+target_compile_options(origin-core PUBLIC -std=c++1z -fconcepts)
 target_include_directories(origin-core
   PUBLIC "$<BUILD_INTERFACE:${Origin_SOURCE_DIR};${Origin_BINARY_DIR}>")
 

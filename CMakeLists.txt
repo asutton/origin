@@ -65,7 +65,7 @@ endif()
 
 # ... and that concepts are included in C++1z.
 # TODO: What happens when there are different versions of concepts?
-set(CMAKE_REQUIRED_FLAGS -std=c++1z)
+set(CMAKE_REQUIRED_FLAGS -fconcepts)
 check_cxx_concepts(CXX_COMPILER_HAS_CONCEPTS)
 if(NOT CXX_COMPILER_HAS_CONCEPTS)
   message(FATAL_ERROR "${PROJECT_NAME} requires a C++ compiler that supports concepts.")
