@@ -439,7 +439,7 @@ Binary_operation()
 template<typename T>
 concept bool Number()
 {
-  return Ordered<T>
+  return Ordered<T>()
     && requires (T a, T b) {
       { a + b } -> T;
       { a - b } -> T;
